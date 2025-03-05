@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     
     // Simple mock authentication
-    // In a real app, this would be a call to your backend
     try {
       // Add a short delay to simulate network request
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -63,9 +62,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } 
       
-      // Regular user login check (simple validation for demo)
-      else {
-        if (password.length >= 6) {
+      // Customer login check (simple validation for demo)
+      else if (foundUser.role === 'customer') {
+        // Same password for customer logins in this demo
+        if (password === "NaveenSir@2025") {
           setUser(foundUser);
           localStorage.setItem('satkar_user', JSON.stringify(foundUser));
           setIsLoading(false);
@@ -74,6 +74,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setIsLoading(false);
           return false;
         }
+      } else {
+        setIsLoading(false);
+        return false;
       }
     } catch (error) {
       console.error('Login error:', error);

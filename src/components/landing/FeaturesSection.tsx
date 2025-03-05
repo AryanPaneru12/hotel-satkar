@@ -54,7 +54,7 @@ const FeaturesSection = () => {
           <FeatureCard 
             icon={<Database className="h-6 w-6 md:h-8 md:w-8 text-hotel-700" />}
             title="Advanced Technology"
-            description="Built with React.js frontend and Node.js backend, powered by MongoDB database technology."
+            description="Built with React frontend and Node.js backend, powered by MongoDB database."
             delay={500}
           />
         </div>

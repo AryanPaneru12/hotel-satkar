@@ -31,10 +31,11 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
     if (!user) {
       // Redirect to landing page with login modal
       navigate('/?login=true');
-    } else {
-      // If user is logged in, show booking form directly
-      setShowBookingForm(true);
+      return;
     }
+    
+    // If user is logged in, show booking form directly
+    setShowBookingForm(true);
   };
 
   return (
@@ -111,13 +112,15 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
         </div>
       </TransitionWrapper>
       
-      <BookingForm 
-        isOpen={showBookingForm} 
-        onClose={() => setShowBookingForm(false)}
-        roomId={room.id}
-        roomType={room.type}
-        roomPrice={room.price}
-      />
+      {showBookingForm && (
+        <BookingForm 
+          isOpen={showBookingForm} 
+          onClose={() => setShowBookingForm(false)}
+          roomId={room.id}
+          roomType={room.type}
+          roomPrice={room.price}
+        />
+      )}
     </>
   );
 };

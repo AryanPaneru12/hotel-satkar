@@ -31,8 +31,8 @@ const RoomCard = ({
   const { user } = useAuth();
   
   const handleBookClick = () => {
-    if (!user && onBookClick) {
-      // If user is not logged in, show login modal
+    if (!user) {
+      // If user is not logged in, show login modal via the parent component
       onBookClick();
     } else {
       // If user is logged in, show booking form directly
@@ -76,16 +76,16 @@ const RoomCard = ({
             Book Now
           </Button>
         </CardFooter>
-        
-        {showBookingForm && (
-          <BookingForm 
-            isOpen={showBookingForm}
-            onClose={() => setShowBookingForm(false)}
-            roomType={title}
-            roomPrice={price}
-          />
-        )}
       </Card>
+      
+      {showBookingForm && (
+        <BookingForm 
+          isOpen={showBookingForm}
+          onClose={() => setShowBookingForm(false)}
+          roomType={title}
+          roomPrice={price}
+        />
+      )}
     </TransitionWrapper>
   );
 };

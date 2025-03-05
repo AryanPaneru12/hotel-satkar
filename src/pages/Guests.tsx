@@ -22,9 +22,57 @@ import {
 import { guests, bookings } from '@/data/mockData';
 import { Plus, Search, MoreHorizontal, User, Phone, Mail, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 
 const Guests = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddGuestOpen, setIsAddGuestOpen] = useState(false);
+  const [newGuest, setNewGuest] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    idType: 'passport',
+    idNumber: '',
+    nationality: 'Indian'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setNewGuest(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSelectChange = (field: string, value: string) => {
+    setNewGuest(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddGuest = () => {
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      toast({
+        title: "Guest Added",
+        description: `${newGuest.name} has been added successfully.`,
+      });
+      
+      setIsSubmitting(false);
+      setIsAddGuestOpen(false);
+      // Reset form
+      setNewGuest({
+        name: '',
+        email: '',
+        phone: '',
+        idType: 'passport',
+        idNumber: '',
+        nationality: 'Indian'
+      });
+    }, 1000);
+  };
 
   // Get guest status by checking if they are currently checked in
   const getGuestStatus = (guestId: string) => {
@@ -86,7 +134,7 @@ const Guests = () => {
           />
         </div>
         
-        <Button className="flex items-center gap-1">
+        <Button className="flex items-center gap-1" onClick={() => setIsAddGuestOpen(true)}>
           <Plus className="h-4 w-4" />
           <span>New Guest</span>
         </Button>
@@ -194,6 +242,108 @@ const Guests = () => {
           </Table>
         </div>
       </div>
+
+      {/* Add Guest Dialog */}
+      <Dialog open={isAddGuestOpen} onOpenChange={setIsAddGuestOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Guest</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  value={newGuest.name}
+                  onChange={handleInputChange}
+                  placeholder="John Smith"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={newGuest.email}
+                  onChange={handleInputChange}
+                  placeholder="john@example.com"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={newGuest.phone}
+                  onChange={handleInputChange}
+                  placeholder="+91 9012345678"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="idType">ID Type</Label>
+                  <Select 
+                    value={newGuest.idType} 
+                    onValueChange={(value) => handleSelectChange('idType', value)}
+                  >
+                    <SelectTrigger id="idType">
+                      <SelectValue placeholder="Select ID type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="passport">Passport</SelectItem>
+                      <SelectItem value="aadhar">Aadhar Card</SelectItem>
+                      <SelectItem value="driving">Driving License</SelectItem>
+                      <SelectItem value="voter">Voter ID</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="idNumber">ID Number</Label>
+                  <Input
+                    id="idNumber"
+                    value={newGuest.idNumber}
+                    onChange={handleInputChange}
+                    placeholder="123456789"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="nationality">Nationality</Label>
+                <Select 
+                  value={newGuest.nationality} 
+                  onValueChange={(value) => handleSelectChange('nationality', value)}
+                >
+                  <SelectTrigger id="nationality">
+                    <SelectValue placeholder="Select nationality" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Indian">Indian</SelectItem>
+                    <SelectItem value="American">American</SelectItem>
+                    <SelectItem value="British">British</SelectItem>
+                    <SelectItem value="Australian">Australian</SelectItem>
+                    <SelectItem value="Canadian">Canadian</SelectItem>
+                    <SelectItem value="Chinese">Chinese</SelectItem>
+                    <SelectItem value="Japanese">Japanese</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddGuestOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddGuest} disabled={isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Guest"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 };

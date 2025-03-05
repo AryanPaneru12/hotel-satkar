@@ -78,7 +78,7 @@ const AppRoutes = () => {
           {user?.role === 'customer' ? (
             <Navigate to="/customer-dashboard" replace />
           ) : (
-            <div className="flex h-screen w-full">
+            <div className="flex h-screen w-full overflow-hidden">
               <Sidebar />
               <div className="flex-1 overflow-hidden">
                 <Index />
@@ -91,7 +91,7 @@ const AppRoutes = () => {
       {/* Customer Dashboard */}
       <Route path="/customer-dashboard" element={
         <CustomerRoute>
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full overflow-hidden">
             <Sidebar />
             <div className="flex-1 overflow-hidden">
               <CustomerDashboard />
@@ -102,7 +102,7 @@ const AppRoutes = () => {
       
       <Route path="/rooms" element={
         <ProtectedRoute>
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full overflow-hidden">
             <Sidebar />
             <div className="flex-1 overflow-hidden">
               <Rooms />
@@ -113,7 +113,7 @@ const AppRoutes = () => {
       
       <Route path="/bookings" element={
         <ProtectedRoute>
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full overflow-hidden">
             <Sidebar />
             <div className="flex-1 overflow-hidden">
               <Bookings />
@@ -124,7 +124,7 @@ const AppRoutes = () => {
       
       <Route path="/guests" element={
         <AdminRoute>
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full overflow-hidden">
             <Sidebar />
             <div className="flex-1 overflow-hidden">
               <Guests />

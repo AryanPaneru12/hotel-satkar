@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Lock, Facebook, Github, Info, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Facebook, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -175,7 +175,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                                   Use
                                 </Button>
                               </div>
-                              <p className="mt-2 text-gray-500">Password for all: NaveenSir@2025</p>
+                              <p className="mt-2 text-gray-500">Password will be filled automatically</p>
                             </div>
                           </AccordionContent>
                         </AccordionItem>
@@ -292,13 +292,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 <Separator className="flex-1" />
               </div>
               
-              {/* Updated this div to be responsive on mobile */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => handleSocialLogin('Google')}
-                  className="w-full flex justify-center items-center"
+                  className="w-full flex items-center justify-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" className="mr-2">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -312,7 +311,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   type="button" 
                   variant="outline" 
                   onClick={() => handleSocialLogin('Facebook')}
-                  className="w-full flex justify-center items-center"
+                  className="w-full flex items-center justify-center"
                 >
                   <Facebook className="h-4 w-4 mr-2 text-blue-600" />
                   Facebook
@@ -322,7 +321,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           </TabsContent>
         </Tabs>
         
-        <CardFooter>
+        <CardFooter className="flex flex-col sm:flex-row gap-4">
           <Button
             type="button"
             variant="outline"

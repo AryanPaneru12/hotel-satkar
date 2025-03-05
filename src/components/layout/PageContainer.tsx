@@ -12,11 +12,26 @@ interface PageContainerProps {
 
 const PageContainer = ({ title, children, className }: PageContainerProps) => {
   const { user } = useAuth();
-  const userRoleDisplay = user?.role === 'superadmin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : 'Customer';
+  
+  // Format the role display text with proper capitalization
+  const getUserRoleDisplay = () => {
+    if (!user) return '';
+    
+    switch (user.role) {
+      case 'superadmin':
+        return 'Super Admin';
+      case 'admin':
+        return 'Admin';
+      case 'customer':
+        return 'Customer';
+      default:
+        return user.role;
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Header title={`${title} ${user ? `(${userRoleDisplay})` : ''}`} />
+      <Header title={`${title} ${user ? `(${getUserRoleDisplay()})` : ''}`} />
       <main className={cn("flex-1 overflow-auto p-6", className)}>
         <div className="page-container">
           {children}

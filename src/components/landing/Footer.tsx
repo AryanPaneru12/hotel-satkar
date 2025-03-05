@@ -2,6 +2,13 @@
 import React from 'react';
 
 const Footer = () => {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
@@ -9,7 +16,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Satkar</h3>
             <p className="mb-4 text-gray-400">
-              A premium property located in the heart of Pokhara, offering stunning views of Phewa Lake and the Annapurna mountain range.
+              Redefining luxury in the heart of Pokhara, offering stunning views of Phewa Lake and the Annapurna mountain range.
             </p>
           </div>
           <div>
@@ -22,10 +29,33 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#rooms" className="hover:text-white transition-colors">Rooms</a></li>
-              <li><a href="#amenities" className="hover:text-white transition-colors">Amenities</a></li>
-              <li><a href="#gallery" className="hover:text-white transition-colors">Gallery</a></li>
-              <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
+              <li>
+                <a 
+                  href="#rooms" 
+                  onClick={(e) => { e.preventDefault(); scrollToSection('rooms'); }}
+                  className="hover:text-white transition-colors"
+                >
+                  Rooms
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#amenities" 
+                  onClick={(e) => { e.preventDefault(); scrollToSection('amenities'); }}
+                  className="hover:text-white transition-colors"
+                >
+                  Amenities
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#about" 
+                  onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}
+                  className="hover:text-white transition-colors"
+                >
+                  About Us
+                </a>
+              </li>
             </ul>
           </div>
         </div>

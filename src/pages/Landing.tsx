@@ -4,6 +4,7 @@ import Navbar from '@/components/landing/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
 import RoomsSection from '@/components/landing/RoomsSection';
+import AboutUsSection from '@/components/landing/AboutUsSection';
 import LoginModal from '@/components/landing/LoginModal';
 import Footer from '@/components/landing/Footer';
 
@@ -20,6 +21,7 @@ const Landing = () => {
       <HeroSection onBookNowClick={handleLoginClick} />
       <FeaturesSection />
       <RoomsSection onBookNowClick={handleLoginClick} />
+      <AboutUsSection />
       <LoginModal isOpen={isLoginMode} onClose={() => setIsLoginMode(false)} />
       <Footer />
     </div>

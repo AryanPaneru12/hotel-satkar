@@ -27,7 +27,7 @@ const FeatureCard = ({
 
 const FeaturesSection = () => {
   return (
-    <section className="py-16 bg-gray-50">
+    <section id="amenities" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <TransitionWrapper delay={200}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">Experience Luxury in the Heart of Pokhara</h2>

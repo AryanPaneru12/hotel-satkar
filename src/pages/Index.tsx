@@ -9,6 +9,22 @@ import { Bed, DollarSign, Users, Calendar, Percent } from 'lucide-react';
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard">
+      {/* Hero Banner */}
+      <div className="relative h-48 md:h-64 lg:h-80 mb-8 rounded-xl overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?auto=format&fit=crop&q=80" 
+          alt="Scenic view of Pokhara and snow mountains" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-hotel-900/70 to-hotel-700/50"></div>
+        <div className="absolute inset-0 flex items-center p-8">
+          <div className="text-white">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Welcome to Satkar</h1>
+            <p className="text-lg md:text-xl">Redefining Luxury</p>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <StatsCard

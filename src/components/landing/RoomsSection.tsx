@@ -1,4 +1,3 @@
-
 import React from 'react';
 import RoomCard from './RoomCard';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
@@ -36,7 +35,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
   ];
 
   return (
-    <section className="py-16">
+    <section id="rooms" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <TransitionWrapper delay={600}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Our Accommodations</h2>

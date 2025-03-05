@@ -9,7 +9,7 @@ interface StatsCardProps {
   icon: LucideIcon;
   description?: string;
   trend?: 'up' | 'down' | 'neutral';
-  trendValue?: string;
+  percentage?: string;
   iconColor?: string;
   delay?: number;
 }
@@ -20,7 +20,7 @@ const StatsCard = ({
   icon: Icon,
   description,
   trend,
-  trendValue,
+  percentage,
   iconColor = "text-primary",
   delay = 0
 }: StatsCardProps) => {
@@ -37,7 +37,7 @@ const StatsCard = ({
         <div className="flex-1">
           <div className="flex items-baseline">
             <span className="text-2xl font-semibold">{value}</span>
-            {trend && trendValue && (
+            {trend && percentage && (
               <span 
                 className={cn(
                   "ml-2 text-xs font-medium px-1.5 py-0.5 rounded",
@@ -46,7 +46,7 @@ const StatsCard = ({
                   'text-gray-600 bg-gray-100'
                 )}
               >
-                {trendValue}
+                {percentage}%
               </span>
             )}
           </div>

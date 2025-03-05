@@ -6,7 +6,7 @@ import DashboardCard from '@/components/dashboard/DashboardCard';
 import RecentBookings from '@/components/dashboard/RecentBookings';
 import PaymentMethodsCard from '@/components/admin/PaymentMethodsCard';
 import { UserRound, Hotel, CalendarDays, IndianRupee } from 'lucide-react';
-import { mockBookings } from '@/data/mockData';
+import { bookings } from '@/data/mockData';
 
 const Index = () => {
   return (
@@ -18,7 +18,7 @@ const Index = () => {
           trend="up"
           percentage="12"
           description="vs. last month"
-          icon={<UserRound size={16} />}
+          icon={UserRound}
           delay={100}
         />
         <StatsCard 
@@ -27,7 +27,7 @@ const Index = () => {
           trend="down"
           percentage="8"
           description="vs. last month"
-          icon={<Hotel size={16} />}
+          icon={Hotel}
           delay={200}
         />
         <StatsCard 
@@ -36,7 +36,7 @@ const Index = () => {
           trend="up"
           percentage="19"
           description="vs. last month"
-          icon={<CalendarDays size={16} />}
+          icon={CalendarDays}
           delay={300}
         />
         <StatsCard 
@@ -45,14 +45,14 @@ const Index = () => {
           trend="up"
           percentage="7"
           description="vs. last month"
-          icon={<IndianRupee size={16} />}
+          icon={IndianRupee}
           delay={400}
         />
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <RecentBookings bookings={mockBookings} />
+          <RecentBookings bookings={bookings} />
         </div>
         <div>
           <PaymentMethodsCard />

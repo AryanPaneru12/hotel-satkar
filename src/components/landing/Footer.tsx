@@ -59,8 +59,12 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Satkar. All rights reserved.</p>
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-500">&copy; {new Date().getFullYear()} Satkar. All rights reserved.</p>
+          <div className="mt-4 md:mt-0 flex space-x-4">
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+          </div>
         </div>
       </div>
     </footer>

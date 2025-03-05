@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import { Check, Info } from 'lucide-react';
 import TransitionWrapper from '../ui/TransitionWrapper';
 import BookingForm from '../booking/BookingForm';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface RoomCardProps {
   room: Room;
@@ -15,12 +17,24 @@ interface RoomCardProps {
 
 const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   
   const statusColorMap = {
     'Available': 'bg-green-100 text-green-800 border-green-200',
     'Occupied': 'bg-red-100 text-red-800 border-red-200',
     'Maintenance': 'bg-orange-100 text-orange-800 border-orange-200',
     'Reserved': 'bg-blue-100 text-blue-800 border-blue-200',
+  };
+
+  const handleBookClick = () => {
+    if (!user) {
+      // Redirect to landing page with login modal
+      navigate('/?login=true');
+    } else {
+      // If user is logged in, show booking form directly
+      setShowBookingForm(true);
+    }
   };
 
   return (
@@ -88,7 +102,7 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
                 size="sm" 
                 className="flex-1"
                 disabled={room.status !== 'Available'}
-                onClick={() => setShowBookingForm(true)}
+                onClick={handleBookClick}
               >
                 {room.status === 'Available' ? 'Book Now' : 'Unavailable'}
               </Button>

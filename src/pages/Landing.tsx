@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '@/components/landing/Navbar';
 import HeroSection from '@/components/landing/HeroSection';
 import FeaturesSection from '@/components/landing/FeaturesSection';
@@ -10,6 +11,16 @@ import Footer from '@/components/landing/Footer';
 
 const Landing = () => {
   const [isLoginMode, setIsLoginMode] = useState(false);
+  const location = useLocation();
+  
+  // Check if we should show login modal based on URL parameter
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const showLogin = query.get('login');
+    if (showLogin === 'true') {
+      setIsLoginMode(true);
+    }
+  }, [location]);
 
   const handleLoginClick = () => {
     setIsLoginMode(true);

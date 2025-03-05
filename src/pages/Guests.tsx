@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { guests, bookings } from '@/data/mockData';
+import { guests, bookings, rooms } from '@/data/mockData';
 import { Plus, Search, MoreHorizontal, User, Phone, Mail, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -36,10 +36,14 @@ const Guests = () => {
     phone: '',
     idType: 'passport',
     idNumber: '',
-    nationality: 'Indian'
+    nationality: 'Indian',
+    roomId: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Get available rooms for selection
+  const availableRooms = rooms.filter(room => room.status === 'Available');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -69,7 +73,8 @@ const Guests = () => {
         phone: '',
         idType: 'passport',
         idNumber: '',
-        nationality: 'Indian'
+        nationality: 'Indian',
+        roomId: ''
       });
     }, 1000);
   };
@@ -117,6 +122,12 @@ const Guests = () => {
       .join('')
       .toUpperCase()
       .substring(0, 2);
+  };
+
+  // Get room details by ID
+  const getRoomDetails = (roomId: string) => {
+    const room = rooms.find(r => r.id === roomId);
+    return room ? `Room ${room.number} (${room.type})` : roomId;
   };
 
   return (
@@ -202,7 +213,7 @@ const Guests = () => {
                         ? new Date(guest.checkOutDate).toLocaleDateString() 
                         : '-'}
                     </TableCell>
-                    <TableCell>{guest.roomId ? `Room ${guest.roomId}` : '-'}</TableCell>
+                    <TableCell>{guest.roomId ? getRoomDetails(guest.roomId) : '-'}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -245,11 +256,11 @@ const Guests = () => {
 
       {/* Add Guest Dialog */}
       <Dialog open={isAddGuestOpen} onOpenChange={setIsAddGuestOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="sticky top-0 bg-white z-10 pb-4">
             <DialogTitle>Add New Guest</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4 py-4 overflow-y-auto">
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
@@ -332,9 +343,30 @@ const Guests = () => {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {/* New Room Selection Field */}
+              <div className="space-y-2">
+                <Label htmlFor="roomId">Assign Room (Optional)</Label>
+                <Select 
+                  value={newGuest.roomId} 
+                  onValueChange={(value) => handleSelectChange('roomId', value)}
+                >
+                  <SelectTrigger id="roomId">
+                    <SelectValue placeholder="Select a room" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">None</SelectItem>
+                    {availableRooms.map(room => (
+                      <SelectItem key={room.id} value={room.id}>
+                        Room {room.number} - {room.type} (${room.price})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="sticky bottom-0 bg-white z-10 pt-4">
             <Button variant="outline" onClick={() => setIsAddGuestOpen(false)}>
               Cancel
             </Button>

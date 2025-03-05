@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bed, Calendar, Star, Check, NepaliRupee, Mail, Lock } from 'lucide-react';
+import { Bed, Calendar, Star, Check, IndianRupee, Mail, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
@@ -100,7 +100,7 @@ const Landing = () => {
             <TransitionWrapper delay={400}>
               <div className="bg-white p-8 rounded-lg shadow-md text-center">
                 <div className="bg-hotel-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
-                  <NepaliRupee className="h-8 w-8 text-hotel-700" />
+                  <IndianRupee className="h-8 w-8 text-hotel-700" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Pre-Payment Only</h3>
                 <p className="text-gray-600">Secure your stay with easy online pre-payment options using PayPal.</p>

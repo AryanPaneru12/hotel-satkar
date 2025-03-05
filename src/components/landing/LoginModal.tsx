@@ -292,12 +292,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 <Separator className="flex-1" />
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Updated this div to be responsive on mobile */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => handleSocialLogin('Google')}
-                  className="w-full"
+                  className="w-full flex justify-center items-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" className="mr-2">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -311,7 +312,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   type="button" 
                   variant="outline" 
                   onClick={() => handleSocialLogin('Facebook')}
-                  className="w-full"
+                  className="w-full flex justify-center items-center"
                 >
                   <Facebook className="h-4 w-4 mr-2 text-blue-600" />
                   Facebook

@@ -30,7 +30,7 @@ const PageContainer = ({ title, children, className }: PageContainerProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen overflow-auto">
       <Header title={`${title} ${user ? `(${getUserRoleDisplay()})` : ''}`} />
       <main className={cn("flex-1 overflow-auto p-6 pt-2", className)}>
         <div className="page-container py-2">

@@ -16,7 +16,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-y-auto">
       <Navbar onLoginClick={handleLoginClick} />
       <div className="flex-1">
         <HeroSection onBookNowClick={handleLoginClick} />

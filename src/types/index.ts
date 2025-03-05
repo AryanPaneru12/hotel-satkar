@@ -53,3 +53,11 @@ export interface SidebarItem {
   path: string;
   icon: React.ComponentType<any>;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'customer' | 'admin' | 'superadmin';
+  createdAt: string;
+}

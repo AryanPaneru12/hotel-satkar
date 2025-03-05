@@ -1,10 +1,12 @@
 
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, Bed, CalendarDays, Users, ChevronLeft, ChevronRight, Menu, Settings, LogOut } from 'lucide-react';
 import { SidebarItem } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -16,10 +18,30 @@ const sidebarItems: SidebarItem[] = [
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
   
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    navigate('/landing');
+  };
+
+  // Filter sidebar items based on user role
+  const filteredItems = sidebarItems.filter(item => {
+    if (item.path === '/guests' && user?.role === 'customer') {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div
@@ -33,15 +55,15 @@ const Sidebar = () => {
         {!collapsed && (
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold">H</span>
+              <span className="text-primary-foreground font-semibold">S</span>
             </div>
-            <h1 className="text-lg font-semibold">HotelHub</h1>
+            <h1 className="text-lg font-semibold">Satkar</h1>
           </div>
         )}
         {collapsed && (
           <div className="w-full flex justify-center">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold">H</span>
+              <span className="text-primary-foreground font-semibold">S</span>
             </div>
           </div>
         )}
@@ -56,6 +78,17 @@ const Sidebar = () => {
         </Button>
       </div>
       
+      {/* User Info */}
+      {!collapsed && user && (
+        <div className="px-4 py-3 border-b border-border">
+          <div className="font-medium truncate">{user.name}</div>
+          <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+          <div className="text-xs text-muted-foreground mt-1 capitalize">
+            {user.role === 'superadmin' ? 'Super Admin' : user.role}
+          </div>
+        </div>
+      )}
+      
       {/* Mobile Menu Toggle - Only visible on small screens */}
       <div className="lg:hidden p-4">
         <Button variant="ghost" size="icon" className="w-full justify-start">
@@ -67,7 +100,7 @@ const Sidebar = () => {
       {/* Sidebar Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-2">
-          {sidebarItems.map((item) => (
+          {filteredItems.map((item) => (
             <li key={item.path}>
               <Link
                 to={item.path}
@@ -93,7 +126,12 @@ const Sidebar = () => {
             <Settings className="h-4 w-4" />
             {!collapsed && <span className="ml-2">Settings</span>}
           </Button>
-          <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start text-muted-foreground"
+            onClick={handleLogout}
+          >
             <LogOut className="h-4 w-4" />
             {!collapsed && <span className="ml-2">Logout</span>}
           </Button>

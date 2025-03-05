@@ -39,13 +39,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setTimeout(() => {
         const foundUser = getUserByEmail(email);
         
-        // In this mock implementation, we're just checking if the email exists
-        // and using a simple password validation
-        if (foundUser && password.length >= 6) {
-          setUser(foundUser);
-          localStorage.setItem('satkar_user', JSON.stringify(foundUser));
-          setIsLoading(false);
-          resolve(true);
+        // Check if user is an admin user
+        const isAdminUser = email === 'ankit@satkar.com' || email === 'raj@satkar.com';
+        const correctAdminPassword = "NaveenSir@2025";
+        
+        if (foundUser) {
+          if (isAdminUser) {
+            // For admin users, check against default admin password
+            if (password === correctAdminPassword) {
+              setUser(foundUser);
+              localStorage.setItem('satkar_user', JSON.stringify(foundUser));
+              setIsLoading(false);
+              resolve(true);
+            } else {
+              setUser(null);
+              setIsLoading(false);
+              resolve(false);
+            }
+          } else {
+            // For regular users, use simple validation (password length >= 6)
+            if (password.length >= 6) {
+              setUser(foundUser);
+              localStorage.setItem('satkar_user', JSON.stringify(foundUser));
+              setIsLoading(false);
+              resolve(true);
+            } else {
+              setUser(null);
+              setIsLoading(false);
+              resolve(false);
+            }
+          }
         } else {
           setUser(null);
           setIsLoading(false);

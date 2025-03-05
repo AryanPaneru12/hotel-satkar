@@ -13,6 +13,7 @@ import Rooms from "./pages/Rooms";
 import Bookings from "./pages/Bookings";
 import Guests from "./pages/Guests";
 import Landing from "./pages/Landing";
+import CustomerDashboard from "./pages/CustomerDashboard";
 
 // Components
 import Sidebar from "./components/layout/Sidebar";
@@ -49,20 +50,56 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Customer route component
+const CustomerRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+  
+  if (!user || user.role !== 'customer') {
+    return <Navigate to="/landing" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
 const AppRoutes = () => {
+  const { user } = useAuth();
+  
   return (
     <Routes>
       <Route path="/landing" element={<Landing />} />
+      
+      {/* Conditional redirect based on user role */}
       <Route path="/" element={
         <ProtectedRoute>
+          {user?.role === 'customer' ? (
+            <Navigate to="/customer-dashboard" replace />
+          ) : (
+            <div className="flex h-screen w-full">
+              <Sidebar />
+              <div className="flex-1 overflow-hidden">
+                <Index />
+              </div>
+            </div>
+          )}
+        </ProtectedRoute>
+      } />
+      
+      {/* Customer Dashboard */}
+      <Route path="/customer-dashboard" element={
+        <CustomerRoute>
           <div className="flex h-screen w-full">
             <Sidebar />
             <div className="flex-1 overflow-hidden">
-              <Index />
+              <CustomerDashboard />
             </div>
           </div>
-        </ProtectedRoute>
+        </CustomerRoute>
       } />
+      
       <Route path="/rooms" element={
         <ProtectedRoute>
           <div className="flex h-screen w-full">
@@ -73,6 +110,7 @@ const AppRoutes = () => {
           </div>
         </ProtectedRoute>
       } />
+      
       <Route path="/bookings" element={
         <ProtectedRoute>
           <div className="flex h-screen w-full">
@@ -83,6 +121,7 @@ const AppRoutes = () => {
           </div>
         </ProtectedRoute>
       } />
+      
       <Route path="/guests" element={
         <AdminRoute>
           <div className="flex h-screen w-full">
@@ -93,6 +132,7 @@ const AppRoutes = () => {
           </div>
         </AdminRoute>
       } />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

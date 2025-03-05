@@ -3,16 +3,24 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Bed, CalendarDays, Users, ChevronLeft, ChevronRight, Menu, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Bed, CalendarDays, Users, ChevronLeft, ChevronRight, Menu, Settings, LogOut, CreditCard, Home } from 'lucide-react';
 import { SidebarItem } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
-const sidebarItems: SidebarItem[] = [
+// Admin sidebar items
+const adminSidebarItems: SidebarItem[] = [
   { title: 'Dashboard', path: '/', icon: LayoutDashboard },
   { title: 'Rooms', path: '/rooms', icon: Bed },
   { title: 'Bookings', path: '/bookings', icon: CalendarDays },
   { title: 'Guests', path: '/guests', icon: Users },
+];
+
+// Customer sidebar items
+const customerSidebarItems: SidebarItem[] = [
+  { title: 'Dashboard', path: '/customer-dashboard', icon: LayoutDashboard },
+  { title: 'Book Rooms', path: '/rooms', icon: Bed },
+  { title: 'My Bookings', path: '/bookings', icon: CalendarDays },
 ];
 
 const Sidebar = () => {
@@ -35,6 +43,9 @@ const Sidebar = () => {
     navigate('/landing');
   };
 
+  // Choose sidebar items based on user role
+  const sidebarItems = user?.role === 'customer' ? customerSidebarItems : adminSidebarItems;
+  
   // Filter sidebar items based on user role
   const filteredItems = sidebarItems.filter(item => {
     if (item.path === '/guests' && user?.role === 'customer') {
@@ -52,15 +63,14 @@ const Sidebar = () => {
     >
       {/* Sidebar Header */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-border">
-        {!collapsed && (
+        {!collapsed ? (
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-semibold">S</span>
             </div>
             <h1 className="text-lg font-semibold">Satkar</h1>
           </div>
-        )}
-        {collapsed && (
+        ) : (
           <div className="w-full flex justify-center">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-semibold">S</span>

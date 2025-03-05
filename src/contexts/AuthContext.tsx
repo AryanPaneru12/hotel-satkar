@@ -45,35 +45,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
       }
       
-      // Check if user is an admin user
-      const isAdminUser = foundUser.role === 'admin' || foundUser.role === 'superadmin';
+      // For this demo, we're using the same password for all users
+      const mockPassword = "NaveenSir@2025";
       
-      // Admin login check
-      if (isAdminUser) {
-        const adminPassword = "NaveenSir@2025";
-        if (password === adminPassword) {
-          setUser(foundUser);
-          localStorage.setItem('satkar_user', JSON.stringify(foundUser));
-          setIsLoading(false);
-          return true;
-        } else {
-          setIsLoading(false);
-          return false;
-        }
-      } 
-      
-      // Customer login check (simple validation for demo)
-      else if (foundUser.role === 'customer') {
-        // Same password for customer logins in this demo
-        if (password === "NaveenSir@2025") {
-          setUser(foundUser);
-          localStorage.setItem('satkar_user', JSON.stringify(foundUser));
-          setIsLoading(false);
-          return true;
-        } else {
-          setIsLoading(false);
-          return false;
-        }
+      if (password === mockPassword) {
+        setUser(foundUser);
+        localStorage.setItem('satkar_user', JSON.stringify(foundUser));
+        setIsLoading(false);
+        return true;
       } else {
         setIsLoading(false);
         return false;

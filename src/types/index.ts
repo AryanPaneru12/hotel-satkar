@@ -2,7 +2,7 @@
 export interface Room {
   id: string;
   number: string;
-  type: 'Standard' | 'Deluxe' | 'Suite' | 'Executive' | 'Presidential';
+  type: 'Standard' | 'Deluxe' | 'Suite' | 'Presidential';
   capacity: number;
   price: number;
   status: 'Available' | 'Occupied' | 'Maintenance' | 'Reserved';

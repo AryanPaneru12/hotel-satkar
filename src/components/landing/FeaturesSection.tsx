@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bed, Calendar, IndianRupee } from 'lucide-react';
+import { Bed, CreditCard, Database } from 'lucide-react';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
 
 const FeatureCard = ({ 
@@ -42,16 +42,16 @@ const FeaturesSection = () => {
           />
           
           <FeatureCard 
-            icon={<IndianRupee className="h-8 w-8 text-hotel-700" />}
-            title="Pre-Payment Only"
-            description="Secure your stay with easy online pre-payment options using PayPal."
+            icon={<CreditCard className="h-8 w-8 text-hotel-700" />}
+            title="Secure Payments with Stripe"
+            description="Enjoy seamless and secure payment processing for your bookings using Stripe."
             delay={400}
           />
           
           <FeatureCard 
-            icon={<Calendar className="h-8 w-8 text-hotel-700" />}
-            title="Instant Booking"
-            description="Check availability and book your stay in real-time with instant confirmation."
+            icon={<Database className="h-8 w-8 text-hotel-700" />}
+            title="MongoDB Powered"
+            description="Fast and reliable booking system powered by MongoDB database technology."
             delay={500}
           />
         </div>

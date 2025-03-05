@@ -1,3 +1,4 @@
+
 import React from 'react';
 import RoomCard from './RoomCard';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
@@ -25,12 +26,20 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
       delay: 800
     },
     {
-      title: "Executive Suite",
+      title: "Suite",
       description: "Luxurious suite with separate living area and panoramic views.",
       image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=2070&auto=format&fit=crop",
       features: ["Living Room & Private Balcony", "Premium Dining & Kitchen", "Work Desk & Premium View"],
       price: 29900,
       delay: 900
+    },
+    {
+      title: "Presidential Suite",
+      description: "The ultimate luxury experience with unparalleled amenities and service.",
+      image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop",
+      features: ["Exclusive Panoramic Views", "Private Dining & Butler Service", "Luxury Spa Bathroom & Private Terrace"],
+      price: 59900,
+      delay: 1000
     }
   ];
 
@@ -42,7 +51,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
           <p className="text-xl text-center text-gray-600 mb-16">Choose from our range of exquisite rooms</p>
         </TransitionWrapper>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {rooms.map((room, index) => (
             <RoomCard
               key={index}

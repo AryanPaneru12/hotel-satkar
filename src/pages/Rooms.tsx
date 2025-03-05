@@ -1,10 +1,8 @@
-
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import RoomCard from '@/components/rooms/RoomCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,7 +13,7 @@ import {
 import { Plus, Search } from 'lucide-react';
 import { rooms } from '@/data/mockData';
 
-const roomTypes = ['All Types', 'Standard', 'Deluxe', 'Suite', 'Executive', 'Presidential'];
+const roomTypes = ['All Types', 'Standard', 'Deluxe', 'Suite', 'Presidential'];
 const roomStatuses = ['All Statuses', 'Available', 'Occupied', 'Maintenance', 'Reserved'];
 
 const Rooms = () => {

@@ -65,18 +65,18 @@ export const rooms: Room[] = [
   {
     id: '7',
     number: '401',
-    type: 'Executive',
-    capacity: 2,
-    price: 299,
+    type: 'Presidential',
+    capacity: 5,
+    price: 599,
     status: 'Available',
-    amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View'],
-    images: ['https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=2074&auto=format&fit=crop']
+    amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],
+    images: ['https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop']
   },
   {
     id: '8',
-    number: '501',
+    number: '402',
     type: 'Presidential',
-    capacity: 6,
+    capacity: 5,
     price: 599,
     status: 'Available',
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],

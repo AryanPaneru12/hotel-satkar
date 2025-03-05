@@ -46,15 +46,15 @@ const FeaturesSection = () => {
           
           <FeatureCard 
             icon={<CreditCard className="h-8 w-8 text-hotel-700" />}
-            title="Secure Payments with Stripe"
+            title="Secure Payments"
             description="Enjoy seamless and secure payment processing for your bookings using Stripe."
             delay={400}
           />
           
           <FeatureCard 
             icon={<Database className="h-8 w-8 text-hotel-700" />}
-            title="MongoDB Powered"
-            description="Fast and reliable booking system powered by MongoDB database technology and Node.js backend."
+            title="Advanced Technology"
+            description="Built with React.js frontend and Node.js backend, powered by MongoDB database technology."
             delay={500}
           />
         </div>

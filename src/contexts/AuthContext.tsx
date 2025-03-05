@@ -35,47 +35,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     // Simple mock authentication
     // In a real app, this would be a call to your backend
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const foundUser = getUserByEmail(email);
-        
-        // Check if user is an admin user
-        const isAdminUser = email === 'ankit@satkar.com' || email === 'raj@satkar.com';
-        const correctAdminPassword = "NaveenSir@2025";
-        
-        if (foundUser) {
-          if (isAdminUser) {
-            // For admin users, check against default admin password
-            if (password === correctAdminPassword) {
-              setUser(foundUser);
-              localStorage.setItem('satkar_user', JSON.stringify(foundUser));
-              setIsLoading(false);
-              resolve(true);
-            } else {
-              setUser(null);
-              setIsLoading(false);
-              resolve(false);
-            }
-          } else {
-            // For regular users, use simple validation (password length >= 6)
-            if (password.length >= 6) {
-              setUser(foundUser);
-              localStorage.setItem('satkar_user', JSON.stringify(foundUser));
-              setIsLoading(false);
-              resolve(true);
-            } else {
-              setUser(null);
-              setIsLoading(false);
-              resolve(false);
-            }
-          }
-        } else {
-          setUser(null);
+    try {
+      // Add a short delay to simulate network request
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      const foundUser = getUserByEmail(email);
+      
+      if (!foundUser) {
+        setIsLoading(false);
+        return false;
+      }
+      
+      // Check if user is an admin user
+      const isAdminUser = foundUser.role === 'admin' || foundUser.role === 'superadmin';
+      
+      // Admin login check
+      if (isAdminUser) {
+        const adminPassword = "NaveenSir@2025";
+        if (password === adminPassword) {
+          setUser(foundUser);
+          localStorage.setItem('satkar_user', JSON.stringify(foundUser));
           setIsLoading(false);
-          resolve(false);
+          return true;
+        } else {
+          setIsLoading(false);
+          return false;
         }
-      }, 1000);
-    });
+      } 
+      
+      // Regular user login check (simple validation for demo)
+      else {
+        if (password.length >= 6) {
+          setUser(foundUser);
+          localStorage.setItem('satkar_user', JSON.stringify(foundUser));
+          setIsLoading(false);
+          return true;
+        } else {
+          setIsLoading(false);
+          return false;
+        }
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsLoading(false);
+      return false;
+    }
   };
 
   const logout = () => {

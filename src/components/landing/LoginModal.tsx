@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -75,10 +74,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-auto">
-      <div className="w-full max-w-md my-4">
-        <Card className="w-full animate-scale-in max-h-[90vh] overflow-y-auto">
-          <CardHeader>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto py-6">
+      <div className="flex min-h-full items-center justify-center p-4">
+        <Card className="w-full max-w-md animate-scale-in">
+          <CardHeader className="sticky top-0 bg-white z-10">
             <CardTitle className="text-center">Sign In to Satkar</CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to access your account
@@ -86,14 +85,14 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           </CardHeader>
           
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsList className="grid w-full grid-cols-2 mb-4 sticky top-[72px] bg-white z-10">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login" className="overflow-y-auto">
-              <form onSubmit={handleAuth}>
-                <CardContent className="space-y-4">
+            <TabsContent value="login" className="max-h-[60vh] overflow-y-auto px-1">
+              <form onSubmit={handleAuth} className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <div className="relative">
@@ -164,8 +163,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               </form>
             </TabsContent>
             
-            <TabsContent value="signup" className="overflow-y-auto">
-              <CardContent className="space-y-4">
+            <TabsContent value="signup" className="max-h-[60vh] overflow-y-auto px-1">
+              <CardContent className="space-y-4 pt-0">
                 <div className="space-y-2">
                   <Label htmlFor="fullname">Full Name</Label>
                   <Input id="fullname" type="text" placeholder="Your Name" />
@@ -231,7 +230,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             </TabsContent>
           </Tabs>
           
-          <CardFooter className="flex flex-col sm:flex-row gap-4">
+          <CardFooter className="flex flex-col sm:flex-row gap-4 sticky bottom-0 bg-white z-10 border-t pt-4">
             <Button
               type="button"
               variant="outline"

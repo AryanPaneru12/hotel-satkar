@@ -5,18 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Lock, Facebook, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Facebook } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -79,23 +72,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setIsLoading(false);
   };
 
-  const fillCredentials = (userType: string) => {
-    switch (userType) {
-      case 'superadmin':
-        setEmail('ankit@satkar.com');
-        break;
-      case 'admin':
-        setEmail('raj@satkar.com');
-        break;
-      case 'customer':
-        setEmail('naveen@satkar.com');
-        break;
-      default:
-        break;
-    }
-    setPassword('NaveenSir@2025');
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -117,72 +93,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           <TabsContent value="login">
             <form onSubmit={handleAuth}>
               <CardContent className="space-y-4">
-                <Alert className="bg-amber-50 border-amber-200">
-                  <AlertCircle className="h-4 w-4 text-amber-500" />
-                  <AlertTitle className="text-amber-800 text-sm font-medium">Demo Accounts</AlertTitle>
-                  <AlertDescription className="text-amber-700 text-xs">
-                    <div className="mt-2">
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="accounts">
-                          <AccordionTrigger className="text-xs py-2">Available login accounts</AccordionTrigger>
-                          <AccordionContent>
-                            <div className="space-y-3 text-xs">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold">Super Admin</p>
-                                  <p className="text-gray-500">ankit@satkar.com</p>
-                                </div>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    fillCredentials('superadmin');
-                                  }}
-                                >
-                                  Use
-                                </Button>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold">Admin</p>
-                                  <p className="text-gray-500">raj@satkar.com</p>
-                                </div>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    fillCredentials('admin');
-                                  }}
-                                >
-                                  Use
-                                </Button>
-                              </div>
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold">Customer</p>
-                                  <p className="text-gray-500">naveen@satkar.com</p>
-                                </div>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    fillCredentials('customer');
-                                  }}
-                                >
-                                  Use
-                                </Button>
-                              </div>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </div>
-                  </AlertDescription>
-                </Alert>
-
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">

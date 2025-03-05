@@ -16,12 +16,14 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen">
       <Navbar onLoginClick={handleLoginClick} />
-      <HeroSection onBookNowClick={handleLoginClick} />
-      <FeaturesSection />
-      <RoomsSection onBookNowClick={handleLoginClick} />
-      <AboutUsSection />
+      <div className="flex-1">
+        <HeroSection onBookNowClick={handleLoginClick} />
+        <FeaturesSection />
+        <RoomsSection onBookNowClick={handleLoginClick} />
+        <AboutUsSection />
+      </div>
       <LoginModal isOpen={isLoginMode} onClose={() => setIsLoginMode(false)} />
       <Footer />
     </div>

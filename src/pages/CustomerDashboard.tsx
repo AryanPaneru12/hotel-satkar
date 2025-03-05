@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import PageContainer from '@/components/layout/PageContainer';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Landmark, QrCode, StripeIcon } from 'lucide-react';
+import { CreditCard, Landmark, QrCode } from 'lucide-react';
+import StripeIcon from '@/components/icons/StripeIcon';
 import { useToast } from '@/components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 

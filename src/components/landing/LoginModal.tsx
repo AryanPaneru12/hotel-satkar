@@ -175,7 +175,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                                   Use
                                 </Button>
                               </div>
-                              <p className="mt-2 text-gray-500">Password will be filled automatically</p>
                             </div>
                           </AccordionContent>
                         </AccordionItem>

@@ -22,13 +22,14 @@ const HeroSection = ({ onBookNowClick }: HeroSectionProps) => {
       ></div>
       <div className="container mx-auto px-4 z-10 relative">
         <TransitionWrapper delay={100}>
-          <h1 className="text-5xl md:text-7xl font-bold mb-4">Satkar</h1>
-          <p className="text-xl md:text-2xl mb-8">Redefining Luxury</p>
+          <h1 className="text-5xl md:text-7xl font-bold mb-4"><em>Satkar</em></h1>
+          <p className="text-xl md:text-2xl mb-8"><em>Redefining Luxury</em> - <span className="font-light">Where Traditions Meet Modern Comfort</span></p>
           <div className="flex space-x-2 items-center mb-12">
             {[1, 2, 3, 4, 5].map((_, index) => (
               <Star key={index} className="h-5 w-5 fill-current text-yellow-400" />
             ))}
           </div>
+          <p className="mb-6 text-gray-200 max-w-lg">Built with React.js frontend and Node.js backend, powered by MongoDB database and Stripe payment processing.</p>
           <Button 
             size="lg" 
             className="bg-white text-hotel-900 hover:bg-gray-100 text-lg font-semibold px-8"

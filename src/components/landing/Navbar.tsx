@@ -24,8 +24,11 @@ const Navbar = ({ onLoginClick }: NavbarProps) => {
               onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}
               className="text-2xl font-bold text-hotel-700"
             >
-              Satkar
+              <em>Satkar</em>
             </a>
+            <span className="ml-2 text-sm text-gray-500 hidden md:inline-block">
+              <em>Redefining Luxury</em>
+            </span>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">

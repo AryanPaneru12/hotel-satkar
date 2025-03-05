@@ -38,6 +38,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         });
         setTimeout(() => {
           navigate('/');
+          onClose();
         }, 1000);
       } else {
         toast({
@@ -101,7 +102,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               </div>
             </div>
             <div className="text-sm text-gray-500">
-              For demo: Try using <span className="font-medium">ankit@satkar.com</span> or <span className="font-medium">raj@satkar.com</span> with password <span className="font-medium">123456</span>
+              Admin login: <span className="font-medium">ankit@satkar.com</span> or <span className="font-medium">raj@satkar.com</span> with password <span className="font-medium">NaveenSir@2025</span>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

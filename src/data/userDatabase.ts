@@ -16,18 +16,18 @@ export const adminUsers: User[] = [
     name: 'Rajbansh Singh',
     role: 'admin',
     createdAt: '2023-01-15T10:00:00Z'
-  },
-  {
-    id: '3',
-    email: 'naveen@satkar.com',
-    name: 'Naveen Kumar',
-    role: 'admin',
-    createdAt: '2023-02-15T10:00:00Z'
   }
 ];
 
 // Customer users database
 export const customerUsers: User[] = [
+  {
+    id: '3',
+    email: 'naveen@satkar.com',
+    name: 'Naveen Kumar',
+    role: 'customer',
+    createdAt: '2023-02-15T10:00:00Z'
+  },
   {
     id: '4',
     email: 'binod@example.com',

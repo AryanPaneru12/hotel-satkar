@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
 import BookingForm from '@/components/booking/BookingForm';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RoomCardProps {
   title: string;
@@ -26,11 +27,14 @@ const RoomCard = ({
   onBookClick
 }: RoomCardProps) => {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const { user } = useAuth();
   
   const handleBookClick = () => {
-    if (onBookClick) {
+    if (!user && onBookClick) {
+      // If user is not logged in and we have an onBookClick handler (to show login modal)
       onBookClick();
     } else {
+      // If user is logged in or we don't have an onBookClick handler, show booking form
       setShowBookingForm(true);
     }
   };

@@ -75,7 +75,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-auto">
       <div className="w-full max-w-md my-4">
         <Card className="w-full animate-scale-in max-h-[90vh] overflow-y-auto">
           <CardHeader>
@@ -91,7 +91,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login">
+            <TabsContent value="login" className="overflow-y-auto">
               <form onSubmit={handleAuth}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -164,7 +164,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               </form>
             </TabsContent>
             
-            <TabsContent value="signup">
+            <TabsContent value="signup" className="overflow-y-auto">
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="fullname">Full Name</Label>

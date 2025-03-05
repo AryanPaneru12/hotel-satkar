@@ -16,9 +16,9 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-y-auto flex flex-col">
+    <div className="flex flex-col min-h-screen w-full overflow-y-auto">
       <Navbar onLoginClick={handleLoginClick} />
-      <div className="flex-1 w-full">
+      <div className="flex-1 w-full overflow-y-auto">
         <HeroSection onBookNowClick={handleLoginClick} />
         <FeaturesSection />
         <RoomsSection onBookNowClick={handleLoginClick} />

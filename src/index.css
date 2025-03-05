@@ -190,3 +190,38 @@ input, select, textarea, button {
   overflow-y: auto;
   padding-bottom: 1rem;
 }
+
+/* Make modals and forms scrollable */
+.overflow-auto, .overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for tabs content to be scrollable */
+.overflow-y-auto {
+  max-height: 60vh;
+  margin-bottom: 1rem;
+}
+
+/* Make sure modal overlay is scrollable on mobile */
+.fixed.inset-0.flex.items-center.justify-center {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Make sure fixed positioning doesn't break scrollability */
+.fixed {
+  position: fixed;
+}
+
+@media (max-height: 700px) {
+  .modal-container, .form-container {
+    max-height: 85vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-container, .form-container {
+    padding: 0.5rem;
+    margin: 0.5rem;
+  }
+}

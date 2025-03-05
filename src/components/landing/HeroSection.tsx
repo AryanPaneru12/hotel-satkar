@@ -29,7 +29,6 @@ const HeroSection = ({ onBookNowClick }: HeroSectionProps) => {
               <Star key={index} className="h-5 w-5 fill-current text-yellow-400" />
             ))}
           </div>
-          <p className="mb-6 text-gray-200 max-w-lg">Built with React.js frontend and Node.js backend, powered by MongoDB database and Stripe payment processing.</p>
           <Button 
             size="lg" 
             className="bg-white text-hotel-900 hover:bg-gray-100 text-lg font-semibold px-8"

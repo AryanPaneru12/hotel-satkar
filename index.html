@@ -233,69 +233,199 @@
 
   <div class="modal" id="bookingModal">
     <div class="modal-overlay"></div>
-    <div class="modal-container">
+    <div class="modal-container booking-modal-container">
       <div class="modal-header">
         <h2 class="modal-title">Book Your Stay</h2>
         <button class="modal-close" id="closeBookingModal">&times;</button>
       </div>
       <div class="modal-content">
-        <form id="bookingForm">
-          <div class="form-row">
+        <div class="booking-steps">
+          <div class="booking-step active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-info">
+              <div class="step-title">Guest Information</div>
+              <div class="step-description">Enter guest details</div>
+            </div>
+          </div>
+          <div class="booking-step-line"></div>
+          <div class="booking-step" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-info">
+              <div class="step-title">Payment Method</div>
+              <div class="step-description">Choose your payment method</div>
+            </div>
+          </div>
+          <div class="booking-step-line"></div>
+          <div class="booking-step" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-info">
+              <div class="step-title">Confirmation</div>
+              <div class="step-description">Review and confirm</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="booking-form-container">
+          <!-- Step 1: Guest Information Form -->
+          <form id="guestInfoForm" class="booking-form active">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingRoomType">Room Type</label>
+                <input type="text" id="bookingRoomType" disabled>
+              </div>
+              <div class="form-group">
+                <label for="bookingPrice">Price Per Night</label>
+                <input type="text" id="bookingPrice" disabled>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingCheckin">Check-in Date</label>
+                <input type="date" id="bookingCheckin" required>
+              </div>
+              <div class="form-group">
+                <label for="bookingCheckout">Check-out Date</label>
+                <input type="date" id="bookingCheckout" required>
+              </div>
+            </div>
+            
             <div class="form-group">
               <label for="bookingName">Full Name</label>
               <input type="text" id="bookingName" placeholder="Enter your name" required>
             </div>
-            <div class="form-group">
-              <label for="bookingEmail">Email</label>
-              <input type="email" id="bookingEmail" placeholder="Enter your email" required>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingEmail">Email</label>
+                <input type="email" id="bookingEmail" placeholder="Enter your email" required>
+              </div>
+              <div class="form-group">
+                <label for="bookingPhone">Phone Number</label>
+                <input type="tel" id="bookingPhone" placeholder="+91 9012345678" required>
+              </div>
             </div>
-          </div>
-          
-          <div class="form-row">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingIdType">ID Type</label>
+                <select id="bookingIdType" required>
+                  <option value="passport">Passport</option>
+                  <option value="aadhar">Aadhar Card</option>
+                  <option value="driving">Driving License</option>
+                  <option value="voter">Voter ID</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="bookingIdNumber">ID Number</label>
+                <input type="text" id="bookingIdNumber" placeholder="Enter ID number" required>
+              </div>
+            </div>
+            
             <div class="form-group">
-              <label for="bookingRoom">Room Type</label>
-              <select id="bookingRoom" required>
-                <option value="" selected disabled>Select room type</option>
-                <option value="standard">Standard Room</option>
-                <option value="deluxe">Deluxe Room</option>
-                <option value="suite">Suite</option>
-                <option value="presidential">Presidential Suite</option>
+              <label for="bookingSpecial">Special Requests (Optional)</label>
+              <textarea id="bookingSpecial" rows="3" placeholder="Any special requirements?"></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="cancelBookingBtn">Cancel</button>
+              <button type="button" class="btn btn-primary" id="nextToPaymentBtn">Next: Payment</button>
+            </div>
+          </form>
+          
+          <!-- Step 2: Payment Method Form -->
+          <form id="paymentMethodForm" class="booking-form">
+            <div class="form-group">
+              <label for="paymentMethod">Select Payment Method</label>
+              <select id="paymentMethod">
+                <option value="cash">Cash</option>
+                <option value="credit" selected>Credit Card</option>
+                <option value="debit">Debit Card</option>
+                <option value="qr">QR Code Payment</option>
+                <option value="stripe">Stripe</option>
               </select>
             </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bookingCheckin">Check-in Date</label>
-              <input type="date" id="bookingCheckin" required>
+            
+            <div class="payment-info-box">
+              <h3 class="payment-method-title">Selected: <span id="selectedPaymentMethod">Credit Card</span></h3>
+              <p class="payment-method-description" id="paymentMethodDescription">
+                Secure payment using your credit card.
+              </p>
             </div>
-            <div class="form-group">
-              <label for="bookingCheckout">Check-out Date</label>
-              <input type="date" id="bookingCheckout" required>
+            
+            <div id="cardPaymentFields">
+              <div class="form-group">
+                <label for="cardName">Cardholder Name</label>
+                <input type="text" id="cardName" placeholder="John Smith">
+              </div>
+              <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="expiryDate">Expiry Date</label>
+                  <input type="text" id="expiryDate" placeholder="MM/YY">
+                </div>
+                <div class="form-group">
+                  <label for="cvv">CVV</label>
+                  <input type="text" id="cvv" placeholder="123">
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bookingGuests">Number of Guests</label>
-              <select id="bookingGuests" required>
-                <option value="1">1 Guest</option>
-                <option value="2" selected>2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4 Guests</option>
-              </select>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="backToGuestBtn">Back</button>
+              <button type="button" class="btn btn-primary" id="processPaymentBtn">Process Payment</button>
             </div>
-          </div>
+          </form>
           
-          <div class="form-group">
-            <label for="bookingSpecial">Special Requests</label>
-            <textarea id="bookingSpecial" rows="3" placeholder="Any special requests or requirements?"></textarea>
-          </div>
-          
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Book Now</button>
-          </div>
-        </form>
+          <!-- Step 3: Confirmation Form -->
+          <form id="confirmationForm" class="booking-form">
+            <div class="confirmation-success">
+              <svg class="success-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <h3 class="success-title">Payment Successful</h3>
+              <p class="success-message">Your payment has been processed successfully.</p>
+            </div>
+            
+            <div class="booking-summary">
+              <h3 class="summary-title">Booking Summary</h3>
+              <div class="summary-details">
+                <div class="summary-row">
+                  <div class="summary-label">Room Type:</div>
+                  <div class="summary-value" id="summaryRoomType"></div>
+                </div>
+                <div class="summary-row">
+                  <div class="summary-label">Check-in:</div>
+                  <div class="summary-value" id="summaryCheckin"></div>
+                </div>
+                <div class="summary-row">
+                  <div class="summary-label">Check-out:</div>
+                  <div class="summary-value" id="summaryCheckout"></div>
+                </div>
+                <div class="summary-row">
+                  <div class="summary-label">Guest:</div>
+                  <div class="summary-value" id="summaryGuest"></div>
+                </div>
+                <div class="summary-row">
+                  <div class="summary-label">Payment Method:</div>
+                  <div class="summary-value" id="summaryPayment"></div>
+                </div>
+                <div class="summary-total">
+                  <div class="summary-label">Total Amount:</div>
+                  <div class="summary-value" id="summaryTotal"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="backToPaymentBtn">Back</button>
+              <button type="button" class="btn btn-primary" id="confirmBookingBtn">Confirm Booking</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

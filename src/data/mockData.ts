@@ -1,3 +1,4 @@
+
 import { Room, Guest, Booking, DashboardStats } from '../types';
 
 // Generate 60 rooms with different types and status
@@ -8,7 +9,7 @@ export const rooms: Room[] = [
     number: `${100 + i + 1}`,
     type: 'Standard' as const,
     capacity: 2,
-    price: 5999,
+    price: 4999,
     status: i % 4 === 0 ? 'Occupied' as const : 
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,

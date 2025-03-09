@@ -14,7 +14,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
       description: "Comfortable and cozy room with breathtaking mountain views.",
       image: "public/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
       features: ["Wi-Fi & Smart TV", "Air Conditioning", "Mountain View Balcony"],
-      price: 5999,
+      price: 4999,
       delay: 700
     },
     {

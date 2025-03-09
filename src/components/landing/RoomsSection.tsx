@@ -2,7 +2,6 @@
 import React from 'react';
 import RoomCard from './RoomCard';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
-import { format } from 'date-fns';
 
 interface RoomsSectionProps {
   onBookNowClick: () => void;
@@ -37,7 +36,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Presidential Suite",
       description: "The ultimate luxury experience with infinity pool and Himalayan panorama.",
-      image: "/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png",
+      image: "/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png",
       features: ["Private Infinity Pool", "Exclusive Panoramic Views", "Private Dining & Butler Service"],
       price: 30999,
       delay: 1000

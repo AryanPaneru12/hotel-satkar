@@ -54,6 +54,6 @@ export const rooms: Room[] = [
     price: 30999,
     status: i % 4 === 0 ? 'Occupied' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],
-    images: ['/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png']
+    images: ['/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png']
   })),
 ];

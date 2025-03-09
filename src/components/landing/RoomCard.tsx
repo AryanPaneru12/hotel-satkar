@@ -45,7 +45,7 @@ const RoomCard = ({
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
-  }).format(price).replace('₹', 'Rs. ');
+  }).format(price).replace('₹', '₹ ');
   
   return (
     <TransitionWrapper delay={delay}>

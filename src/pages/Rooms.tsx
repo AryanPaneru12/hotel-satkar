@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Search } from 'lucide-react';
-import { rooms } from '@/data/mockData';
+import { rooms } from '@/data/rooms';
 
 const roomTypes = ['All Types', 'Standard', 'Deluxe', 'Suite', 'Presidential'];
 const roomStatuses = ['All Statuses', 'Available', 'Occupied', 'Maintenance', 'Reserved'];

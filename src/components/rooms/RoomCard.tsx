@@ -20,6 +20,14 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
+  // Map room types to our new images
+  const roomImages = {
+    'Standard': "public/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
+    'Deluxe': "public/lovable-uploads/127a805a-a683-4d65-8411-a8640d5f839c.png",
+    'Suite': "public/lovable-uploads/7f333ea6-b0d6-44ca-90c8-ec02f7f9902a.png",
+    'Presidential': "public/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png"
+  };
+  
   const statusColorMap = {
     'Available': 'bg-green-100 text-green-800 border-green-200',
     'Occupied': 'bg-red-100 text-red-800 border-red-200',
@@ -41,14 +49,15 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   return (
     <>
       <TransitionWrapper delay={delay}>
-        <div className="bg-card rounded-lg shadow-card overflow-hidden card-hover">
+        <div className="bg-card rounded-lg shadow-card overflow-hidden card-hover border-0 shadow-md">
           {/* Room Image */}
-          <div className="h-48 relative overflow-hidden">
+          <div className="h-52 relative overflow-hidden">
             <img 
-              src={room.images?.[0] || '/placeholder.svg'} 
+              src={roomImages[room.type] || '/placeholder.svg'} 
               alt={`Room ${room.number}`} 
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <div className="absolute top-3 right-3">
               <Badge variant="outline" className={cn("border font-medium", statusColorMap[room.status])}>
                 {room.status}
@@ -101,7 +110,7 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
               </Button>
               <Button 
                 size="sm" 
-                className="flex-1"
+                className="flex-1 bg-hotel-700 hover:bg-hotel-800"
                 disabled={room.status !== 'Available'}
                 onClick={handleBookClick}
               >

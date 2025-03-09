@@ -15,14 +15,14 @@ const AboutUsSection = () => {
                 "before:absolute before:inset-0 before:bg-hotel-600/20 before:z-10"
               )}>
                 <img 
-                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" 
-                  alt="Scenic view of Pokhara lake and mountains" 
+                  src="public/lovable-uploads/3334a0b3-058e-403f-9f56-23fd144ae856.png" 
+                  alt="Scenic mountain terrace dining with Himalayan views" 
                   className="w-full h-[500px] object-cover"
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-lg shadow-lg md:max-w-[300px] z-20">
-                <h3 className="text-xl font-bold text-hotel-700 mb-2">Integrating Traditions</h3>
-                <p className="text-gray-600">Our hospitality is rooted in Nepali traditions that have welcomed travelers for centuries.</p>
+                <h3 className="text-xl font-bold text-hotel-700 mb-2">Himalayan Experience</h3>
+                <p className="text-gray-600">Our hospitality combines Nepali traditions with breathtaking mountain vistas that have welcomed travelers for centuries.</p>
               </div>
             </div>
           </TransitionWrapper>
@@ -33,16 +33,16 @@ const AboutUsSection = () => {
                 Redefining Luxury
               </h2>
               <p className="text-xl text-hotel-700 font-medium">
-                Integrating traditions and culture at SATKAR, we do from heart
+                Integrating traditions and culture at SATKAR, with an unparalleled mountain experience
               </p>
               <p className="text-gray-600">
-                Nestled in the heart of Pokhara with breathtaking views of Phewa Lake and the majestic Annapurna range, Satkar is more than just a hotel — it's an experience that blends traditional Nepali hospitality with modern luxury.
+                Nestled in the heart of the Himalayas with breathtaking views of the majestic Annapurna range, Satkar is more than just a hotel — it's an experience that blends traditional Nepali hospitality with luxurious mountain living.
               </p>
               <p className="text-gray-600">
-                Our name "Satkar" represents the essence of heartfelt hospitality that has been integral to Nepali culture for generations. We believe true luxury lies in authentic experiences, personalized service, and creating moments that become cherished memories.
+                Our name "Satkar" represents the essence of heartfelt hospitality that has been integral to Nepali culture for generations. We believe true luxury lies in authentic experiences, personalized service, and creating moments that become cherished memories against the backdrop of the world's highest peaks.
               </p>
               <p className="text-gray-600">
-                From locally sourced materials in our architecture to traditional textiles in our decor, every detail at Satkar celebrates Nepal's rich cultural heritage while providing all the modern comforts you expect.
+                From locally sourced materials in our architecture to traditional textiles in our decor, every detail at Satkar celebrates Nepal's rich cultural heritage while providing all the modern comforts you expect, accompanied by some of the most spectacular mountain views on the planet.
               </p>
             </div>
           </TransitionWrapper>

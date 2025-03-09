@@ -9,7 +9,7 @@ export const rooms: Room[] = [
     number: `${100 + i + 1}`,
     type: 'Standard' as const,
     capacity: 2,
-    price: 99,
+    price: 5999,
     status: i % 4 === 0 ? 'Occupied' as const : 
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
@@ -23,7 +23,7 @@ export const rooms: Room[] = [
     number: `${200 + i + 1}`,
     type: 'Deluxe' as const,
     capacity: 3,
-    price: 149,
+    price: 10999,
     status: i % 4 === 0 ? 'Occupied' as const : 
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
@@ -37,7 +37,7 @@ export const rooms: Room[] = [
     number: `${300 + i + 1}`,
     type: 'Suite' as const,
     capacity: 4,
-    price: 249,
+    price: 20999,
     status: i % 4 === 0 ? 'Occupied' as const : 
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
@@ -51,7 +51,7 @@ export const rooms: Room[] = [
     number: `${400 + i + 1}`,
     type: 'Presidential' as const,
     capacity: 5,
-    price: 599,
+    price: 30999,
     status: i % 4 === 0 ? 'Occupied' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],
     images: ['https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop']

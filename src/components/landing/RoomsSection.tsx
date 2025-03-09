@@ -14,23 +14,23 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
       description: "Comfortable and cozy room with breathtaking mountain views.",
       image: "public/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
       features: ["Wi-Fi & Smart TV", "Air Conditioning", "Mountain View Balcony"],
-      price: 9900,
+      price: 5999,
       delay: 700
     },
     {
       title: "Deluxe Room",
       description: "Spacious room with premium amenities and panoramic Himalayan vista.",
-      image: "public/lovable-uploads/127a805a-a683-4d65-8411-a8640d5f839c.png",
+      image: "public/lovable-uploads/f8913d78-265e-419a-8d99-0a66c4dfa584.png",
       features: ["Premium Wi-Fi & Smart TV", "Mini Bar & Safe", "Private Balcony with Mountain View"],
-      price: 14900,
+      price: 10999,
       delay: 800
     },
     {
       title: "Suite",
       description: "Luxurious suite with separate living area and unparalleled Annapurna views.",
-      image: "public/lovable-uploads/7f333ea6-b0d6-44ca-90c8-ec02f7f9902a.png",
+      image: "public/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png",
       features: ["Living Room & Private Terrace", "Premium Dining Area", "Panoramic Mountain Views"],
-      price: 29900,
+      price: 20999,
       delay: 900
     },
     {
@@ -38,7 +38,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
       description: "The ultimate luxury experience with infinity pool and Himalayan panorama.",
       image: "public/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png",
       features: ["Private Infinity Pool", "Exclusive Panoramic Views", "Private Dining & Butler Service"],
-      price: 59900,
+      price: 30999,
       delay: 1000
     }
   ];

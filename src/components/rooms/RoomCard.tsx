@@ -23,8 +23,8 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   // Map room types to our new images
   const roomImages = {
     'Standard': "public/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
-    'Deluxe': "public/lovable-uploads/127a805a-a683-4d65-8411-a8640d5f839c.png",
-    'Suite': "public/lovable-uploads/7f333ea6-b0d6-44ca-90c8-ec02f7f9902a.png",
+    'Deluxe': "public/lovable-uploads/f8913d78-265e-419a-8d99-0a66c4dfa584.png",
+    'Suite': "public/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png",
     'Presidential': "public/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png"
   };
   

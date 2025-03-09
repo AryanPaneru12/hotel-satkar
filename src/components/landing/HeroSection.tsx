@@ -12,9 +12,9 @@ const HeroSection = ({ onBookNowClick }: HeroSectionProps) => {
   return (
     <header id="home" className="relative bg-gradient-to-r from-hotel-900 to-hotel-700 text-white py-16 md:py-24 lg:py-32">
       <div 
-        className="absolute inset-0 bg-black opacity-40 z-0"
+        className="absolute inset-0 bg-black opacity-50 z-0"
         style={{
-          backgroundImage: 'url(public/lovable-uploads/e3185d9e-4ace-4e70-8b57-10c3c7af72d6.png)',
+          backgroundImage: 'url(public/lovable-uploads/476487c8-28f8-499b-8f20-c745c7caeddd.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           mixBlendMode: 'overlay'

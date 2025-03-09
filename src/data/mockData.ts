@@ -1,4 +1,3 @@
-
 import { Room, Guest, Booking, DashboardStats } from '../types';
 
 // Generate 60 rooms with different types and status

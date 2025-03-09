@@ -20,7 +20,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Deluxe Room",
       description: "Spacious room with premium amenities and panoramic Himalayan vista.",
-      image: "public/lovable-uploads/f8913d78-265e-419a-8d99-0a66c4dfa584.png",
+      image: "public/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png",
       features: ["Premium Wi-Fi & Smart TV", "Mini Bar & Safe", "Private Balcony with Mountain View"],
       price: 10999,
       delay: 800

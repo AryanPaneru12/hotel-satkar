@@ -14,7 +14,7 @@ export const rooms: Room[] = [
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Fridge'],
-    images: ['https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop']
+    images: ['/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png']
   })),
   
   // Deluxe Rooms (20 rooms: 201-220)
@@ -28,7 +28,7 @@ export const rooms: Room[] = [
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub'],
-    images: ['https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop']
+    images: ['/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png']
   })),
   
   // Suite Rooms (15 rooms: 301-315)
@@ -42,7 +42,7 @@ export const rooms: Room[] = [
            i % 5 === 0 ? 'Maintenance' as const :
            i % 7 === 0 ? 'Reserved' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen'],
-    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=2070&auto=format&fit=crop']
+    images: ['/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png']
   })),
   
   // Presidential Suites (5 rooms: 401-405)
@@ -54,6 +54,6 @@ export const rooms: Room[] = [
     price: 30999,
     status: i % 4 === 0 ? 'Occupied' as const : 'Available' as const,
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],
-    images: ['https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop']
+    images: ['/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png']
   })),
 ];

@@ -20,13 +20,12 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Map room types to our new images
-  const roomImages = {
-    'Standard': "public/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
-    'Deluxe': "public/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png",
-    'Suite': "public/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png",
-    'Presidential': "public/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png"
-  };
+  // Format price
+  const formattedPrice = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(room.price).replace('₹', '₹ ');
   
   const statusColorMap = {
     'Available': 'bg-green-100 text-green-800 border-green-200',
@@ -46,6 +45,23 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
     setShowBookingForm(true);
   };
 
+  // Get the appropriate image based on room type
+  const getRoomImage = () => {
+    if (room.images && room.images.length > 0) {
+      return room.images[0];
+    }
+    
+    // Fallback images based on room type
+    const roomImages = {
+      'Standard': '/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png',
+      'Deluxe': '/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png',
+      'Suite': '/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png',
+      'Presidential': '/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png'
+    };
+    
+    return roomImages[room.type] || '/placeholder.svg';
+  };
+
   return (
     <>
       <TransitionWrapper delay={delay}>
@@ -53,7 +69,7 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
           {/* Room Image */}
           <div className="h-52 relative overflow-hidden">
             <img 
-              src={roomImages[room.type] || '/placeholder.svg'} 
+              src={getRoomImage()} 
               alt={`Room ${room.number}`} 
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
             />
@@ -69,7 +85,7 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
           <div className="p-5">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold">Room {room.number}</h3>
-              <span className="text-lg font-semibold text-primary">${room.price}/night</span>
+              <span className="text-lg font-semibold text-primary">{formattedPrice}/night</span>
             </div>
             
             <div className="mb-4">

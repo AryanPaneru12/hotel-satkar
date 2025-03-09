@@ -40,6 +40,13 @@ const RoomCard = ({
     }
   };
   
+  // Format the price with commas for thousands
+  const formattedPrice = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(price).replace('₹', 'Rs. ');
+  
   return (
     <TransitionWrapper delay={delay}>
       <Card className="overflow-hidden h-full flex flex-col transition-all hover:shadow-lg border-0 shadow-md">
@@ -51,7 +58,7 @@ const RoomCard = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
           <Badge className="absolute top-3 right-3 bg-primary/90 text-white font-medium">
-            Rs. {format(price, "0,0")}
+            {formattedPrice}
           </Badge>
         </div>
         <CardContent className="pt-5 flex-1">

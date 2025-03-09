@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bed, CreditCard, Database } from 'lucide-react';
+import { Bed, CreditCard, Users } from 'lucide-react';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
 
 const FeatureCard = ({ 
@@ -52,9 +52,9 @@ const FeaturesSection = () => {
           />
           
           <FeatureCard 
-            icon={<Database className="h-6 w-6 md:h-8 md:w-8 text-hotel-700" />}
-            title="Advanced Technology"
-            description="Built with React frontend and Node.js backend, powered by MongoDB database."
+            icon={<Users className="h-6 w-6 md:h-8 md:w-8 text-hotel-700" />}
+            title="Exceptional Service"
+            description="Personalized attention from our dedicated staff to make your stay memorable and comfortable."
             delay={500}
           />
         </div>

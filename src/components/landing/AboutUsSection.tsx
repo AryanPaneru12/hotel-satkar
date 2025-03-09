@@ -15,7 +15,7 @@ const AboutUsSection = () => {
                 "before:absolute before:inset-0 before:bg-hotel-600/20 before:z-10"
               )}>
                 <img 
-                  src="public/lovable-uploads/3334a0b3-058e-403f-9f56-23fd144ae856.png" 
+                  src="/lovable-uploads/3334a0b3-058e-403f-9f56-23fd144ae856.png" 
                   alt="Scenic mountain terrace dining with Himalayan views" 
                   className="w-full h-[500px] object-cover"
                 />

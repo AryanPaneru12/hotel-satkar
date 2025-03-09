@@ -19,7 +19,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { guests, bookings, rooms } from '@/data/mockData';
+import { guests } from '@/data/guests';
+import { bookings } from '@/data/bookings';
+import { rooms } from '@/data/rooms';
 import { Plus, Search, MoreHorizontal, User, Phone, Mail, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';

@@ -25,7 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { bookings } from '@/data/mockData';
+import { bookings } from '@/data/bookings';
 import { cn } from '@/lib/utils';
 import { Plus, Search, MoreHorizontal, Calendar, FileText, CheckCircle, X } from 'lucide-react';
 import BookingForm from '@/components/booking/BookingForm';

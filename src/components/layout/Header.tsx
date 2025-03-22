@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -91,7 +91,7 @@ const Header = ({ title }: HeaderProps) => {
   };
 
   // Use debounced value for search
-  React.useEffect(() => {
+  useEffect(() => {
     if (debouncedSearchQuery) {
       handleSearch(debouncedSearchQuery);
     }

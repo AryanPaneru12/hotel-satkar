@@ -82,8 +82,7 @@ const CredibilityScore = ({ score, history }: CredibilityScoreCardProps) => {
       
       <Progress 
         value={score} 
-        className="h-2 mb-3" 
-        indicatorClassName={getProgressColorClass(score)}
+        className={cn("h-2 mb-3", getProgressColorClass(score))}
       />
       
       <div className="text-sm flex items-center mt-2">

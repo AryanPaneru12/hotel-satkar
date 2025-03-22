@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
@@ -36,6 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Booking } from '@/types';
 
 const bookingStatuses = ['All Statuses', 'Pending', 'Confirmed', 'Cancelled', 'Checked In', 'Checked Out'];
 const paymentStatuses = ['All Payments', 'Pending', 'Paid', 'Refunded', 'Failed'];
@@ -75,7 +75,6 @@ const Bookings = () => {
     }
   };
 
-  // Filter bookings based on search query and selected filters
   const filteredBookings = bookings.filter(booking => {
     const guestName = booking.guest?.name?.toLowerCase() || '';
     const roomNumber = booking.room?.number?.toLowerCase() || '';
@@ -136,7 +135,6 @@ const Bookings = () => {
   return (
     <>
       <PageContainer title="Bookings">
-        {/* Filters and Actions */}
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -208,7 +206,6 @@ const Bookings = () => {
           </div>
         </div>
         
-        {/* Bookings Table */}
         <div className="bg-card rounded-lg shadow-card overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
@@ -327,7 +324,6 @@ const Bookings = () => {
           </div>
         </div>
 
-        {/* Credibility Score Statistics */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           {bookings.slice(0, 3).map((booking) => (
             booking.guest?.credibilityScore && (

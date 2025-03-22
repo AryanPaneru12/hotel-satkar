@@ -14,6 +14,7 @@ import Bookings from "./pages/Bookings";
 import Guests from "./pages/Guests";
 import Landing from "./pages/Landing";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import Settings from "./pages/Settings";
 
 // Components
 import Sidebar from "./components/layout/Sidebar";
@@ -131,6 +132,17 @@ const AppRoutes = () => {
             </div>
           </div>
         </AdminRoute>
+      } />
+      
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <div className="flex h-screen w-full overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-hidden">
+              <Settings />
+            </div>
+          </div>
+        </ProtectedRoute>
       } />
       
       <Route path="*" element={<NotFound />} />

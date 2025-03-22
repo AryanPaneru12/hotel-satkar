@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
@@ -36,18 +37,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Booking } from '@/types';
+import BookingDetailsModal from '@/components/booking/BookingDetailsModal';
+import { downloadInvoice } from '@/lib/invoiceGenerator';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const bookingStatuses = ['All Statuses', 'Pending', 'Confirmed', 'Cancelled', 'Checked In', 'Checked Out'];
 const paymentStatuses = ['All Payments', 'Pending', 'Paid', 'Refunded', 'Failed'];
 const credibilityFilters = ['All Scores', 'Excellent (90-100)', 'Good (75-89)', 'Fair (60-74)', 'Needs Improvement (40-59)', 'Poor (0-39)'];
 
 const Bookings = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [selectedPayment, setSelectedPayment] = useState('All Payments');
   const [selectedCredibility, setSelectedCredibility] = useState('All Scores');
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const statusColorMap = {
     'Pending': 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -75,7 +83,12 @@ const Bookings = () => {
     }
   };
 
-  const filteredBookings = bookings.filter(booking => {
+  // Filter bookings based on user role and search criteria
+  const userFilteredBookings = user?.role === 'customer' 
+    ? bookings.filter(booking => booking.guest?.email === user.email)
+    : bookings;
+
+  const filteredBookings = userFilteredBookings.filter(booking => {
     const guestName = booking.guest?.name?.toLowerCase() || '';
     const roomNumber = booking.room?.number?.toLowerCase() || '';
     
@@ -130,6 +143,54 @@ const Bookings = () => {
     if (score >= 60) return "Moderate";
     if (score >= 40) return "Low";
     return "Very Low";
+  };
+
+  // Handler functions for booking actions
+  const handleViewDetails = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setShowDetailsModal(true);
+  };
+
+  const handleGenerateInvoice = (booking: Booking) => {
+    toast({
+      title: "Generating Invoice",
+      description: "Your invoice PDF is being generated and will download shortly.",
+    });
+    
+    setTimeout(() => {
+      try {
+        downloadInvoice(booking);
+        toast({
+          title: "Invoice Generated",
+          description: "Your invoice has been successfully downloaded.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "There was a problem generating your invoice. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }, 1000);
+  };
+
+  const handleMarkCheckIn = (bookingId: string) => {
+    toast({
+      title: "Status Updated",
+      description: `Booking #${bookingId} has been marked as Checked In.`,
+    });
+    
+    // In a real app, this would update the booking in the database
+  };
+
+  const handleCancelBooking = (bookingId: string) => {
+    toast({
+      title: "Booking Cancelled",
+      description: `Booking #${bookingId} has been cancelled.`,
+      variant: "destructive",
+    });
+    
+    // In a real app, this would update the booking in the database
   };
 
   return (
@@ -289,22 +350,38 @@ const Bookings = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="flex items-center">
+                          <DropdownMenuItem 
+                            className="flex items-center"
+                            onClick={() => handleViewDetails(booking)}
+                          >
                             <Calendar className="mr-2 h-4 w-4" />
                             <span>View Details</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="flex items-center">
+                          <DropdownMenuItem 
+                            className="flex items-center"
+                            onClick={() => handleGenerateInvoice(booking)}
+                          >
                             <FileText className="mr-2 h-4 w-4" />
                             <span>Generate Invoice</span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="flex items-center">
-                            <CheckCircle className="mr-2 h-4 w-4" />
-                            <span>Mark as Checked In</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="flex items-center text-red-600">
-                            <X className="mr-2 h-4 w-4" />
-                            <span>Cancel Booking</span>
-                          </DropdownMenuItem>
+                          {booking.status === 'Confirmed' && (
+                            <DropdownMenuItem 
+                              className="flex items-center"
+                              onClick={() => handleMarkCheckIn(booking.id)}
+                            >
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              <span>Mark as Checked In</span>
+                            </DropdownMenuItem>
+                          )}
+                          {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
+                            <DropdownMenuItem 
+                              className="flex items-center text-red-600"
+                              onClick={() => handleCancelBooking(booking.id)}
+                            >
+                              <X className="mr-2 h-4 w-4" />
+                              <span>Cancel Booking</span>
+                            </DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -343,6 +420,15 @@ const Bookings = () => {
         roomId={selectedBooking?.roomId}
         roomType={selectedBooking?.room?.type}
         roomPrice={selectedBooking?.room?.price}
+      />
+      
+      <BookingDetailsModal
+        booking={selectedBooking}
+        isOpen={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        onMarkCheckIn={handleMarkCheckIn}
+        onCancelBooking={handleCancelBooking}
+        onGenerateInvoice={handleGenerateInvoice}
       />
     </>
   );

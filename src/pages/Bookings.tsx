@@ -36,7 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Booking } from '@/types';
+import { Booking, BookingHistory } from '@/types';
 import BookingDetailsModal from '@/components/booking/BookingDetailsModal';
 import { downloadInvoice } from '@/lib/invoiceGenerator';
 import { useToast } from '@/components/ui/use-toast';
@@ -403,7 +403,7 @@ const Bookings = () => {
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           {bookings.slice(0, 3).map((booking) => (
-            booking.guest?.credibilityScore && (
+            booking.guest?.credibilityScore && booking.guest?.bookingHistory && (
               <CredibilityScore 
                 key={booking.guest.id}
                 score={booking.guest.credibilityScore} 
@@ -417,14 +417,14 @@ const Bookings = () => {
       <BookingForm 
         isOpen={showBookingForm} 
         onClose={() => setShowBookingForm(false)} 
-        roomId={selectedBooking?.roomId}
+        roomId={selectedBooking?.room?.id}
         roomType={selectedBooking?.room?.type}
         roomPrice={selectedBooking?.room?.price}
       />
       
       <BookingDetailsModal
         booking={selectedBooking}
-        isOpen={showDetailsModal}
+        open={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
         onMarkCheckIn={handleMarkCheckIn}
         onCancelBooking={handleCancelBooking}

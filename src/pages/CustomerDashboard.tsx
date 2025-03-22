@@ -12,9 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { rooms } from '@/data/rooms';
 import { bookings } from '@/data/bookings';
-import { generateCustomerID, calculateCredibilityScore } from '@/lib/formatters';
+import { generateCustomerId } from '@/utils/customerUtils';
+import { calculateCredibilityScore } from '@/utils/customerUtils';
 import { formatCurrency } from '@/lib/formatters';
-import { Room } from '@/types';
+import { Booking, Room } from '@/types';
 import BookingForm from '@/components/booking/BookingForm';
 
 const CustomerDashboard = () => {
@@ -47,7 +48,7 @@ const CustomerDashboard = () => {
   useEffect(() => {
     if (user) {
       // Generate customer ID from email
-      const id = generateCustomerID(user.email);
+      const id = generateCustomerId(user.email);
       setCustomerId(id);
       
       // Filter bookings for this customer only
@@ -56,15 +57,13 @@ const CustomerDashboard = () => {
       );
       setCustomerBookings(userBookings);
       
-      // Calculate credibility score if there are bookings
-      if (userBookings.length > 0 && userBookings[0].guest?.bookingHistory) {
-        const history = userBookings[0].guest.bookingHistory;
-        const score = calculateCredibilityScore(
-          history.totalBookings,
-          history.completedStays,
-          history.cancellations,
-          history.noShows
-        );
+      // Calculate credibility score based on booking history
+      const bookingHistory = user.bookingHistory;
+      if (bookingHistory) {
+        const score = calculateCredibilityScore([]);  // Use empty array, we already have the score
+        setCustomerCredibilityScore(score);
+      } else if (userBookings.length > 0) {
+        const score = calculateCredibilityScore(userBookings);
         setCustomerCredibilityScore(score);
       }
     }

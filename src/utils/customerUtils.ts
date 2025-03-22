@@ -36,7 +36,7 @@ export const calculateCredibilityScore = (userBookings: Booking[]): number => {
   
   // Completed bookings boost score
   const completed = userBookings.filter(booking => 
-    booking.status === 'Checked Out' || booking.status === 'Completed');
+    booking.status === 'Checked Out'); // Changed from 'Completed' to 'Checked Out'
   score += Math.min(completed.length * 5, 30); // Up to +30 points
   
   // Make sure score is between 0 and 100

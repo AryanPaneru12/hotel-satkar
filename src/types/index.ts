@@ -1,75 +1,40 @@
+// Add or update these types
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'customer' | 'admin' | 'superadmin';
+  createdAt: string;
+  updatedAt?: string;
+  credibilityScore?: number;
+}
 
 export interface Room {
   id: string;
   number: string;
-  type: 'Standard' | 'Deluxe' | 'Suite' | 'Presidential';
+  type: string;
   capacity: number;
-  price: number;
+  pricePerNight: number;
   status: 'Available' | 'Occupied' | 'Maintenance' | 'Reserved';
+  floor: number;
   amenities: string[];
-  images?: string[];
-}
-
-export interface Guest {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address?: string;
-  nationality?: string;
-  idNumber?: string;
-  checkInDate?: string;
-  checkOutDate?: string;
-  roomId?: string;
-  image?: string;
-  credibilityScore?: number;
-  bookingHistory?: {
-    totalBookings: number;
-    cancellations: number;
-    noShows: number;
-    completedStays: number;
-  };
+  description: string;
+  images: string[];
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Booking {
   id: string;
-  roomId: string;
-  guestId: string;
+  guest?: User;
+  room?: Room;
   checkInDate: string;
   checkOutDate: string;
-  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Checked In' | 'Checked Out';
-  totalAmount: number;
+  status: 'Pending' | 'Confirmed' | 'Checked In' | 'Checked Out' | 'Cancelled' | 'No Show';
   paymentStatus: 'Pending' | 'Paid' | 'Refunded' | 'Failed';
+  paymentMethod?: 'Cash' | 'Credit Card' | 'Debit Card' | 'Online' | 'Bank Transfer';
+  totalAmount: number;
+  specialRequests?: string;
   createdAt: string;
-  guest?: Guest;
-  room?: Room;
-}
-
-export interface DashboardStats {
-  totalBookings: number;
-  availableRooms: number;
-  occupiedRooms: number;
-  todayCheckIns: number;
-  todayCheckOuts: number;
-  revenueToday: number;
-  occupancyRate: number;
-}
-
-export interface SidebarItem {
-  title: string;
-  path: string;
-  icon: React.ComponentType<any>;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'customer' | 'admin' | 'superadmin';
-  createdAt: string;
-}
-
-export interface CredibilityScoreCardProps {
-  score: number;
-  history?: Guest['bookingHistory'];
+  updatedAt?: string;
 }

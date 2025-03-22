@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { useDebounce } from '@/hooks/useDebounce';
+import { searchData } from '@/utils/searchUtils';
 
 interface HeaderProps {
   title: string;
@@ -55,19 +56,10 @@ const Header = ({ title }: HeaderProps) => {
       return;
     }
     
-    // Simple mock search implementation
-    // In a real app, this would call an API or search through a local data store
-    const mockResults = [
-      { id: '1', type: 'booking', title: 'Booking #1234', subtitle: 'Deluxe Room - June 15, 2023' },
-      { id: '2', type: 'room', title: 'Room 304', subtitle: 'Presidential Suite - Available' },
-      { id: '3', type: 'guest', title: 'John Smith', subtitle: 'john@example.com' },
-    ].filter(item => 
-      item.title.toLowerCase().includes(query.toLowerCase()) || 
-      item.subtitle.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    setSearchResults(mockResults);
-    setShowResults(mockResults.length > 0);
+    // Use the searchData utility
+    const results = searchData(query);
+    setSearchResults(results);
+    setShowResults(results.length > 0);
   };
 
   const handleResultClick = (result: any) => {
@@ -114,10 +106,6 @@ const Header = ({ title }: HeaderProps) => {
             onFocus={() => {
               if (searchResults.length > 0) setShowResults(true);
             }}
-            onBlur={() => {
-              // Delay hiding to allow for clicks on results
-              setTimeout(() => setShowResults(false), 200);
-            }}
           />
           
           {/* Search Results Dropdown */}
@@ -126,7 +114,7 @@ const Header = ({ title }: HeaderProps) => {
               {searchResults.map((result) => (
                 <div 
                   key={result.id}
-                  className="p-2 hover:bg-muted cursor-pointer"
+                  className="p-2 hover:bg-muted cursor-pointer transition-colors duration-200"
                   onClick={() => handleResultClick(result)}
                 >
                   <div className="font-medium">{result.title}</div>
@@ -140,7 +128,7 @@ const Header = ({ title }: HeaderProps) => {
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative hover:bg-muted transition-colors duration-200">
               <Bell className="h-5 w-5" />
               {notifications.length > 0 && (
                 <span className="absolute top-1 right-1 flex h-2 w-2">
@@ -154,7 +142,7 @@ const Header = ({ title }: HeaderProps) => {
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {notifications.map((notification) => (
-              <DropdownMenuItem key={notification.id} className="flex flex-col items-start py-2">
+              <DropdownMenuItem key={notification.id} className="flex flex-col items-start py-2 cursor-pointer hover:bg-muted transition-colors duration-200">
                 <span>{notification.message}</span>
                 <span className="text-xs text-muted-foreground">{notification.time}</span>
               </DropdownMenuItem>
@@ -164,7 +152,7 @@ const Header = ({ title }: HeaderProps) => {
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="justify-center">
-              <Button variant="ghost" size="sm" className="w-full">View all</Button>
+              <Button variant="ghost" size="sm" className="w-full hover:bg-muted transition-colors duration-200">View all</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -172,7 +160,7 @@ const Header = ({ title }: HeaderProps) => {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted transition-colors duration-200">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="" />
                 <AvatarFallback className="bg-primary/10 text-primary">
@@ -181,17 +169,26 @@ const Header = ({ title }: HeaderProps) => {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-[200px]">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/profile')}>
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-muted transition-colors duration-200" 
+              onClick={() => navigate('/profile')}
+            >
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/settings')}>
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-muted transition-colors duration-200" 
+              onClick={() => navigate('/settings')}
+            >
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-muted transition-colors duration-200" 
+              onClick={handleLogout}
+            >
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>

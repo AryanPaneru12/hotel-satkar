@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "next-themes";
 
 // Pages
 import Index from "./pages/Index";
@@ -15,6 +16,7 @@ import Guests from "./pages/Guests";
 import Landing from "./pages/Landing";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 
 // Components
 import Sidebar from "./components/layout/Sidebar";
@@ -89,6 +91,18 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
+      {/* Profile Page */}
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <div className="flex h-screen w-full overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-hidden">
+              <Profile />
+            </div>
+          </div>
+        </ProtectedRoute>
+      } />
+      
       {/* Customer Dashboard */}
       <Route path="/customer-dashboard" element={
         <CustomerRoute>
@@ -154,13 +168,15 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

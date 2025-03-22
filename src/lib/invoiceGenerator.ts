@@ -1,155 +1,104 @@
 
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { Booking } from '@/types';
+import { formatDate } from '@/utils/bookingUtils';
 
-interface GenerateInvoiceOptions {
-  includeLogo?: boolean;
-  companyDetails?: {
-    name: string;
-    address: string;
-    email: string;
-    phone: string;
-  };
-}
-
-export const generateInvoice = (booking: Booking, options: GenerateInvoiceOptions = {}) => {
+// Generate PDF invoice for a booking
+export const generateInvoice = (booking: Booking) => {
   const doc = new jsPDF();
-
-  const defaultCompanyDetails = {
-    name: 'Satkar Hotel',
-    address: '123 Himalayan View, Kathmandu, Nepal',
-    email: 'info@satkar.com',
-    phone: '+977 1234567890'
-  };
-
-  const companyDetails = options.companyDetails || defaultCompanyDetails;
   
-  // Add the document title
+  // Add hotel logo/header
   doc.setFontSize(20);
-  doc.setTextColor(40, 40, 40);
-  doc.text('INVOICE', 105, 20, { align: 'center' });
+  doc.setTextColor(62, 82, 163);
+  doc.text('SATKAR HOTELS', 105, 20, { align: 'center' });
   
-  // Add invoice number and date
-  doc.setFontSize(10);
-  doc.text(`Invoice #: INV-${booking.id}`, 20, 40);
-  doc.text(`Date: ${new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })}`, 20, 45);
-  doc.text(`Booking Reference: #${booking.id}`, 20, 50);
-  
-  // Add company details
   doc.setFontSize(12);
-  doc.setTextColor(40, 40, 40);
-  doc.text(companyDetails.name, 20, 65);
-  doc.setFontSize(10);
-  doc.setTextColor(80, 80, 80);
-  doc.text(companyDetails.address, 20, 70);
-  doc.text(`Email: ${companyDetails.email}`, 20, 75);
-  doc.text(`Phone: ${companyDetails.phone}`, 20, 80);
+  doc.setTextColor(100, 100, 100);
+  doc.text('123 Main Street, Kathmandu, Nepal', 105, 30, { align: 'center' });
+  doc.text('Phone: +977 1234 5678 | Email: info@satkarhotels.com', 105, 36, { align: 'center' });
+  
+  // Add invoice title and number
+  doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0);
+  doc.text('INVOICE', 20, 50);
+  
+  doc.setFontSize(12);
+  doc.text(`Invoice #: INV-${booking.id}`, 20, 60);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 66);
   
   // Add customer details
-  if (booking.guest) {
-    doc.setFontSize(12);
-    doc.setTextColor(40, 40, 40);
-    doc.text('Bill To:', 120, 65);
-    doc.setFontSize(10);
-    doc.setTextColor(80, 80, 80);
-    doc.text(booking.guest.name, 120, 70);
-    doc.text(`Email: ${booking.guest.email}`, 120, 75);
-    doc.text(`Phone: ${booking.guest.phone}`, 120, 80);
-    if (booking.guest.address) {
-      doc.text(`Address: ${booking.guest.address}`, 120, 85);
-    }
-  }
+  doc.setFontSize(14);
+  doc.text('Bill To:', 20, 80);
+  
+  doc.setFontSize(12);
+  doc.text(booking.guest?.name || 'N/A', 20, 88);
+  doc.text(`ID: ${booking.guest?.id || 'N/A'}`, 20, 94);
+  doc.text(`Email: ${booking.guest?.email || 'N/A'}`, 20, 100);
   
   // Add booking details
+  doc.setFontSize(14);
+  doc.text('Booking Details:', 120, 80);
+  
   doc.setFontSize(12);
-  doc.setTextColor(40, 40, 40);
-  doc.text('Booking Details:', 20, 100);
+  doc.text(`Booking ID: ${booking.id}`, 120, 88);
+  doc.text(`Room: ${booking.room?.number} (${booking.room?.type})`, 120, 94);
+  doc.text(`Check-in: ${formatDate(booking.checkInDate)}`, 120, 100);
+  doc.text(`Check-out: ${formatDate(booking.checkOutDate)}`, 120, 106);
   
-  // Table for booking details
-  const formattedCheckIn = new Date(booking.checkInDate).toLocaleDateString('en-US', { 
-    year: 'numeric', month: 'short', day: 'numeric' 
-  });
+  // Calculate number of nights
+  const checkIn = new Date(booking.checkInDate);
+  const checkOut = new Date(booking.checkOutDate);
+  const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
   
-  const formattedCheckOut = new Date(booking.checkOutDate).toLocaleDateString('en-US', { 
-    year: 'numeric', month: 'short', day: 'numeric' 
-  });
-  
-  // Calculate the number of nights
-  const checkInDate = new Date(booking.checkInDate);
-  const checkOutDate = new Date(booking.checkOutDate);
-  const nights = Math.floor((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-  
-  const roomType = booking.room?.type || 'Standard Room';
-  const roomNumber = booking.room?.number || 'Not assigned';
+  // Add invoice items table
   const roomRate = booking.totalAmount / nights;
   
-  const tableHeaders = [['Description', 'Nights', 'Rate', 'Amount']];
-  const tableData = [[`${roomType} (Room ${roomNumber})`, nights, `$${roomRate.toFixed(2)}`, `$${booking.totalAmount.toFixed(2)}`]];
-  
-  // @ts-ignore - jspdf-autotable augments the jsPDF prototype
-  doc.autoTable({
-    startY: 105,
-    head: tableHeaders,
-    body: tableData,
+  autoTable(doc, {
+    startY: 120,
+    head: [['Description', 'Nights', 'Rate', 'Amount']],
+    body: [
+      [
+        `${booking.room?.type} Room (${booking.room?.number})`,
+        nights.toString(),
+        `$${roomRate.toFixed(2)}`,
+        `$${booking.totalAmount.toFixed(2)}`
+      ],
+      ['Additional Services', '', '', '$0.00'],
+    ],
+    foot: [
+      ['', '', 'Subtotal', `$${booking.totalAmount.toFixed(2)}`],
+      ['', '', 'Tax (13%)', `$${(booking.totalAmount * 0.13).toFixed(2)}`],
+      ['', '', 'Total', `$${(booking.totalAmount * 1.13).toFixed(2)}`]
+    ],
     theme: 'grid',
-    headStyles: {
-      fillColor: [60, 60, 60],
-      textColor: [255, 255, 255],
-      fontStyle: 'bold'
-    },
-    styles: {
-      fontSize: 9
-    }
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [62, 82, 163], textColor: [255, 255, 255] },
+    footStyles: { fillColor: [240, 240, 240] }
   });
   
-  // Add total
-  // @ts-ignore - accessing table object from autoTable
-  const finalY = (doc as any).lastAutoTable.finalY || 140;
-  
-  doc.setFontSize(10);
-  doc.text('Subtotal:', 140, finalY + 10);
-  doc.text(`$${booking.totalAmount.toFixed(2)}`, 170, finalY + 10, { align: 'right' });
-  
-  doc.text('Tax (0%):', 140, finalY + 15);
-  doc.text('$0.00', 170, finalY + 15, { align: 'right' });
+  // Add payment information
+  const finalY = (doc as any).lastAutoTable.finalY + 10;
   
   doc.setFontSize(12);
-  doc.setFont(undefined, 'bold');
-  doc.text('Total:', 140, finalY + 22);
-  doc.text(`$${booking.totalAmount.toFixed(2)}`, 170, finalY + 22, { align: 'right' });
-  doc.setFont(undefined, 'normal');
-  
-  // Add payment status
+  doc.text('Payment Information:', 20, finalY);
   doc.setFontSize(10);
-  doc.text(`Payment Status: ${booking.paymentStatus}`, 20, finalY + 15);
-  doc.text(`Payment Date: ${booking.paymentStatus === 'Paid' ? new Date().toLocaleDateString() : 'Pending'}`, 20, finalY + 20);
+  doc.text(`Status: ${booking.paymentStatus}`, 20, finalY + 6);
+  doc.text(`Method: ${booking.paymentMethod || 'N/A'}`, 20, finalY + 12);
   
-  // Add booking dates
-  doc.text(`Check-in: ${formattedCheckIn}`, 20, finalY + 30);
-  doc.text(`Check-out: ${formattedCheckOut}`, 20, finalY + 35);
-  
-  // Add terms and notes
+  // Add terms and conditions
   doc.setFontSize(10);
-  doc.text('Terms and Conditions:', 20, finalY + 45);
+  doc.text('Terms & Conditions:', 20, finalY + 25);
   doc.setFontSize(8);
-  doc.text('1. Check-in time is 2:00 PM, and check-out time is 12:00 PM.', 20, finalY + 50);
-  doc.text('2. Cancellations must be made 24 hours before the check-in date for a full refund.', 20, finalY + 55);
-  doc.text('3. Any damages to the property will be charged to the guest.', 20, finalY + 60);
+  doc.text('1. Check-in time is 2:00 PM and check-out time is 12:00 PM.', 20, finalY + 32);
+  doc.text('2. This invoice is computer-generated and does not require a signature.', 20, finalY + 38);
+  doc.text('3. For any queries regarding this invoice, please contact our reception.', 20, finalY + 44);
   
   // Add footer
   doc.setFontSize(8);
-  doc.text('Thank you for choosing Satkar Hotel for your stay!', 105, 280, { align: 'center' });
-  doc.text('For any questions regarding this invoice, please contact our customer service.', 105, 285, { align: 'center' });
+  doc.setTextColor(100, 100, 100);
+  doc.text('Thank you for choosing Satkar Hotels!', 105, 280, { align: 'center' });
   
-  return doc;
-};
-
-export const downloadInvoice = (booking: Booking, options: GenerateInvoiceOptions = {}) => {
-  const doc = generateInvoice(booking, options);
+  // Save the PDF
   doc.save(`Invoice-${booking.id}.pdf`);
 };

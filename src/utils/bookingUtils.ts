@@ -1,6 +1,6 @@
 
 import { Booking } from '@/types';
-import { generateInvoice } from '@/lib/invoiceGenerator';
+import { downloadInvoice, generateInvoice } from '@/lib/invoiceGenerator';
 import { toast } from '@/components/ui/use-toast';
 
 // Utility function to format dates
@@ -30,8 +30,8 @@ export const viewBookingDetails = (booking: Booking, onOpen: (booking: Booking) 
 // Handle generate invoice
 export const generateBookingInvoice = (booking: Booking) => {
   try {
-    // Generate PDF invoice
-    generateInvoice(booking);
+    // Generate PDF invoice using the proper function
+    downloadInvoice(booking);
     
     toast({
       title: "Invoice Generated",

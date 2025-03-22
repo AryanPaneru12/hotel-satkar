@@ -86,3 +86,6 @@ export const downloadInvoice = (booking: Booking) => {
   // Save the PDF
   doc.save(`Invoice-Booking-${booking.id}.pdf`);
 };
+
+// Add the missing export that's referenced in bookingUtils.ts
+export const generateInvoice = downloadInvoice;

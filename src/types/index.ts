@@ -1,4 +1,3 @@
-
 // Add or update these types
 export interface User {
   id: string;
@@ -9,6 +8,10 @@ export interface User {
   updatedAt?: string;
   credibilityScore?: number;
   bookingHistory?: BookingHistory;
+  phone?: string;
+  address?: string;
+  nationality?: string;
+  idNumber?: string;
 }
 
 export interface BookingHistory {
@@ -31,6 +34,10 @@ export interface Guest {
   roomId?: string;
   credibilityScore?: number;
   bookingHistory?: BookingHistory;
+  role?: 'customer' | 'admin' | 'superadmin';
+  createdAt?: string;
+  updatedAt?: string;
+  image?: string;
 }
 
 export interface Room {

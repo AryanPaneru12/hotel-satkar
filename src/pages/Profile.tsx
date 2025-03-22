@@ -53,7 +53,8 @@ const Profile = () => {
                   <Separator />
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Credibility Score</p>
-                    <CredibilityScore value={credibilityScore || 0} />
+                    {/* Update from 'value' to 'score' prop */}
+                    <CredibilityScore score={credibilityScore || 0} />
                     <p className="text-xs text-muted-foreground mt-1">
                       {canPayWithCash 
                         ? "✅ Eligible for cash payments" 

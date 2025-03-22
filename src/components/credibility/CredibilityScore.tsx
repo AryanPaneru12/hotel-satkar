@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { CredibilityScoreCardProps } from '@/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+// The component should accept 'score' prop as defined in CredibilityScoreCardProps
 const CredibilityScore = ({ score, history }: CredibilityScoreCardProps) => {
   // Determine the color and status based on the score
   const getColorClass = (score: number) => {

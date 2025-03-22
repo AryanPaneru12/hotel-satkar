@@ -12,7 +12,14 @@ export const guests: Guest[] = [
     idNumber: 'IND123456',
     checkInDate: '2023-06-15',
     checkOutDate: '2023-06-18',
-    roomId: '2'
+    roomId: '2',
+    credibilityScore: 92,
+    bookingHistory: {
+      totalBookings: 8,
+      cancellations: 0,
+      noShows: 0,
+      completedStays: 8
+    }
   },
   {
     id: '2',
@@ -24,7 +31,14 @@ export const guests: Guest[] = [
     idNumber: 'IND789012',
     checkInDate: '2023-06-14',
     checkOutDate: '2023-06-19',
-    roomId: '4'
+    roomId: '4',
+    credibilityScore: 85,
+    bookingHistory: {
+      totalBookings: 6,
+      cancellations: 1,
+      noShows: 0,
+      completedStays: 5
+    }
   },
   {
     id: '3',
@@ -36,7 +50,14 @@ export const guests: Guest[] = [
     idNumber: 'IND345678',
     checkInDate: '2023-06-16',
     checkOutDate: '2023-06-22',
-    roomId: '6'
+    roomId: '6',
+    credibilityScore: 78,
+    bookingHistory: {
+      totalBookings: 5,
+      cancellations: 1,
+      noShows: 0,
+      completedStays: 4
+    }
   },
   {
     id: '4',
@@ -48,6 +69,13 @@ export const guests: Guest[] = [
     idNumber: 'NPL901234',
     checkInDate: '2023-06-17',
     checkOutDate: '2023-06-20',
+    credibilityScore: 65,
+    bookingHistory: {
+      totalBookings: 4,
+      cancellations: 1,
+      noShows: 1,
+      completedStays: 2
+    }
   },
   {
     id: '5',
@@ -59,6 +87,13 @@ export const guests: Guest[] = [
     idNumber: 'NPL567890',
     checkInDate: '2023-06-18',
     checkOutDate: '2023-06-25',
+    credibilityScore: 94,
+    bookingHistory: {
+      totalBookings: 10,
+      cancellations: 0,
+      noShows: 0,
+      completedStays: 10
+    }
   },
   {
     id: '6',
@@ -70,6 +105,13 @@ export const guests: Guest[] = [
     idNumber: 'IND678901',
     checkInDate: '2023-07-01',
     checkOutDate: '2023-07-05',
+    credibilityScore: 45,
+    bookingHistory: {
+      totalBookings: 3,
+      cancellations: 2,
+      noShows: 0,
+      completedStays: 1
+    }
   },
   {
     id: '7',
@@ -81,5 +123,12 @@ export const guests: Guest[] = [
     idNumber: 'NPL123789',
     checkInDate: '2023-07-03',
     checkOutDate: '2023-07-09',
+    credibilityScore: 73,
+    bookingHistory: {
+      totalBookings: 6,
+      cancellations: 1,
+      noShows: 1,
+      completedStays: 4
+    }
   }
 ];

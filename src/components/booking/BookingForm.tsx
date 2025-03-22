@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { addDays, format, differenceInDays, isAfter, isBefore } from 'date-fns';
 import { 
   Select,
   SelectContent,
@@ -15,11 +16,12 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Landmark, QrCode, User, CalendarIcon, Calendar as CalendarCheck, ChevronsUpDown } from 'lucide-react';
+import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface BookingFormProps {
   isOpen: boolean;
@@ -28,6 +30,10 @@ interface BookingFormProps {
   roomType?: string;
   roomPrice?: number;
 }
+
+type FormErrors = {
+  [key: string]: string;
+};
 
 const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFormProps) => {
   const [fullName, setFullName] = useState('');
@@ -39,13 +45,71 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
   const [paymentMethod, setPaymentMethod] = useState('credit');
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [totalNights, setTotalNights] = useState(1);
+  const [totalAmount, setTotalAmount] = useState(roomPrice || 9900);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
-    new Date(new Date().setDate(new Date().getDate() + 1))
+    addDays(new Date(), 1)
   );
   
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      const nights = differenceInDays(checkOutDate, checkInDate);
+      setTotalNights(nights);
+      setTotalAmount((roomPrice || 9900) * nights);
+    }
+  }, [checkInDate, checkOutDate, roomPrice]);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[\d\s+()-]{10,15}$/.test(phone);
+  };
+
+  const validateStep = (step: number) => {
+    const newErrors: FormErrors = {};
+
+    if (step === 0) {
+      if (!fullName.trim()) {
+        newErrors.fullName = 'Full name is required';
+      }
+
+      if (!email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!validateEmail(email)) {
+        newErrors.email = 'Invalid email format';
+      }
+
+      if (!phone.trim()) {
+        newErrors.phone = 'Phone number is required';
+      } else if (!validatePhone(phone)) {
+        newErrors.phone = 'Invalid phone number format';
+      }
+
+      if (!idNumber.trim()) {
+        newErrors.idNumber = 'ID number is required';
+      }
+
+      if (!checkInDate) {
+        newErrors.checkInDate = 'Check-in date is required';
+      }
+
+      if (!checkOutDate) {
+        newErrors.checkOutDate = 'Check-out date is required';
+      } else if (checkInDate && isBefore(checkOutDate, checkInDate)) {
+        newErrors.checkOutDate = 'Check-out date must be after check-in date';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +149,12 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
       case 'qr': return 'QR Code Payment';
       case 'stripe': return 'Stripe';
       default: return 'Unknown Method';
+    }
+  };
+
+  const handleNextStep = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep(currentStep + 1);
     }
   };
   
@@ -167,7 +237,7 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       <Label htmlFor="price">Price Per Night</Label>
                       <Input 
                         id="price" 
-                        value={`Rs. ${roomPrice?.toLocaleString() || "9,900"}`} 
+                        value={`Rs. ${(roomPrice || 9900).toLocaleString()}`} 
                         disabled 
                         className="bg-muted"
                       />
@@ -181,7 +251,10 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full justify-start text-left font-normal"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              errors.checkInDate && "border-red-500"
+                            )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {checkInDate ? format(checkInDate, "PPP") : "Select date"}
@@ -191,11 +264,20 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                           <Calendar
                             mode="single"
                             selected={checkInDate}
-                            onSelect={setCheckInDate}
+                            onSelect={(date) => {
+                              setCheckInDate(date);
+                              if (date && checkOutDate && isBefore(checkOutDate, date)) {
+                                setCheckOutDate(addDays(date, 1));
+                              }
+                            }}
+                            disabled={(date) => isBefore(date, new Date())}
                             initialFocus
                           />
                         </PopoverContent>
                       </Popover>
+                      {errors.checkInDate && (
+                        <p className="text-xs text-red-500">{errors.checkInDate}</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -204,7 +286,10 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full justify-start text-left font-normal"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              errors.checkOutDate && "border-red-500"
+                            )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {checkOutDate ? format(checkOutDate, "PPP") : "Select date"}
@@ -217,12 +302,26 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                             onSelect={setCheckOutDate}
                             initialFocus
                             disabled={(date) => 
-                              date < new Date() || 
-                              (checkInDate ? date <= checkInDate : false)
+                              isBefore(date, new Date()) || 
+                              (checkInDate ? isBefore(date, checkInDate) || isBefore(date, addDays(checkInDate, 1)) : false)
                             }
                           />
                         </PopoverContent>
                       </Popover>
+                      {errors.checkOutDate && (
+                        <p className="text-xs text-red-500">{errors.checkOutDate}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Total Stay:</span> {totalNights} {totalNights === 1 ? 'night' : 'nights'}
+                      </div>
+                      <div className="text-sm font-bold">
+                        <span className="text-muted-foreground">Total:</span> Rs. {totalAmount.toLocaleString()}
+                      </div>
                     </div>
                   </div>
                   
@@ -233,12 +332,15 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       <Input
                         id="fullName"
                         placeholder="John Smith"
-                        className="pl-10"
+                        className={cn("pl-10", errors.fullName && "border-red-500")}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
                       />
                     </div>
+                    {errors.fullName && (
+                      <p className="text-xs text-red-500">{errors.fullName}</p>
+                    )}
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -248,10 +350,14 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                         id="email"
                         type="email"
                         placeholder="you@example.com"
+                        className={cn(errors.email && "border-red-500")}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                       />
+                      {errors.email && (
+                        <p className="text-xs text-red-500">{errors.email}</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -259,10 +365,14 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       <Input
                         id="phone"
                         placeholder="+91 9012345678"
+                        className={cn(errors.phone && "border-red-500")}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
                       />
+                      {errors.phone && (
+                        <p className="text-xs text-red-500">{errors.phone}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -287,10 +397,14 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       <Input
                         id="idNumber"
                         placeholder="Enter ID number"
+                        className={cn(errors.idNumber && "border-red-500")}
                         value={idNumber}
                         onChange={(e) => setIdNumber(e.target.value)}
                         required
                       />
+                      {errors.idNumber && (
+                        <p className="text-xs text-red-500">{errors.idNumber}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -311,8 +425,8 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                     </Button>
                     <Button 
                       type="button" 
-                      onClick={() => setCurrentStep(1)}
-                      disabled={!fullName || !email || !phone || !idNumber}
+                      onClick={handleNextStep}
+                      disabled={isLoading}
                     >
                       Next: Payment
                     </Button>
@@ -412,7 +526,14 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       onClick={handlePaymentProcess}
                       disabled={isLoading}
                     >
-                      {isLoading ? "Processing..." : "Process Payment"}
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        "Process Payment"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -443,6 +564,9 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                         <p className="text-gray-500">Check-out:</p>
                         <p>{checkOutDate ? format(checkOutDate, "PPP") : "-"}</p>
                         
+                        <p className="text-gray-500">Duration:</p>
+                        <p>{totalNights} {totalNights === 1 ? 'night' : 'nights'}</p>
+                        
                         <p className="text-gray-500">Guest:</p>
                         <p>{fullName}</p>
                         
@@ -454,7 +578,7 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                     <div className="p-4">
                       <div className="flex justify-between items-center">
                         <span className="font-semibold">Total Amount:</span>
-                        <span className="font-semibold">Rs. {roomPrice?.toLocaleString() || "9,900"}</span>
+                        <span className="font-semibold">Rs. {totalAmount.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -468,7 +592,14 @@ const BookingForm = ({ isOpen, onClose, roomId, roomType, roomPrice }: BookingFo
                       onClick={handleSubmit}
                       disabled={isLoading}
                     >
-                      {isLoading ? "Confirming..." : "Confirm Booking"}
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Confirming...
+                        </>
+                      ) : (
+                        "Confirm Booking"
+                      )}
                     </Button>
                   </div>
                 </div>

@@ -4,11 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Room } from '@/types';
 import { cn } from '@/lib/utils';
-import { Check, Info } from 'lucide-react';
+import { Check, Info, Loader2 } from 'lucide-react';
 import TransitionWrapper from '../ui/TransitionWrapper';
 import BookingForm from '../booking/BookingForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
 interface RoomCardProps {
   room: Room;
@@ -17,8 +18,11 @@ interface RoomCardProps {
 
 const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   // Format price
   const formattedPrice = new Intl.NumberFormat('en-IN', {
@@ -35,14 +39,34 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   };
 
   const handleBookClick = () => {
+    setIsLoading(true);
+    
     if (!user) {
       // Redirect to landing page with login modal
-      navigate('/?login=true');
+      toast({
+        title: "Authentication Required",
+        description: "Please login to book a room",
+      });
+      
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate('/?login=true');
+      }, 800);
       return;
     }
     
     // If user is logged in, show booking form directly
-    setShowBookingForm(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowBookingForm(true);
+    }, 500);
+  };
+
+  const handleViewDetails = () => {
+    toast({
+      title: `Room ${room.number}`,
+      description: `Viewing details for ${room.type} room`,
+    });
   };
 
   // Get the appropriate image based on room type
@@ -65,13 +89,20 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   return (
     <>
       <TransitionWrapper delay={delay}>
-        <div className="bg-card rounded-lg shadow-card overflow-hidden card-hover border-0 shadow-md">
+        <div 
+          className="bg-card rounded-lg shadow-card overflow-hidden border-0 shadow-md hover:shadow-lg transition-all duration-300"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           {/* Room Image */}
           <div className="h-52 relative overflow-hidden">
             <img 
               src={getRoomImage()} 
               alt={`Room ${room.number}`} 
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+              className={cn(
+                "w-full h-full object-cover transition-transform duration-700",
+                isHovered ? "scale-110" : "scale-100"
+              )}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <div className="absolute top-3 right-3">
@@ -89,17 +120,17 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
             </div>
             
             <div className="mb-4">
-              <Badge variant="secondary" className="mr-2 mb-2">
+              <Badge variant="secondary" className="mr-2 mb-2 transition-colors hover:bg-secondary/80">
                 {room.type}
               </Badge>
-              <Badge variant="outline" className="mr-2 mb-2">
+              <Badge variant="outline" className="mr-2 mb-2 transition-colors hover:bg-muted">
                 {room.capacity} {room.capacity === 1 ? 'Guest' : 'Guests'}
               </Badge>
             </div>
             
             <div className="mb-4">
               <h4 className="text-sm font-medium mb-2">Amenities</h4>
-              <div className="flex flex-wrap gap-1 text-sm">
+              <div className="flex flex-wrap gap-1.5 text-sm">
                 {room.amenities.slice(0, 3).map((amenity) => (
                   <div key={amenity} className="flex items-center text-muted-foreground">
                     <Check className="h-3 w-3 mr-1 text-primary" />
@@ -120,17 +151,27 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="flex-1"
+                className="flex-1 hover:bg-muted transition-colors"
+                onClick={handleViewDetails}
               >
                 Details
               </Button>
               <Button 
                 size="sm" 
-                className="flex-1 bg-hotel-700 hover:bg-hotel-800"
-                disabled={room.status !== 'Available'}
+                className="flex-1 bg-hotel-700 hover:bg-hotel-800 transition-colors"
+                disabled={room.status !== 'Available' || isLoading}
                 onClick={handleBookClick}
               >
-                {room.status === 'Available' ? 'Book Now' : 'Unavailable'}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                    Loading...
+                  </>
+                ) : room.status === 'Available' ? (
+                  'Book Now'
+                ) : (
+                  'Unavailable'
+                )}
               </Button>
             </div>
           </div>

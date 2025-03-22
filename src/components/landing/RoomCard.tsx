@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
 import BookingForm from '@/components/booking/BookingForm';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
 interface RoomCardProps {
   title: string;
@@ -28,15 +30,31 @@ const RoomCard = ({
   onBookClick
 }: RoomCardProps) => {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const handleBookClick = () => {
+    setIsLoading(true);
+    
     if (!user) {
       // If user is not logged in, show login modal via the parent component
-      onBookClick();
+      toast({
+        title: "Authentication Required",
+        description: "Please login to book a room",
+      });
+      
+      setTimeout(() => {
+        setIsLoading(false);
+        onBookClick();
+      }, 800);
     } else {
       // If user is logged in, show booking form directly
-      setShowBookingForm(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setShowBookingForm(true);
+      }, 500);
     }
   };
   
@@ -49,12 +67,19 @@ const RoomCard = ({
   
   return (
     <TransitionWrapper delay={delay}>
-      <Card className="overflow-hidden h-full flex flex-col transition-all hover:shadow-lg border-0 shadow-md">
+      <Card 
+        className="overflow-hidden h-full flex flex-col transition-all hover:shadow-lg border-0 shadow-md"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <div className="relative h-56 overflow-hidden">
           <img 
             src={image}
             alt={title}
-            className="w-full h-full object-cover transition-transform hover:scale-105 duration-700"
+            className={cn(
+              "w-full h-full object-cover transition-transform duration-700",
+              isHovered ? "scale-105" : "scale-100"
+            )}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
           <Badge className="absolute top-3 right-3 bg-primary/90 text-white font-medium">
@@ -78,10 +103,18 @@ const RoomCard = ({
         <CardFooter className="pt-0">
           <Button 
             variant="default" 
-            className="w-full bg-hotel-700 hover:bg-hotel-800 text-white"
+            className="w-full bg-hotel-700 hover:bg-hotel-800 text-white transition-colors"
             onClick={handleBookClick}
+            disabled={isLoading}
           >
-            Book Now
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              "Book Now"
+            )}
           </Button>
         </CardFooter>
       </Card>
@@ -97,5 +130,8 @@ const RoomCard = ({
     </TransitionWrapper>
   );
 };
+
+// Import cn utility
+import { cn } from '@/lib/utils';
 
 export default RoomCard;

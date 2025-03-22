@@ -27,17 +27,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { bookings } from '@/data/bookings';
 import { cn } from '@/lib/utils';
-import { Plus, Search, MoreHorizontal, Calendar, FileText, CheckCircle, X } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Calendar, FileText, CheckCircle, X, Star, AlertTriangle, Info } from 'lucide-react';
 import BookingForm from '@/components/booking/BookingForm';
+import CredibilityScore from '@/components/credibility/CredibilityScore';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const bookingStatuses = ['All Statuses', 'Pending', 'Confirmed', 'Cancelled', 'Checked In', 'Checked Out'];
 const paymentStatuses = ['All Payments', 'Pending', 'Paid', 'Refunded', 'Failed'];
+const credibilityFilters = ['All Scores', 'Excellent (90-100)', 'Good (75-89)', 'Fair (60-74)', 'Needs Improvement (40-59)', 'Poor (0-39)'];
 
 const Bookings = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [selectedPayment, setSelectedPayment] = useState('All Payments');
+  const [selectedCredibility, setSelectedCredibility] = useState('All Scores');
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   const statusColorMap = {
     'Pending': 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -54,6 +64,17 @@ const Bookings = () => {
     'Failed': 'bg-red-100 text-red-800 border-red-200',
   };
 
+  const getCredibilityScoreRange = (filter: string) => {
+    switch (filter) {
+      case 'Excellent (90-100)': return { min: 90, max: 100 };
+      case 'Good (75-89)': return { min: 75, max: 89 };
+      case 'Fair (60-74)': return { min: 60, max: 74 };
+      case 'Needs Improvement (40-59)': return { min: 40, max: 59 };
+      case 'Poor (0-39)': return { min: 0, max: 39 };
+      default: return { min: 0, max: 100 };
+    }
+  };
+
   // Filter bookings based on search query and selected filters
   const filteredBookings = bookings.filter(booking => {
     const guestName = booking.guest?.name?.toLowerCase() || '';
@@ -67,7 +88,14 @@ const Bookings = () => {
     const matchesStatus = selectedStatus === 'All Statuses' || booking.status === selectedStatus;
     const matchesPayment = selectedPayment === 'All Payments' || booking.paymentStatus === selectedPayment;
     
-    return matchesSearch && matchesStatus && matchesPayment;
+    let matchesCredibility = true;
+    if (selectedCredibility !== 'All Scores') {
+      const range = getCredibilityScoreRange(selectedCredibility);
+      const score = booking.guest?.credibilityScore;
+      matchesCredibility = score !== undefined && score >= range.min && score <= range.max;
+    }
+    
+    return matchesSearch && matchesStatus && matchesPayment && matchesCredibility;
   });
 
   const formatDate = (dateString: string) => {
@@ -76,6 +104,33 @@ const Bookings = () => {
       day: 'numeric',
       year: 'numeric'
     });
+  };
+
+  const getCredibilityColor = (score?: number) => {
+    if (!score) return "text-gray-400";
+    if (score >= 90) return "text-green-600";
+    if (score >= 75) return "text-emerald-600";
+    if (score >= 60) return "text-blue-600";
+    if (score >= 40) return "text-amber-600";
+    return "text-red-600";
+  };
+
+  const getStatusText = (score?: number) => {
+    if (!score) return "Unknown";
+    if (score >= 90) return "Excellent";
+    if (score >= 75) return "Good";
+    if (score >= 60) return "Fair";
+    if (score >= 40) return "Needs Improvement";
+    return "Poor";
+  };
+
+  const getTurnupLikelihood = (score?: number) => {
+    if (!score) return "Unknown";
+    if (score >= 90) return "Very High";
+    if (score >= 75) return "High";
+    if (score >= 60) return "Moderate";
+    if (score >= 40) return "Low";
+    return "Very Low";
   };
 
   return (
@@ -125,9 +180,27 @@ const Bookings = () => {
               </Select>
             </div>
             
+            <div className="w-full sm:w-52">
+              <Select value={selectedCredibility} onValueChange={setSelectedCredibility}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Credibility Scores" />
+                </SelectTrigger>
+                <SelectContent>
+                  {credibilityFilters.map((filter) => (
+                    <SelectItem key={filter} value={filter}>
+                      {filter}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
             <Button 
               className="flex items-center gap-1"
-              onClick={() => setShowBookingForm(true)}
+              onClick={() => {
+                setSelectedBooking(null);
+                setShowBookingForm(true);
+              }}
             >
               <Plus className="h-4 w-4" />
               <span>New Booking</span>
@@ -149,6 +222,7 @@ const Bookings = () => {
                   <TableHead>Status</TableHead>
                   <TableHead>Payment</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Credibility</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
@@ -171,6 +245,45 @@ const Bookings = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">${booking.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center">
+                              <span className={cn(
+                                "font-medium mr-1", 
+                                getCredibilityColor(booking.guest?.credibilityScore)
+                              )}>
+                                {booking.guest?.credibilityScore || '-'}%
+                              </span>
+                              {booking.guest?.credibilityScore ? (
+                                <Star 
+                                  className={cn("h-4 w-4", getCredibilityColor(booking.guest?.credibilityScore))} 
+                                  fill="currentColor" 
+                                />
+                              ) : (
+                                <Info className="h-4 w-4 text-gray-400" />
+                              )}
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="space-y-1 p-1">
+                              <p className="text-sm font-medium">{getStatusText(booking.guest?.credibilityScore)}</p>
+                              <div className="flex items-center text-xs">
+                                <AlertTriangle className="w-3 h-3 mr-1" />
+                                <span>Turn-up Likelihood: {getTurnupLikelihood(booking.guest?.credibilityScore)}</span>
+                              </div>
+                              {booking.guest?.bookingHistory && (
+                                <div className="text-xs mt-1">
+                                  Total Bookings: {booking.guest.bookingHistory.totalBookings}, 
+                                  Cancellations: {booking.guest.bookingHistory.cancellations}
+                                </div>
+                              )}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -203,7 +316,7 @@ const Bookings = () => {
                 
                 {filteredBookings.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8">
+                    <TableCell colSpan={10} className="text-center py-8">
                       <h3 className="text-lg font-medium mb-2">No bookings found</h3>
                       <p className="text-muted-foreground">Try adjusting your search or filters</p>
                     </TableCell>
@@ -213,11 +326,27 @@ const Bookings = () => {
             </Table>
           </div>
         </div>
+
+        {/* Credibility Score Statistics */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {bookings.slice(0, 3).map((booking) => (
+            booking.guest?.credibilityScore && (
+              <CredibilityScore 
+                key={booking.guest.id}
+                score={booking.guest.credibilityScore} 
+                history={booking.guest.bookingHistory}
+              />
+            )
+          ))}
+        </div>
       </PageContainer>
       
       <BookingForm 
         isOpen={showBookingForm} 
         onClose={() => setShowBookingForm(false)} 
+        roomId={selectedBooking?.roomId}
+        roomType={selectedBooking?.room?.type}
+        roomPrice={selectedBooking?.room?.price}
       />
     </>
   );

@@ -22,6 +22,13 @@ export interface Guest {
   checkOutDate?: string;
   roomId?: string;
   image?: string;
+  credibilityScore?: number;
+  bookingHistory?: {
+    totalBookings: number;
+    cancellations: number;
+    noShows: number;
+    completedStays: number;
+  };
 }
 
 export interface Booking {
@@ -60,4 +67,9 @@ export interface User {
   name: string;
   role: 'customer' | 'admin' | 'superadmin';
   createdAt: string;
+}
+
+export interface CredibilityScoreCardProps {
+  score: number;
+  history?: Guest['bookingHistory'];
 }

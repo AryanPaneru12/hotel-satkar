@@ -33,7 +33,7 @@ const Payments = () => {
     id: `PAY-${booking.id.split('-')[1]}`,
     bookingId: booking.id,
     amount: booking.totalAmount,
-    date: booking.paymentDate || new Date(),
+    date: booking.createdAt || new Date(), // Using createdAt instead of paymentDate which doesn't exist
     status: booking.paymentStatus,
     method: booking.paymentMethod || 'card',
     guest: booking.guest,

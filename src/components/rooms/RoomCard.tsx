@@ -39,6 +39,15 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
   };
 
   const handleBookClick = () => {
+    if (room.status !== 'Available') {
+      toast({
+        title: "Room Unavailable",
+        description: `This room is currently ${room.status.toLowerCase()}`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     if (!user) {
@@ -159,7 +168,7 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
               <Button 
                 size="sm" 
                 className="flex-1 bg-hotel-700 hover:bg-hotel-800 transition-colors"
-                disabled={room.status !== 'Available' || isLoading}
+                disabled={isLoading}
                 onClick={handleBookClick}
               >
                 {isLoading ? (

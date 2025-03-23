@@ -1,23 +1,25 @@
-
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Room } from '@/types';
 import { cn } from '@/lib/utils';
-import { Check, Info, Loader2 } from 'lucide-react';
+import { Check, Info, Loader2, Settings } from 'lucide-react';
 import TransitionWrapper from '../ui/TransitionWrapper';
 import BookingForm from '../booking/BookingForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
+import RoomStatusModal from './RoomStatusModal';
 
 interface RoomCardProps {
   room: Room;
   delay?: number;
+  onStatusChange?: (roomId: string, status: Room['status'], notes: string) => void;
 }
 
-const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
+const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { user } = useAuth();
@@ -78,6 +80,12 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
     });
   };
 
+  const handleStatusUpdate = (roomId: string, status: Room['status'], notes: string) => {
+    if (onStatusChange) {
+      onStatusChange(roomId, status, notes);
+    }
+  };
+
   // Get the appropriate image based on room type
   const getRoomImage = () => {
     if (room.images && room.images.length > 0) {
@@ -94,6 +102,8 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
     
     return roomImages[room.type] || '/placeholder.svg';
   };
+
+  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
 
   return (
     <>
@@ -119,6 +129,20 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
                 {room.status}
               </Badge>
             </div>
+            
+            {/* Admin Status Change Button */}
+            {isAdmin && (
+              <div className="absolute top-3 left-3">
+                <Button 
+                  size="icon" 
+                  variant="outline" 
+                  className="h-8 w-8 bg-white bg-opacity-90 hover:bg-white"
+                  onClick={() => setShowStatusModal(true)}
+                >
+                  <Settings className="h-4 w-4 text-gray-700" />
+                </Button>
+              </div>
+            )}
           </div>
           
           {/* Room Details */}
@@ -194,6 +218,15 @@ const RoomCard = ({ room, delay = 0 }: RoomCardProps) => {
           roomId={room.id}
           roomType={room.type}
           roomPrice={room.price}
+        />
+      )}
+      
+      {showStatusModal && (
+        <RoomStatusModal
+          isOpen={showStatusModal}
+          onClose={() => setShowStatusModal(false)}
+          onUpdateStatus={handleStatusUpdate}
+          room={room}
         />
       )}
     </>

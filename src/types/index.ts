@@ -1,3 +1,4 @@
+
 // Add or update these types
 export interface User {
   id: string;
@@ -34,8 +35,8 @@ export interface Guest {
   roomId?: string;
   credibilityScore?: number;
   bookingHistory?: BookingHistory;
-  role?: 'customer' | 'admin' | 'superadmin';
-  createdAt?: string;
+  role: 'customer' | 'admin' | 'superadmin'; // Changed from optional to required
+  createdAt: string; // Changed from optional to required
   updatedAt?: string;
   image?: string;
 }

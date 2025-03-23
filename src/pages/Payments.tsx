@@ -379,7 +379,7 @@ const Payments = () => {
                     <span>Total Amount:</span>
                     <div className="flex items-center">
                       <IndianRupee className="h-4 w-4 mr-1" />
-                      <span>{formatCurrency(selectedPayment.amount)}</span>
+                      <span>{formatCurrency(selectedPayment.amount).replace('₹', '')}</span>
                     </div>
                   </div>
                 </div>

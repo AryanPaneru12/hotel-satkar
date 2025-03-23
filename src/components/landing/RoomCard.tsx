@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -39,7 +38,6 @@ const RoomCard = ({
     setIsLoading(true);
     
     if (!user) {
-      // If user is not logged in, show login modal via the parent component
       toast({
         title: "Authentication Required",
         description: "Please login to book a room",
@@ -50,7 +48,6 @@ const RoomCard = ({
         onBookClick();
       }, 800);
     } else {
-      // If user is logged in, show booking form directly
       setTimeout(() => {
         setIsLoading(false);
         setShowBookingForm(true);
@@ -58,12 +55,11 @@ const RoomCard = ({
     }
   };
   
-  // Format the price with commas for thousands
   const formattedPrice = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
-  }).format(price).replace('₹', '₹ ');
+  }).format(price);
   
   return (
     <TransitionWrapper delay={delay}>
@@ -131,7 +127,6 @@ const RoomCard = ({
   );
 };
 
-// Import cn utility
 import { cn } from '@/lib/utils';
 
 export default RoomCard;

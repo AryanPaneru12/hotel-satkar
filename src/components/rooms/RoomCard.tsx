@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
-  }).format(room.price).replace('₹', '₹ ');
+  }).format(room.price);
   
   const statusColorMap = {
     'Available': 'bg-green-100 text-green-800 border-green-200',

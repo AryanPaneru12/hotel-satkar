@@ -6,6 +6,7 @@
  * @returns Formatted currency string
  */
 export const formatCurrency = (amount: number, currency: string = 'INR'): string => {
+  // Use Intl.NumberFormat but ensure we don't add the ₹ symbol twice
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency,

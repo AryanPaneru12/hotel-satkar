@@ -119,7 +119,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
                   {booking.paymentStatus}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">₹{formatCurrency(booking.totalAmount)}</TableCell>
+              <TableCell className="text-right">{formatCurrency(booking.totalAmount)}</TableCell>
               <TableCell>
                 <TooltipProvider>
                   <Tooltip>

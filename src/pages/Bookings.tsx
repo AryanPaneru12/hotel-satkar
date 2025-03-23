@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
@@ -83,7 +82,6 @@ const Bookings = () => {
     }
   };
 
-  // Filter bookings based on user role and search criteria
   const userFilteredBookings = user?.role === 'customer' 
     ? bookings.filter(booking => booking.guest?.email === user.email)
     : bookings;
@@ -145,7 +143,13 @@ const Bookings = () => {
     return "Very Low";
   };
 
-  // Handler functions for booking actions
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
   const handleViewDetails = (booking: Booking) => {
     setSelectedBooking(booking);
     setShowDetailsModal(true);
@@ -302,7 +306,7 @@ const Bookings = () => {
                         {booking.paymentStatus}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">${booking.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(booking.totalAmount)}</TableCell>
                     <TableCell>
                       <TooltipProvider>
                         <Tooltip>

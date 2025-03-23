@@ -1,12 +1,30 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Bed, CalendarDays, Users, ChevronLeft, ChevronRight, Menu, Settings, LogOut, CreditCard, Home } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  Bed, 
+  CalendarDays, 
+  Users, 
+  ChevronLeft, 
+  ChevronRight, 
+  Menu, 
+  Settings, 
+  LogOut, 
+  CreditCard, 
+  Moon,
+  Sun,
+  UserRound,
+  Hotel,
+  Wallet,
+  Receipt
+} from 'lucide-react';
 import { SidebarItem } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import { useTheme } from 'next-themes';
 
 // Admin sidebar items
 const adminSidebarItems: SidebarItem[] = [
@@ -14,6 +32,8 @@ const adminSidebarItems: SidebarItem[] = [
   { title: 'Rooms', path: '/rooms', icon: Bed },
   { title: 'Bookings', path: '/bookings', icon: CalendarDays },
   { title: 'Guests', path: '/guests', icon: Users },
+  { title: 'Payments', path: '/bookings', icon: CreditCard },
+  { title: 'Reports', path: '/bookings', icon: Receipt },
 ];
 
 // Customer sidebar items
@@ -21,6 +41,7 @@ const customerSidebarItems: SidebarItem[] = [
   { title: 'Dashboard', path: '/customer-dashboard', icon: LayoutDashboard },
   { title: 'Book Rooms', path: '/rooms', icon: Bed },
   { title: 'My Bookings', path: '/bookings', icon: CalendarDays },
+  { title: 'My Payments', path: '/bookings', icon: Wallet },
 ];
 
 const Sidebar = () => {
@@ -29,6 +50,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -66,14 +88,14 @@ const Sidebar = () => {
         {!collapsed ? (
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold">S</span>
+              <Hotel className="h-4 w-4 text-primary-foreground" />
             </div>
             <h1 className="text-lg font-semibold">Satkar</h1>
           </div>
         ) : (
           <div className="w-full flex justify-center">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold">S</span>
+              <Hotel className="h-4 w-4 text-primary-foreground" />
             </div>
           </div>
         )}
@@ -132,10 +154,45 @@ const Sidebar = () => {
       {/* Sidebar Footer */}
       <div className="p-4 border-t border-border">
         <div className="space-y-2">
-          <Button variant="ghost" size="sm" className="w-full justify-start">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => navigate('/profile')}
+          >
+            <UserRound className="h-4 w-4" />
+            {!collapsed && <span className="ml-2">My Account</span>}
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => navigate('/settings')}
+          >
             <Settings className="h-4 w-4" />
             {!collapsed && <span className="ml-2">Settings</span>}
           </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="h-4 w-4" />
+                {!collapsed && <span className="ml-2">Light Mode</span>}
+              </>
+            ) : (
+              <>
+                <Moon className="h-4 w-4" />
+                {!collapsed && <span className="ml-2">Dark Mode</span>}
+              </>
+            )}
+          </Button>
+          
           <Button 
             variant="ghost" 
             size="sm" 

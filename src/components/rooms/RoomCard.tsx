@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -53,7 +54,7 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
     setIsLoading(true);
     
     if (!user) {
-      // Redirect to landing page with login modal
+      // If not logged in, redirect to landing page with login modal
       toast({
         title: "Authentication Required",
         description: "Please login to book a room",
@@ -66,7 +67,7 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
       return;
     }
     
-    // If user is logged in, show booking form directly
+    // If user is logged in, show booking form
     setTimeout(() => {
       setIsLoading(false);
       setShowBookingForm(true);
@@ -74,10 +75,7 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
   };
 
   const handleViewDetails = () => {
-    toast({
-      title: `Room ${room.number}`,
-      description: `Viewing details for ${room.type} room`,
-    });
+    navigate(`/bookings?room=${room.id}`);
   };
 
   const handleStatusUpdate = (roomId: string, status: Room['status'], notes: string) => {
@@ -192,7 +190,7 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
               <Button 
                 size="sm" 
                 className="flex-1 bg-hotel-700 hover:bg-hotel-800 transition-colors"
-                disabled={isLoading}
+                disabled={isLoading || room.status !== 'Available'}
                 onClick={handleBookClick}
               >
                 {isLoading ? (

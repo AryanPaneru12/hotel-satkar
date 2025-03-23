@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatCurrency } from '@/lib/formatters';
 
 interface RecentBookingsProps {
   bookings: Booking[];
@@ -106,7 +107,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
                   {booking.paymentStatus}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">${booking.totalAmount.toFixed(2)}</TableCell>
+              <TableCell className="text-right">{formatCurrency(booking.totalAmount)}</TableCell>
               <TableCell>
                 <TooltipProvider>
                   <Tooltip>

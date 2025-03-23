@@ -2,7 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Booking } from '@/types';
-import { calculatePriceBreakdown, getGSTRate } from './formatters';
+import { calculatePriceBreakdown, getGSTRate, formatCurrency } from './formatters';
 
 /**
  * Generate and download an invoice PDF for a booking

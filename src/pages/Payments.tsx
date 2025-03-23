@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,34 +23,53 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Download, Filter, CreditCard, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { bookings } from '@/data/bookings';
 import { formatCurrency } from '@/lib/formatters';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Payments = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const { user, customerId } = useAuth();
   
-  // Convert bookings to payments data
-  const payments = bookings.map(booking => ({
-    id: `PAY-${booking.id.split('-')[1]}`,
-    bookingId: booking.id,
-    amount: booking.totalAmount,
-    date: booking.createdAt || new Date(), // Using createdAt instead of paymentDate which doesn't exist
-    status: booking.paymentStatus,
-    method: booking.paymentMethod || 'card',
-    guest: booking.guest,
-    roomNumber: booking.room.number
-  }));
+  // Convert bookings to payments data and filter by current user
+  const payments = useMemo(() => {
+    if (!user) return [];
+    
+    return bookings
+      .filter(booking => booking.guest?.id === user.id)
+      .map(booking => ({
+        id: `PAY-${booking.id.split('-')[1]}`,
+        bookingId: booking.id,
+        amount: booking.totalAmount,
+        date: booking.createdAt || new Date(),
+        status: booking.paymentStatus,
+        method: booking.paymentMethod || 'card',
+        guest: booking.guest,
+        roomNumber: booking.room.number
+      }));
+  }, [user]);
   
   // Filter payments based on search and status
-  const filteredPayments = payments.filter(payment => {
-    const matchesSearch = 
-      payment.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      payment.bookingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      payment.guest.name.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' || payment.status.toLowerCase() === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
+  const filteredPayments = useMemo(() => {
+    return payments.filter(payment => {
+      const matchesSearch = 
+        payment.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        payment.bookingId.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'all' || payment.status.toLowerCase() === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+  }, [payments, searchQuery, statusFilter]);
+
+  // Calculate totals for different payment statuses
+  const totals = useMemo(() => {
+    return {
+      total: payments.reduce((sum, payment) => sum + payment.amount, 0),
+      paid: payments.filter(p => p.status.toLowerCase() === 'paid').reduce((sum, payment) => sum + payment.amount, 0),
+      pending: payments.filter(p => p.status.toLowerCase() === 'pending').reduce((sum, payment) => sum + payment.amount, 0),
+      refunded: payments.filter(p => p.status.toLowerCase() === 'refunded').reduce((sum, payment) => sum + payment.amount, 0)
+    };
+  }, [payments]);
 
   const getStatusBadgeColor = (status) => {
     switch (status.toLowerCase()) {
@@ -72,8 +91,21 @@ const Payments = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <PageContainer title="Payments Management">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">You need to log in</h2>
+            <p className="text-muted-foreground">Please log in to view your payment history</p>
+          </div>
+        </div>
+      </PageContainer>
+    );
+  }
+
   return (
-    <PageContainer title="Payments Management">
+    <PageContainer title="Payment History">
       <div className="space-y-6">
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -83,7 +115,7 @@ const Payments = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(payments.reduce((sum, payment) => sum + payment.amount, 0))}
+                {formatCurrency(totals.total)}
               </div>
             </CardContent>
           </Card>
@@ -93,7 +125,7 @@ const Payments = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {formatCurrency(payments.filter(p => p.status.toLowerCase() === 'paid').reduce((sum, payment) => sum + payment.amount, 0))}
+                {formatCurrency(totals.paid)}
               </div>
             </CardContent>
           </Card>
@@ -103,7 +135,7 @@ const Payments = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">
-                {formatCurrency(payments.filter(p => p.status.toLowerCase() === 'pending').reduce((sum, payment) => sum + payment.amount, 0))}
+                {formatCurrency(totals.pending)}
               </div>
             </CardContent>
           </Card>
@@ -113,10 +145,19 @@ const Payments = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">
-                {formatCurrency(payments.filter(p => p.status.toLowerCase() === 'refunded').reduce((sum, payment) => sum + payment.amount, 0))}
+                {formatCurrency(totals.refunded)}
               </div>
             </CardContent>
           </Card>
+        </div>
+        
+        {/* Customer ID display */}
+        <div className="bg-muted rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <CreditCard className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Customer ID:</span>
+            <span className="font-medium">{customerId || 'Not available'}</span>
+          </div>
         </div>
         
         {/* Filters and Actions */}
@@ -125,7 +166,7 @@ const Payments = () => {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search by payment ID, booking ID, or guest name..."
+              placeholder="Search by payment ID or booking ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 bg-background w-full"
@@ -164,7 +205,6 @@ const Payments = () => {
                 <TableRow>
                   <TableHead>Payment ID</TableHead>
                   <TableHead>Date</TableHead>
-                  <TableHead>Guest</TableHead>
                   <TableHead>Room</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Method</TableHead>
@@ -178,7 +218,6 @@ const Payments = () => {
                     <TableRow key={payment.id}>
                       <TableCell className="font-medium">{payment.id}</TableCell>
                       <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
-                      <TableCell>{payment.guest.name}</TableCell>
                       <TableCell>Room {payment.roomNumber}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(payment.amount)}</TableCell>
                       <TableCell className="capitalize">{payment.method}</TableCell>
@@ -197,8 +236,8 @@ const Payments = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
-                      No payments found matching the current filters.
+                    <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                      No payment history found for your account.
                     </TableCell>
                   </TableRow>
                 )}

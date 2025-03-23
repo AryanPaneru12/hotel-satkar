@@ -52,6 +52,15 @@ const Sidebar = () => {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    // If no theme is set, initialize it based on system preference
+    if (!theme) {
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(systemPrefersDark ? 'dark' : 'light');
+    }
+  }, [theme, setTheme]);
+
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
@@ -63,6 +72,16 @@ const Sidebar = () => {
       description: "You have been successfully logged out",
     });
     navigate('/landing');
+  };
+  
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+    
+    // Show toast notification
+    toast({
+      title: `${theme === 'dark' ? 'Light' : 'Dark'} Mode Activated`,
+      description: `Switched to ${theme === 'dark' ? 'light' : 'dark'} mode.`,
+    });
   };
 
   // Choose sidebar items based on user role
@@ -177,17 +196,18 @@ const Sidebar = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            className="w-full justify-start"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-full justify-start transition-colors hover:bg-primary/10"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
             {theme === 'dark' ? (
               <>
-                <Sun className="h-4 w-4" />
+                <Sun className="h-4 w-4 text-yellow-400" />
                 {!collapsed && <span className="ml-2">Light Mode</span>}
               </>
             ) : (
               <>
-                <Moon className="h-4 w-4" />
+                <Moon className="h-4 w-4 text-indigo-400" />
                 {!collapsed && <span className="ml-2">Dark Mode</span>}
               </>
             )}

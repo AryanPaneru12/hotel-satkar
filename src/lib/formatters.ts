@@ -2,11 +2,11 @@
 /**
  * Format a number as currency
  * @param amount - The amount to format
- * @param currency - The currency code (default: 'USD')
+ * @param currency - The currency code (default: 'INR' for Indian Rupees)
  * @returns Formatted currency string
  */
-export const formatCurrency = (amount: number, currency: string = 'USD'): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatCurrency = (amount: number, currency: string = 'INR'): string => {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency,
     maximumFractionDigits: 2

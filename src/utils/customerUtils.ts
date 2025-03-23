@@ -1,6 +1,8 @@
 
 import { Booking } from '@/types';
 import crypto from 'crypto-js';
+import { guests } from '@/data/guests';
+import { customerUsers } from '@/data/userDatabase';
 
 /**
  * Generates a unique customer ID using SHA-256 hashing from an email
@@ -49,4 +51,62 @@ export const calculateCredibilityScore = (userBookings: Booking[]): number => {
 export const canPayWithCash = (credibilityScore: number | null): boolean => {
   if (credibilityScore === null) return false;
   return credibilityScore >= 80; // Threshold is 80%
+};
+
+/**
+ * Find a customer by ID or name
+ */
+export const findCustomerById = (customerId: string) => {
+  // First check in guests data
+  const guest = guests.find(g => g.id === customerId);
+  if (guest) return guest;
+  
+  // If not found in guests, check in customer users
+  return customerUsers.find(u => u.id === customerId);
+};
+
+/**
+ * Find a customer by name (partial match)
+ */
+export const findCustomersByName = (name: string) => {
+  if (!name || name.trim() === '') return [];
+  
+  const lowerName = name.toLowerCase();
+  
+  // Search in guests data
+  const matchedGuests = guests.filter(g => 
+    g.name.toLowerCase().includes(lowerName)
+  );
+  
+  // Search in customer users
+  const matchedCustomers = customerUsers.filter(u => 
+    u.name.toLowerCase().includes(lowerName) && 
+    // Avoid duplicates
+    !matchedGuests.some(g => g.id === u.id)
+  );
+  
+  return [...matchedGuests, ...matchedCustomers];
+};
+
+/**
+ * Find a customer by exact ID or create new profile placeholder
+ */
+export const getOrCreateCustomerProfile = (identifier: string, newCustomerInfo?: any) => {
+  // First try to find by ID
+  const existingCustomer = findCustomerById(identifier);
+  if (existingCustomer) return existingCustomer;
+  
+  // If not found and we have new customer info, create a placeholder
+  if (newCustomerInfo) {
+    return {
+      id: generateCustomerId(newCustomerInfo.email || Date.now().toString()),
+      name: newCustomerInfo.name || 'New Customer',
+      email: newCustomerInfo.email || '',
+      phone: newCustomerInfo.phone || '',
+      credibilityScore: 50, // Default score for new customers
+      ...newCustomerInfo
+    };
+  }
+  
+  return null;
 };

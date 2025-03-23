@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, UserRound, UserSearch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -94,19 +94,23 @@ const Header = ({ title }: HeaderProps) => {
       <h1 className="text-xl font-semibold">{title}</h1>
       
       <div className="flex items-center space-x-4">
-        {/* Search */}
+        {/* Customer Search */}
         <div className="relative hidden md:block">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-[200px] lg:w-[300px] pl-8 bg-background border-muted"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            onFocus={() => {
-              if (searchResults.length > 0) setShowResults(true);
-            }}
-          />
+          <div className="flex items-center space-x-1 bg-muted/50 rounded-lg px-2 py-1 border border-border/50 hover:border-primary/30 transition-colors">
+            <UserSearch className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary mr-1">Customer:</span>
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search by ID or name..."
+              className="w-[200px] lg:w-[250px] border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              onFocus={() => {
+                if (searchResults.length > 0) setShowResults(true);
+              }}
+            />
+          </div>
           
           {/* Search Results Dropdown */}
           {showResults && (
@@ -117,8 +121,15 @@ const Header = ({ title }: HeaderProps) => {
                   className="p-2 hover:bg-muted cursor-pointer transition-colors duration-200"
                   onClick={() => handleResultClick(result)}
                 >
-                  <div className="font-medium">{result.title}</div>
-                  <div className="text-xs text-muted-foreground">{result.subtitle}</div>
+                  <div className="font-medium flex items-center">
+                    {result.type === 'guest' ? (
+                      <UserRound className="h-3.5 w-3.5 mr-1.5 text-primary" />
+                    ) : (
+                      <span className="h-3.5 w-3.5 mr-1.5"></span>
+                    )}
+                    {result.title}
+                  </div>
+                  <div className="text-xs text-muted-foreground pl-5">{result.subtitle}</div>
                 </div>
               ))}
             </div>

@@ -11,7 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Booking } from '@/types';
 import { cn } from '@/lib/utils';
-import { Star, AlertTriangle, Info, User } from 'lucide-react';
+import { Star, AlertTriangle, Info, User, Search } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -81,7 +81,12 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Guest</TableHead>
-            <TableHead>Customer ID</TableHead>
+            <TableHead>
+              <div className="flex items-center">
+                <User className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                <span>Customer ID</span>
+              </div>
+            </TableHead>
             <TableHead>Room</TableHead>
             <TableHead>Check In</TableHead>
             <TableHead>Check Out</TableHead>
@@ -97,7 +102,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
               <TableCell className="font-medium">{booking.guest?.name}</TableCell>
               <TableCell>
                 <div className="flex items-center">
-                  <User className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                  <Search className="h-3.5 w-3.5 mr-1 text-primary" />
                   <span className="text-xs font-medium">{booking.guest?.id || 'N/A'}</span>
                 </div>
               </TableCell>
@@ -114,7 +119,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
                   {booking.paymentStatus}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">{formatCurrency(booking.totalAmount)}</TableCell>
+              <TableCell className="text-right">₹{formatCurrency(booking.totalAmount)}</TableCell>
               <TableCell>
                 <TooltipProvider>
                   <Tooltip>

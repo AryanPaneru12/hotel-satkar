@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Booking } from '@/types';
 import { calculatePriceBreakdown, getGSTRate, formatCurrency } from './formatters';
+import { findCustomerById } from '@/utils/customerUtils';
 
 /**
  * Generate and download an invoice PDF for a booking
@@ -24,6 +25,10 @@ export const downloadInvoice = (booking: Booking) => {
   doc.setDrawColor(200, 200, 200);
   doc.line(20, 35, 190, 35);
   
+  // Get customer details - use the customer utility for more complete profile
+  const customerProfile = booking.guest?.id ? 
+    findCustomerById(booking.guest.id) : booking.guest;
+  
   // Add invoice details
   doc.setFontSize(10);
   doc.setTextColor(60, 60, 60);
@@ -31,10 +36,10 @@ export const downloadInvoice = (booking: Booking) => {
   // Left column - Customer details
   doc.text('BILLED TO:', 20, 45);
   doc.setFont(undefined, 'bold');
-  doc.text(booking.guest?.name || 'Guest', 20, 50);
+  doc.text(customerProfile?.name || booking.guest?.name || 'Guest', 20, 50);
   doc.setFont(undefined, 'normal');
-  doc.text(booking.guest?.email || 'N/A', 20, 55);
-  doc.text(`Customer ID: ${booking.guest?.id || 'N/A'}`, 20, 60);
+  doc.text(customerProfile?.email || booking.guest?.email || 'N/A', 20, 55);
+  doc.text(`Customer ID: ${customerProfile?.id || booking.guest?.id || 'N/A'}`, 20, 60);
   
   // Right column - Invoice details
   doc.text('INVOICE NO:', 150, 45);
@@ -92,6 +97,11 @@ export const downloadInvoice = (booking: Booking) => {
   doc.text('PAYMENT INFORMATION:', 20, finalY);
   doc.text(`Status: ${booking.paymentStatus}`, 20, finalY + 5);
   doc.text(`Method: ${booking.paymentMethod || 'N/A'}`, 20, finalY + 10);
+  
+  // Add customer credibility information if available
+  if (customerProfile?.credibilityScore) {
+    doc.text(`Customer Credibility Score: ${customerProfile.credibilityScore}%`, 20, finalY + 15);
+  }
   
   // Add footer
   doc.setFontSize(9);

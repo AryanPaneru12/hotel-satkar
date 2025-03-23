@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,7 @@ import {
 import { guests } from '@/data/guests';
 import { bookings } from '@/data/bookings';
 import { rooms } from '@/data/rooms';
-import { Plus, Search, MoreHorizontal, User, Phone, Mail, Edit } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, User, Phone, Mail, Edit, UserPlus, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -63,7 +62,7 @@ const Guests = () => {
     setTimeout(() => {
       toast({
         title: "Guest Added",
-        description: `${newGuest.name} has been added successfully.`,
+        description: `${newGuest.name} has been added successfully. Customer ID: CUS-${Math.floor(100000 + Math.random() * 900000)}`,
       });
       
       setIsSubmitting(false);
@@ -148,13 +147,23 @@ const Guests = () => {
         </div>
         
         <Button className="flex items-center gap-1" onClick={() => setIsAddGuestOpen(true)}>
-          <Plus className="h-4 w-4" />
-          <span>New Guest</span>
+          <UserPlus className="h-4 w-4" />
+          <span>New Customer Profile</span>
         </Button>
       </div>
       
-      {/* Guests Table */}
+      {/* Customer Profiles Table */}
       <div className="bg-card rounded-lg shadow-card overflow-hidden">
+        <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <h3 className="text-lg font-medium">Customer Profiles</h3>
+            <p className="text-sm text-muted-foreground">Manage all customers and their booking history</p>
+          </div>
+          <div className="text-sm text-muted-foreground flex items-center">
+            <Calendar className="h-4 w-4 mr-1" />
+            <span>Hotel Satkar - Established 2025</span>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -183,7 +192,7 @@ const Guests = () => {
                         </Avatar>
                         <div>
                           <div className="font-medium">{guest.name}</div>
-                          <div className="text-xs text-muted-foreground">ID: {guest.idNumber}</div>
+                          <div className="text-xs text-muted-foreground">Customer ID: {guest.id}</div>
                         </div>
                       </div>
                     </TableCell>
@@ -246,7 +255,7 @@ const Guests = () => {
               {filteredGuests.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-8">
-                    <h3 className="text-lg font-medium mb-2">No guests found</h3>
+                    <h3 className="text-lg font-medium mb-2">No customers found</h3>
                     <p className="text-muted-foreground">Try adjusting your search</p>
                   </TableCell>
                 </TableRow>
@@ -260,7 +269,7 @@ const Guests = () => {
       <Dialog open={isAddGuestOpen} onOpenChange={setIsAddGuestOpen}>
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader className="sticky top-0 bg-white z-10 pb-4">
-            <DialogTitle>Add New Guest</DialogTitle>
+            <DialogTitle>Add New Customer Profile</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4 overflow-y-auto">
             <div className="grid grid-cols-1 gap-3">
@@ -373,7 +382,7 @@ const Guests = () => {
               Cancel
             </Button>
             <Button onClick={handleAddGuest} disabled={isSubmitting}>
-              {isSubmitting ? "Adding..." : "Add Guest"}
+              {isSubmitting ? "Adding..." : "Add Customer"}
             </Button>
           </DialogFooter>
         </DialogContent>

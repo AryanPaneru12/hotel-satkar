@@ -34,6 +34,7 @@ export const downloadInvoice = (booking: Booking) => {
   doc.text(booking.guest?.name || 'Guest', 20, 50);
   doc.setFont(undefined, 'normal');
   doc.text(booking.guest?.email || 'N/A', 20, 55);
+  doc.text(`Customer ID: ${booking.guest?.id || 'N/A'}`, 20, 60);
   
   // Right column - Invoice details
   doc.text('INVOICE NO:', 150, 45);
@@ -96,6 +97,7 @@ export const downloadInvoice = (booking: Booking) => {
   doc.setFontSize(9);
   doc.setTextColor(120, 120, 120);
   doc.text('Thank you for choosing Hotel Satkar. We look forward to your next stay!', 105, 280, { align: 'center' });
+  doc.text('Hotel Satkar - Established 2025', 105, 285, { align: 'center' });
   
   // Save the PDF
   doc.save(`Invoice-Booking-${booking.id}.pdf`);

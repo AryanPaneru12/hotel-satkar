@@ -11,7 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Booking } from '@/types';
 import { cn } from '@/lib/utils';
-import { Star, AlertTriangle, Info } from 'lucide-react';
+import { Star, AlertTriangle, Info, User } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -81,6 +81,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Guest</TableHead>
+            <TableHead>Customer ID</TableHead>
             <TableHead>Room</TableHead>
             <TableHead>Check In</TableHead>
             <TableHead>Check Out</TableHead>
@@ -94,6 +95,12 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
           {bookings.map((booking) => (
             <TableRow key={booking.id} className="hover:bg-muted/50">
               <TableCell className="font-medium">{booking.guest?.name}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  <User className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                  <span className="text-xs font-medium">{booking.guest?.id || 'N/A'}</span>
+                </div>
+              </TableCell>
               <TableCell>{booking.room?.number} ({booking.room?.type})</TableCell>
               <TableCell>{formatDate(booking.checkInDate)}</TableCell>
               <TableCell>{formatDate(booking.checkOutDate)}</TableCell>

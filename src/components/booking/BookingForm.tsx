@@ -15,7 +15,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2 } from 'lucide-react';
+import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
@@ -23,6 +23,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { calculateCredibilityScore } from '@/lib/formatters';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { guests } from '@/data/guests';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 
 interface BookingFormProps {
   isOpen: boolean;
@@ -63,6 +65,10 @@ const BookingForm = ({
   const [totalAmount, setTotalAmount] = useState(roomPrice || 9900);
   const [errors, setErrors] = useState<FormErrors>({});
   const [customerCredibilityScore, setCustomerCredibilityScore] = useState(0);
+  const [useExistingCustomer, setUseExistingCustomer] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [searchCustomer, setSearchCustomer] = useState('');
+  const [commandOpen, setCommandOpen] = useState(false);
   
   const parseDateIfProvided = (dateString?: string): Date | undefined => {
     if (!dateString) return undefined;
@@ -75,18 +81,51 @@ const BookingForm = ({
   };
   
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(
-    parseDateIfProvided(initialCheckInDate) || new Date()
+    parseDateIfProvided(initialCheckInDate) || new Date(2025, 0, 15)
   );
   
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
-    parseDateIfProvided(initialCheckOutDate) || addDays(new Date(), 1)
+    parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 0, 15), 1)
   );
   
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const filteredGuests = searchCustomer 
+    ? guests.filter(guest => 
+        guest.name.toLowerCase().includes(searchCustomer.toLowerCase()) ||
+        guest.id.includes(searchCustomer)
+      )
+    : guests;
+
   useEffect(() => {
-    if (user) {
+    if (selectedCustomerId) {
+      const selectedGuest = guests.find(g => g.id === selectedCustomerId);
+      if (selectedGuest) {
+        setFullName(selectedGuest.name);
+        setEmail(selectedGuest.email || '');
+        setPhone(selectedGuest.phone || '');
+        setIdType(selectedGuest.idNumber?.startsWith('IND') ? 'aadhar' : 'passport');
+        setIdNumber(selectedGuest.idNumber || '');
+        
+        // Set credibility score based on selected customer
+        if (selectedGuest.credibilityScore) {
+          setCustomerCredibilityScore(selectedGuest.credibilityScore);
+        } else if (selectedGuest.bookingHistory) {
+          const score = calculateCredibilityScore(
+            selectedGuest.bookingHistory.totalBookings,
+            selectedGuest.bookingHistory.completedStays,
+            selectedGuest.bookingHistory.cancellations,
+            selectedGuest.bookingHistory.noShows
+          );
+          setCustomerCredibilityScore(score);
+        }
+      }
+    }
+  }, [selectedCustomerId]);
+
+  useEffect(() => {
+    if (user && !selectedCustomerId) {
       const mockHistory = {
         totalBookings: 5,
         completedStays: 4,
@@ -103,7 +142,7 @@ const BookingForm = ({
       
       setCustomerCredibilityScore(score);
     }
-  }, [user]);
+  }, [user, selectedCustomerId]);
 
   useEffect(() => {
     if (checkInDate && checkOutDate) {
@@ -164,10 +203,14 @@ const BookingForm = ({
     e.preventDefault();
     setIsLoading(true);
     
+    const profileDetails = selectedCustomerId 
+      ? `Customer ID: ${selectedCustomerId}` 
+      : "New customer profile";
+    
     setTimeout(() => {
       toast({
         title: "Booking Created!",
-        description: "Your booking has been successfully created.",
+        description: `Your booking has been successfully created. ${profileDetails}`,
         variant: "default",
       });
       setIsLoading(false);
@@ -382,6 +425,80 @@ const BookingForm = ({
                     <span className="text-muted-foreground">Total:</span> Rs. {totalAmount.toLocaleString()}
                   </div>
                 </div>
+              </div>
+              
+              <div className="border rounded-lg p-4 bg-muted/20">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-medium">Customer Mapping</h3>
+                  <div className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      id="useExistingCustomer" 
+                      className="mr-2"
+                      checked={useExistingCustomer}
+                      onChange={(e) => setUseExistingCustomer(e.target.checked)}
+                    />
+                    <Label htmlFor="useExistingCustomer">Use Existing Customer</Label>
+                  </div>
+                </div>
+                
+                {useExistingCustomer && (
+                  <div className="space-y-3">
+                    <Label htmlFor="customerSearch">Select Customer</Label>
+                    <Popover open={commandOpen} onOpenChange={setCommandOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={commandOpen}
+                          className="w-full justify-between"
+                        >
+                          {selectedCustomerId ? 
+                            guests.find(g => g.id === selectedCustomerId)?.name : 
+                            "Search customers..."}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[300px] p-0">
+                        <Command>
+                          <CommandInput 
+                            placeholder="Search by name or ID..." 
+                            value={searchCustomer}
+                            onValueChange={setSearchCustomer}
+                          />
+                          <CommandEmpty>No customer found.</CommandEmpty>
+                          <CommandGroup className="max-h-[200px] overflow-auto">
+                            {filteredGuests.map(guest => (
+                              <CommandItem
+                                key={guest.id}
+                                value={guest.id}
+                                onSelect={(value) => {
+                                  setSelectedCustomerId(value);
+                                  setCommandOpen(false);
+                                }}
+                              >
+                                <div className="flex items-center">
+                                  <User className="mr-2 h-4 w-4" />
+                                  <span>{guest.name}</span>
+                                </div>
+                                <span className="ml-auto text-xs text-muted-foreground">
+                                  ID: {guest.id}
+                                </span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    
+                    {selectedCustomerId && (
+                      <div className="text-sm bg-primary/10 p-2 rounded flex items-center">
+                        <Info className="h-4 w-4 mr-2 text-primary" />
+                        Customer profile details loaded. You can modify if needed.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -634,6 +751,13 @@ const BookingForm = ({
                   <span className="font-medium">BOK-{Math.floor(100000 + Math.random() * 900000)}</span>
                 </div>
                 
+                {selectedCustomerId && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Customer ID:</span>
+                    <span className="font-medium">{selectedCustomerId}</span>
+                  </div>
+                )}
+                
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Room Type:</span>
                   <span className="font-medium">{roomType || "Standard Room"}</span>
@@ -663,6 +787,7 @@ const BookingForm = ({
               <div className="pt-2 text-sm text-muted-foreground">
                 <p>A confirmation email has been sent to {email}.</p>
                 <p className="mt-1">For any queries, please contact our support team.</p>
+                <p className="mt-1">Hotel Satkar - Established 2025</p>
               </div>
               
               <div className="flex justify-between">

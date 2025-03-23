@@ -30,22 +30,31 @@ const Payments = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const { user, customerId } = useAuth();
   
-  // Convert bookings to payments data and filter by current user
+  // Convert bookings to payments data
+  // For admin/superadmin: show all payment history
+  // For regular customers: only show their payments
   const payments = useMemo(() => {
     if (!user) return [];
     
+    const isAdmin = user.role === 'admin' || user.role === 'superadmin';
+    
     return bookings
-      .filter(booking => booking.guest?.id === user.id)
-      .map(booking => ({
-        id: `PAY-${booking.id.split('-')[1]}`,
-        bookingId: booking.id,
-        amount: booking.totalAmount,
-        date: booking.createdAt || new Date(),
-        status: booking.paymentStatus,
-        method: booking.paymentMethod || 'card',
-        guest: booking.guest,
-        roomNumber: booking.room.number
-      }));
+      .filter(booking => isAdmin || booking.guest?.id === user.id)
+      .map(booking => {
+        // Generate a random payment ID for demonstration purposes
+        const randomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
+        return {
+          id: `PAY-${randomId}`,
+          bookingId: booking.id,
+          amount: booking.totalAmount,
+          date: booking.createdAt || new Date(),
+          status: booking.paymentStatus,
+          method: booking.paymentMethod || 'card',
+          guest: booking.guest,
+          roomNumber: booking.room.number
+        };
+      });
   }, [user]);
   
   // Filter payments based on search and status
@@ -53,7 +62,8 @@ const Payments = () => {
     return payments.filter(payment => {
       const matchesSearch = 
         payment.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment.bookingId.toLowerCase().includes(searchQuery.toLowerCase());
+        payment.bookingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (payment.guest?.name && payment.guest.name.toLowerCase().includes(searchQuery.toLowerCase()));
       
       const matchesStatus = statusFilter === 'all' || payment.status.toLowerCase() === statusFilter;
       
@@ -91,6 +101,9 @@ const Payments = () => {
     }
   };
 
+  // Check if user is admin or superadmin
+  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
+
   if (!user) {
     return (
       <PageContainer title="Payments Management">
@@ -105,7 +118,7 @@ const Payments = () => {
   }
 
   return (
-    <PageContainer title="Payment History">
+    <PageContainer title={isAdmin ? "Payments Management" : "Payment History"}>
       <div className="space-y-6">
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -151,14 +164,28 @@ const Payments = () => {
           </Card>
         </div>
         
-        {/* Customer ID display */}
-        <div className="bg-muted rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <CreditCard className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Customer ID:</span>
-            <span className="font-medium">{customerId || 'Not available'}</span>
+        {/* Customer ID display (only for regular users) */}
+        {!isAdmin && (
+          <div className="bg-muted rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <CreditCard className="h-5 w-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Customer ID:</span>
+              <span className="font-medium">{customerId || 'Not available'}</span>
+            </div>
           </div>
-        </div>
+        )}
+        
+        {/* Admin section banner */}
+        {isAdmin && (
+          <div className="bg-amber-100 border border-amber-300 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="h-5 w-5 text-amber-600" />
+              <span className="font-medium text-amber-800">
+                Admin View: Showing all payment records
+              </span>
+            </div>
+          </div>
+        )}
         
         {/* Filters and Actions */}
         <div className="flex flex-col sm:flex-row gap-4">
@@ -166,7 +193,7 @@ const Payments = () => {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search by payment ID or booking ID..."
+              placeholder={isAdmin ? "Search by payment ID, booking ID or guest name..." : "Search by payment ID or booking ID..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 bg-background w-full"
@@ -206,6 +233,7 @@ const Payments = () => {
                   <TableHead>Payment ID</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Room</TableHead>
+                  {isAdmin && <TableHead>Guest</TableHead>}
                   <TableHead>Amount</TableHead>
                   <TableHead>Method</TableHead>
                   <TableHead>Status</TableHead>
@@ -219,6 +247,11 @@ const Payments = () => {
                       <TableCell className="font-medium">{payment.id}</TableCell>
                       <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
                       <TableCell>Room {payment.roomNumber}</TableCell>
+                      {isAdmin && (
+                        <TableCell>
+                          {payment.guest?.name || 'Unknown'}
+                        </TableCell>
+                      )}
                       <TableCell className="font-medium">{formatCurrency(payment.amount)}</TableCell>
                       <TableCell className="capitalize">{payment.method}</TableCell>
                       <TableCell>
@@ -236,8 +269,8 @@ const Payments = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                      No payment history found for your account.
+                    <TableCell colSpan={isAdmin ? 8 : 7} className="text-center py-6 text-muted-foreground">
+                      No payment history found.
                     </TableCell>
                   </TableRow>
                 )}

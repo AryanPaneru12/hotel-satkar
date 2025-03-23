@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -32,8 +31,8 @@ const adminSidebarItems: SidebarItem[] = [
   { title: 'Rooms', path: '/rooms', icon: Bed },
   { title: 'Bookings', path: '/bookings', icon: CalendarDays },
   { title: 'Guests', path: '/guests', icon: Users },
-  { title: 'Payments', path: '/bookings', icon: CreditCard },
-  { title: 'Reports', path: '/bookings', icon: Receipt },
+  { title: 'Payments', path: '/payments', icon: CreditCard },
+  { title: 'Reports', path: '/reports', icon: Receipt },
 ];
 
 // Customer sidebar items
@@ -41,7 +40,7 @@ const customerSidebarItems: SidebarItem[] = [
   { title: 'Dashboard', path: '/customer-dashboard', icon: LayoutDashboard },
   { title: 'Book Rooms', path: '/rooms', icon: Bed },
   { title: 'My Bookings', path: '/bookings', icon: CalendarDays },
-  { title: 'My Payments', path: '/bookings', icon: Wallet },
+  { title: 'My Payments', path: '/payments', icon: Wallet },
 ];
 
 const Sidebar = () => {
@@ -52,12 +51,10 @@ const Sidebar = () => {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   
-  // Initialize theme from localStorage or system preference
+  // Initialize theme from localStorage or default to light
   useEffect(() => {
-    // If no theme is set, initialize it based on system preference
     if (!theme) {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(systemPrefersDark ? 'dark' : 'light');
+      setTheme('light');
     }
   }, [theme, setTheme]);
 

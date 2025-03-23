@@ -17,6 +17,8 @@ import Landing from "./pages/Landing";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Payments from "./pages/Payments";
+import Reports from "./pages/Reports";
 
 // Components
 import Sidebar from "./components/layout/Sidebar";
@@ -137,6 +139,28 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
+      <Route path="/payments" element={
+        <ProtectedRoute>
+          <div className="flex h-screen w-full overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-hidden">
+              <Payments />
+            </div>
+          </div>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/reports" element={
+        <AdminRoute>
+          <div className="flex h-screen w-full overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-hidden">
+              <Reports />
+            </div>
+          </div>
+        </AdminRoute>
+      } />
+      
       <Route path="/guests" element={
         <AdminRoute>
           <div className="flex h-screen w-full overflow-hidden">
@@ -168,7 +192,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <TooltipProvider>
             <Toaster />
             <Sonner />

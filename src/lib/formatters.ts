@@ -64,3 +64,50 @@ export const calculateCredibilityScore = (
   
   return score;
 };
+
+/**
+ * Calculate GST based on room type
+ * @param amount - Base amount before tax
+ * @param roomType - Type of room (Standard, Deluxe, Suite, Presidential)
+ * @returns GST amount
+ */
+export const calculateGST = (amount: number, roomType: string): number => {
+  // Premium rooms (Deluxe, Suite, Presidential) have 28% GST
+  // Standard rooms have 18% GST
+  const gstRate = ['Deluxe', 'Suite', 'Presidential'].includes(roomType) ? 0.28 : 0.18;
+  return amount * gstRate;
+};
+
+/**
+ * Get the GST rate based on room type
+ * @param roomType - Type of room
+ * @returns GST rate as a percentage (18 or 28)
+ */
+export const getGSTRate = (roomType: string): number => {
+  return ['Deluxe', 'Suite', 'Presidential'].includes(roomType) ? 28 : 18;
+};
+
+/**
+ * Calculate the breakdown of a room price with GST
+ * @param totalAmount - Total amount including GST
+ * @param roomType - Type of room
+ * @returns Object with baseAmount, gstAmount, and gstRate
+ */
+export const calculatePriceBreakdown = (totalAmount: number, roomType: string): {
+  baseAmount: number;
+  gstAmount: number;
+  gstRate: number;
+} => {
+  const gstRate = getGSTRate(roomType);
+  const gstMultiplier = gstRate / 100;
+  
+  // Calculate base amount (before GST) from total amount
+  const baseAmount = totalAmount / (1 + gstMultiplier);
+  const gstAmount = totalAmount - baseAmount;
+  
+  return {
+    baseAmount,
+    gstAmount,
+    gstRate
+  };
+};

@@ -2,6 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Booking } from '@/types';
+import { calculatePriceBreakdown, getGSTRate } from './formatters';
 
 /**
  * Generate and download an invoice PDF for a booking
@@ -52,20 +53,33 @@ export const downloadInvoice = (booking: Booking) => {
   const checkOut = new Date(booking.checkOutDate);
   const nightsDiff = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
   
+  // Get GST rate based on room type
+  const roomType = booking.room?.type || 'Standard';
+  const gstRate = getGSTRate(roomType);
+  
+  // Calculate price breakdown
+  const priceBreakdown = calculatePriceBreakdown(booking.totalAmount, roomType);
+  
   // Create table for invoice items
   autoTable(doc, {
     startY: 100,
-    head: [['Description', 'Rate', 'Nights', 'Amount']],
+    head: [['Description', 'Rate (₹)', 'Nights', 'Amount (₹)']],
     body: [
       [
         `${booking.room?.type} Room (${booking.room?.number})`, 
-        `$${(booking.room?.pricePerNight || 0).toFixed(2)}`,
+        `${(priceBreakdown.baseAmount / nightsDiff).toFixed(2)}`,
         nightsDiff.toString(),
-        `$${booking.totalAmount.toFixed(2)}`
+        `${priceBreakdown.baseAmount.toFixed(2)}`
       ],
+      [
+        `GST (${gstRate}%)`,
+        '', 
+        '',
+        `${priceBreakdown.gstAmount.toFixed(2)}`
+      ]
     ],
     foot: [
-      ['', '', 'Total', `$${booking.totalAmount.toFixed(2)}`]
+      ['', '', 'Total', `₹ ${booking.totalAmount.toFixed(2)}`]
     ],
     theme: 'striped',
     headStyles: { fillColor: [44, 62, 80] },

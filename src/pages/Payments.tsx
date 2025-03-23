@@ -20,14 +20,19 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '@/components/ui/badge';
-import { Search, Download, Filter, CreditCard, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Search, Download, Filter, CreditCard, CheckCircle, XCircle, AlertCircle, IndianRupee, Receipt } from 'lucide-react';
 import { bookings } from '@/data/bookings';
-import { formatCurrency } from '@/lib/formatters';
+import { formatCurrency, calculatePriceBreakdown, getGSTRate } from '@/lib/formatters';
 import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Separator } from '@/components/ui/separator';
+import { rooms } from '@/data/rooms';
 
 const Payments = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
   const { user, customerId } = useAuth();
   
   // Convert bookings to payments data
@@ -44,6 +49,10 @@ const Payments = () => {
         // Generate a random payment ID for demonstration purposes
         const randomId = Math.random().toString(36).substring(2, 8).toUpperCase();
         
+        // Find room details to get room type for GST calculation
+        const roomDetail = rooms.find(room => room.id === booking.roomId || (booking.room && room.id === booking.room.id));
+        const roomType = roomDetail?.type || 'Standard';
+        
         return {
           id: `PAY-${randomId}`,
           bookingId: booking.id,
@@ -52,7 +61,10 @@ const Payments = () => {
           status: booking.paymentStatus,
           method: booking.paymentMethod || 'card',
           guest: booking.guest,
-          roomNumber: booking.room.number
+          roomNumber: booking.room.number,
+          roomType: roomType,
+          checkInDate: booking.checkInDate,
+          checkOutDate: booking.checkOutDate
         };
       });
   }, [user]);
@@ -101,6 +113,12 @@ const Payments = () => {
     }
   };
 
+  // Handle view payment details
+  const handleViewPaymentDetails = (payment) => {
+    setSelectedPayment(payment);
+    setShowPaymentDetails(true);
+  };
+
   // Check if user is admin or superadmin
   const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
 
@@ -116,6 +134,13 @@ const Payments = () => {
       </PageContainer>
     );
   }
+
+  // Calculate price breakdown for selected payment
+  const priceBreakdown = useMemo(() => {
+    if (!selectedPayment) return null;
+    
+    return calculatePriceBreakdown(selectedPayment.amount, selectedPayment.roomType);
+  }, [selectedPayment]);
 
   return (
     <PageContainer title={isAdmin ? "Payments Management" : "Payment History"}>
@@ -263,7 +288,13 @@ const Payments = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">View</Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleViewPaymentDetails(payment)}
+                        >
+                          View
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
@@ -279,6 +310,122 @@ const Payments = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Payment Details Dialog */}
+      <Dialog open={showPaymentDetails} onOpenChange={setShowPaymentDetails}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Payment Details</DialogTitle>
+            <DialogDescription>
+              Details for payment {selectedPayment?.id}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedPayment && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Payment ID:</span>
+                <span className="font-medium">{selectedPayment.id}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Booking ID:</span>
+                <span className="font-medium">{selectedPayment.bookingId}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Date:</span>
+                <span className="font-medium">{new Date(selectedPayment.date).toLocaleDateString()}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Room:</span>
+                <span className="font-medium">{selectedPayment.roomType} Room {selectedPayment.roomNumber}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Check-in Date:</span>
+                <span className="font-medium">{new Date(selectedPayment.checkInDate).toLocaleDateString()}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Check-out Date:</span>
+                <span className="font-medium">{new Date(selectedPayment.checkOutDate).toLocaleDateString()}</span>
+              </div>
+              
+              <Separator />
+              
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center">
+                  <Receipt className="h-4 w-4 mr-2" />
+                  Price Breakdown
+                </h3>
+                <div className="bg-muted p-4 rounded-md space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Base Amount:</span>
+                    <span className="font-medium">{formatCurrency(priceBreakdown.baseAmount)}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">
+                      GST ({priceBreakdown.gstRate}%):
+                    </span>
+                    <span className="font-medium">{formatCurrency(priceBreakdown.gstAmount)}</span>
+                  </div>
+                  
+                  <Separator className="my-1" />
+                  
+                  <div className="flex items-center justify-between font-bold">
+                    <span>Total Amount:</span>
+                    <div className="flex items-center">
+                      <IndianRupee className="h-4 w-4 mr-1" />
+                      <span>{formatCurrency(selectedPayment.amount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Payment Method:</span>
+                <span className="font-medium capitalize">{selectedPayment.method}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Status:</span>
+                <Badge 
+                  variant="outline" 
+                  className={getStatusBadgeColor(selectedPayment.status)}
+                >
+                  {selectedPayment.status}
+                </Badge>
+              </div>
+              
+              {isAdmin && selectedPayment.guest && (
+                <>
+                  <Separator />
+                  <div>
+                    <h3 className="font-semibold mb-2 flex items-center">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Guest Information
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Name:</span>
+                        <span className="font-medium">{selectedPayment.guest.name}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Email:</span>
+                        <span className="font-medium">{selectedPayment.guest.email}</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 };

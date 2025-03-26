@@ -355,7 +355,6 @@ const Guests = () => {
                 </Select>
               </div>
               
-              {/* New Room Selection Field */}
               <div className="space-y-2">
                 <Label htmlFor="roomId">Assign Room (Optional)</Label>
                 <Select 

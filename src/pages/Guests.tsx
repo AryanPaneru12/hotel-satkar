@@ -366,7 +366,7 @@ const Guests = () => {
                     <SelectValue placeholder="Select a room" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {availableRooms.map(room => (
                       <SelectItem key={room.id} value={room.id}>
                         Room {room.number} - {room.type} (${room.price})

@@ -2,18 +2,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
+import { useFormContext } from 'react-hook-form';
 
 interface ConfirmationFormProps {
-  formData: {
-    fullName: string;
-    email: string;
-    selectedCustomerId: string;
-    roomType: string | undefined;
-    checkInDate: Date | undefined;
-    checkOutDate: Date | undefined;
-    totalAmount: number;
-    paymentMethod: string;
-  };
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
 }
@@ -31,10 +22,12 @@ const getMethodName = (value: string): string => {
 };
 
 const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
-  formData,
   onSubmit,
   onClose
 }) => {
+  const { getValues } = useFormContext();
+  const formData = getValues();
+  
   return (
     <div className="space-y-6">
       <div className="bg-green-50 border border-green-200 rounded-md p-4 text-center">

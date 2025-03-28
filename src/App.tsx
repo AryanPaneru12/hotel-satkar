@@ -29,17 +29,18 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      // On error, use onSettled instead of onError
-      onSettled: (data, error) => {
-        if (error) {
+      // Using the correct syntax for error handling in React Query v5
+      meta: {
+        onError: (error: Error) => {
           console.error('Query error:', error);
           window.location.href = '/error';
         }
       }
     },
     mutations: {
-      onSettled: (data, error) => {
-        if (error) {
+      // Using the correct syntax for error handling in React Query v5
+      meta: {
+        onError: (error: Error) => {
           console.error('Mutation error:', error);
           window.location.href = '/error';
         }

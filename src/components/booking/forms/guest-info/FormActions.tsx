@@ -7,9 +7,16 @@ import { useFormContext } from 'react-hook-form';
 interface FormActionsProps {
   onClose: () => void;
   isSubmitting?: boolean;
+  onNext?: () => void;
+  submitLabel?: string;
 }
 
-const FormActions: React.FC<FormActionsProps> = ({ onClose, isSubmitting }) => {
+const FormActions: React.FC<FormActionsProps> = ({ 
+  onClose, 
+  isSubmitting,
+  onNext,
+  submitLabel = "Next"
+}) => {
   const { formState } = useFormContext();
   
   return (
@@ -20,6 +27,7 @@ const FormActions: React.FC<FormActionsProps> = ({ onClose, isSubmitting }) => {
       <Button 
         type="submit" 
         disabled={isSubmitting || formState.isSubmitting}
+        onClick={onNext}
       >
         {isSubmitting || formState.isSubmitting ? (
           <>
@@ -27,7 +35,7 @@ const FormActions: React.FC<FormActionsProps> = ({ onClose, isSubmitting }) => {
             Processing...
           </>
         ) : (
-          "Next"
+          submitLabel
         )}
       </Button>
     </div>

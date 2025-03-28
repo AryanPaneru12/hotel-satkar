@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -283,6 +282,9 @@ const BookingForm = ({
                 isLoading={isLoading}
                 onBack={() => setCurrentStep(0)}
                 onProcessPayment={handlePaymentProcess}
+                paymentMethod={formPaymentMethod}
+                onPaymentMethodChange={(method) => setValue('paymentMethod', method)}
+                totalAmount={methods.getValues('totalAmount')}
               />
             )}
             
@@ -290,7 +292,6 @@ const BookingForm = ({
               <ConfirmationForm 
                 onSubmit={handleConfirmBooking}
                 onClose={onClose}
-                isLoading={isLoading}
               />
             )}
           </FormProvider>

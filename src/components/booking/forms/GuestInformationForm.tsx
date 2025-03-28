@@ -6,7 +6,6 @@ import RoomInfo from './guest-info/RoomInfo';
 import DateSelection from './guest-info/DateSelection';
 import CustomerMapping from './guest-info/CustomerMapping';
 import PersonalInfo from './guest-info/PersonalInfo';
-import FormActions from './guest-info/FormActions';
 
 export type GuestFormValues = {
   fullName: string;
@@ -42,12 +41,14 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
   filteredGuests,
   guests
 }) => {
-  const { handleSubmit, watch } = useFormContext();
-  const formValues = watch();
+  const { handleSubmit } = useFormContext();
   
   return (
     <form className="space-y-4 overflow-y-auto" onSubmit={handleSubmit(onSubmit)}>
-      <RoomInfo />
+      <RoomInfo 
+        onClose={onClose}
+        onNext={onSubmit}
+      />
       
       <DateSelection />
       
@@ -61,10 +62,6 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
       />
       
       <PersonalInfo />
-      
-      <FormActions 
-        onClose={onClose}
-      />
     </form>
   );
 };

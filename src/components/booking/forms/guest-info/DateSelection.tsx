@@ -10,17 +10,11 @@ import { cn } from '@/lib/utils';
 import { format, addDays, isBefore } from 'date-fns';
 import { FormItem, FormControl, FormField, FormMessage } from '@/components/ui/form';
 
-interface DateSelectionProps {
-  totalNights: number;
-  totalAmount: number;
-}
-
-const DateSelection: React.FC<DateSelectionProps> = ({
-  totalNights,
-  totalAmount
-}) => {
+const DateSelection: React.FC = () => {
   const { control, watch, setValue } = useFormContext();
   const checkInDate = watch('checkInDate');
+  const totalNights = watch('totalNights');
+  const totalAmount = watch('totalAmount');
 
   return (
     <>
@@ -57,6 +51,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                     }}
                     disabled={(date) => isBefore(date, new Date())}
                     initialFocus
+                    className={cn("p-3 pointer-events-auto")}
                   />
                 </PopoverContent>
               </Popover>
@@ -94,6 +89,7 @@ const DateSelection: React.FC<DateSelectionProps> = ({
                       isBefore(date, new Date()) || 
                       (checkInDate ? isBefore(date, checkInDate) || isBefore(date, addDays(checkInDate, 1)) : false)
                     }
+                    className={cn("p-3 pointer-events-auto")}
                   />
                 </PopoverContent>
               </Popover>

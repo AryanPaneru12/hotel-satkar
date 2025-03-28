@@ -15,7 +15,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2, Search } from 'lucide-react';
+import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
@@ -91,10 +91,12 @@ const BookingForm = ({
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const filteredGuests = searchCustomer 
+  const filteredGuests = searchCustomer.trim() !== '' 
     ? guests.filter(guest => 
         guest.name.toLowerCase().includes(searchCustomer.toLowerCase()) ||
-        guest.id.includes(searchCustomer)
+        guest.id.toLowerCase().includes(searchCustomer.toLowerCase()) ||
+        (guest.email && guest.email.toLowerCase().includes(searchCustomer.toLowerCase())) ||
+        (guest.phone && guest.phone.includes(searchCustomer))
       )
     : guests;
 
@@ -108,7 +110,6 @@ const BookingForm = ({
         setIdType(selectedGuest.idNumber?.startsWith('IND') ? 'aadhar' : 'passport');
         setIdNumber(selectedGuest.idNumber || '');
         
-        // Set credibility score based on selected customer
         if (selectedGuest.credibilityScore) {
           setCustomerCredibilityScore(selectedGuest.credibilityScore);
         } else if (selectedGuest.bookingHistory) {
@@ -454,17 +455,18 @@ const BookingForm = ({
                           className="w-full justify-between"
                         >
                           {selectedCustomerId ? 
-                            guests.find(g => g.id === selectedCustomerId)?.name : 
+                            guests.find(g => g.id === selectedCustomerId)?.name || "Search customers..." : 
                             "Search customers..."}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[300px] p-0">
+                      <PopoverContent className="w-[300px] p-0 bg-white" align="start">
                         <Command>
                           <CommandInput 
                             placeholder="Search by name or ID..." 
                             value={searchCustomer}
                             onValueChange={setSearchCustomer}
+                            className="h-9"
                           />
                           <CommandEmpty>No customer found.</CommandEmpty>
                           <CommandGroup className="max-h-[200px] overflow-auto">

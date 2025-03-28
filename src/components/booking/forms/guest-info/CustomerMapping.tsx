@@ -1,46 +1,54 @@
 
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { User, ChevronsUpDown, Info } from 'lucide-react';
 import { Guest } from '@/types';
+import { FormField, FormItem } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface CustomerMappingProps {
-  useExistingCustomer: boolean;
-  onFormDataChange: (field: string, value: any) => void;
-  selectedCustomerId: string;
   commandOpen: boolean;
   setCommandOpen: (open: boolean) => void;
   searchCustomer: string;
+  onSearchChange: (value: string) => void;
   filteredGuests: Guest[];
   guests: Guest[];
 }
 
 const CustomerMapping: React.FC<CustomerMappingProps> = ({
-  useExistingCustomer,
-  onFormDataChange,
-  selectedCustomerId,
   commandOpen,
   setCommandOpen,
   searchCustomer,
+  onSearchChange,
   filteredGuests,
   guests
 }) => {
+  const { watch, setValue } = useFormContext();
+  const useExistingCustomer = watch('useExistingCustomer');
+  const selectedCustomerId = watch('selectedCustomerId');
+  
   return (
     <div className="border rounded-lg p-4 bg-muted/20">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-medium">Customer Mapping</h3>
         <div className="flex items-center">
-          <input 
-            type="checkbox" 
-            id="useExistingCustomer" 
-            className="mr-2"
-            checked={useExistingCustomer}
-            onChange={(e) => onFormDataChange('useExistingCustomer', e.target.checked)}
+          <FormField
+            name="useExistingCustomer"
+            render={({ field }) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="useExistingCustomer" 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <Label htmlFor="useExistingCustomer">Use Existing Customer</Label>
+              </div>
+            )}
           />
-          <Label htmlFor="useExistingCustomer">Use Existing Customer</Label>
         </div>
       </div>
       
@@ -66,7 +74,7 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
                 <CommandInput 
                   placeholder="Search by name or ID..." 
                   value={searchCustomer}
-                  onValueChange={(value) => onFormDataChange('searchCustomer', value)}
+                  onValueChange={onSearchChange}
                   className="h-9"
                 />
                 <CommandEmpty>No customer found.</CommandEmpty>
@@ -76,7 +84,7 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
                       key={guest.id}
                       value={guest.id}
                       onSelect={(value) => {
-                        onFormDataChange('selectedCustomerId', value);
+                        setValue('selectedCustomerId', value);
                         setCommandOpen(false);
                       }}
                     >

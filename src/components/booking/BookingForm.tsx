@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { addDays, format, differenceInDays, isAfter, isBefore } from 'date-fns';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { guests } from '@/data/guests';
@@ -11,7 +11,7 @@ import { calculateCredibilityScore } from '@/lib/formatters';
 
 // Import our new component files
 import StepIndicator from './StepIndicator';
-import GuestInformationForm from './forms/GuestInformationForm';
+import GuestInformationForm, { GuestFormValues } from './forms/GuestInformationForm';
 import PaymentMethodForm from './forms/PaymentMethodForm';
 import ConfirmationForm from './forms/ConfirmationForm';
 
@@ -26,10 +26,6 @@ interface BookingFormProps {
   paymentMethod?: string;
 }
 
-type FormErrors = {
-  [key: string]: string;
-};
-
 const BookingForm = ({ 
   isOpen, 
   onClose, 
@@ -41,23 +37,15 @@ const BookingForm = ({
   paymentMethod: initialPaymentMethod
 }: BookingFormProps) => {
   const { user } = useAuth();
-  const [fullName, setFullName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState('');
-  const [idType, setIdType] = useState('passport');
-  const [idNumber, setIdNumber] = useState('');
-  const [specialRequests, setSpecialRequests] = useState('');
   const [paymentMethod, setPaymentMethod] = useState(initialPaymentMethod || 'credit');
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [totalNights, setTotalNights] = useState(1);
   const [totalAmount, setTotalAmount] = useState(roomPrice || 9900);
-  const [errors, setErrors] = useState<FormErrors>({});
   const [customerCredibilityScore, setCustomerCredibilityScore] = useState(0);
-  const [useExistingCustomer, setUseExistingCustomer] = useState(false);
-  const [selectedCustomerId, setSelectedCustomerId] = useState('');
-  const [searchCustomer, setSearchCustomer] = useState('');
   const [commandOpen, setCommandOpen] = useState(false);
+  const [searchCustomer, setSearchCustomer] = useState('');
+  const [formData, setFormData] = useState<GuestFormValues | null>(null);
   
   const parseDateIfProvided = (dateString?: string): Date | undefined => {
     if (!dateString) return undefined;
@@ -69,13 +57,8 @@ const BookingForm = ({
     }
   };
   
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(
-    parseDateIfProvided(initialCheckInDate) || new Date(2025, 0, 15)
-  );
-  
-  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
-    parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 0, 15), 1)
-  );
+  const defaultCheckInDate = parseDateIfProvided(initialCheckInDate) || new Date(2025, 0, 15);
+  const defaultCheckOutDate = parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 0, 15), 1);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -89,33 +72,23 @@ const BookingForm = ({
       )
     : [];
 
-  useEffect(() => {
-    if (selectedCustomerId) {
-      const selectedGuest = guests.find(g => g.id === selectedCustomerId);
-      if (selectedGuest) {
-        setFullName(selectedGuest.name);
-        setEmail(selectedGuest.email || '');
-        setPhone(selectedGuest.phone || '');
-        setIdType(selectedGuest.idNumber?.startsWith('IND') ? 'aadhar' : 'passport');
-        setIdNumber(selectedGuest.idNumber || '');
-        
-        if (selectedGuest.credibilityScore) {
-          setCustomerCredibilityScore(selectedGuest.credibilityScore);
-        } else if (selectedGuest.bookingHistory) {
-          const score = calculateCredibilityScore(
-            selectedGuest.bookingHistory.totalBookings,
-            selectedGuest.bookingHistory.completedStays,
-            selectedGuest.bookingHistory.cancellations,
-            selectedGuest.bookingHistory.noShows
-          );
-          setCustomerCredibilityScore(score);
-        }
-      }
-    }
-  }, [selectedCustomerId]);
+  // Set default form values
+  const defaultValues = {
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: '',
+    idType: 'passport',
+    idNumber: '',
+    specialRequests: '',
+    checkInDate: defaultCheckInDate,
+    checkOutDate: defaultCheckOutDate,
+    useExistingCustomer: false,
+    selectedCustomerId: '',
+  };
 
+  // Calculate credibility score for logged-in user
   useEffect(() => {
-    if (user && !selectedCustomerId) {
+    if (user && !formData?.selectedCustomerId) {
       const mockHistory = {
         totalBookings: 5,
         completedStays: 4,
@@ -132,69 +105,46 @@ const BookingForm = ({
       
       setCustomerCredibilityScore(score);
     }
-  }, [user, selectedCustomerId]);
+  }, [user, formData?.selectedCustomerId]);
 
+  // Update customer info based on selectedCustomerId
   useEffect(() => {
-    if (checkInDate && checkOutDate) {
-      const nights = differenceInDays(checkOutDate, checkInDate);
+    if (formData?.selectedCustomerId) {
+      const selectedGuest = guests.find(g => g.id === formData.selectedCustomerId);
+      if (selectedGuest && selectedGuest.credibilityScore) {
+        setCustomerCredibilityScore(selectedGuest.credibilityScore);
+      } else if (selectedGuest && selectedGuest.bookingHistory) {
+        const score = calculateCredibilityScore(
+          selectedGuest.bookingHistory.totalBookings,
+          selectedGuest.bookingHistory.completedStays,
+          selectedGuest.bookingHistory.cancellations,
+          selectedGuest.bookingHistory.noShows
+        );
+        setCustomerCredibilityScore(score);
+      }
+    }
+  }, [formData?.selectedCustomerId]);
+
+  // Calculate total nights and amount
+  useEffect(() => {
+    if (formData?.checkInDate && formData?.checkOutDate) {
+      const nights = differenceInDays(formData.checkOutDate, formData.checkInDate);
       setTotalNights(nights > 0 ? nights : 1);
       setTotalAmount((roomPrice || 9900) * (nights > 0 ? nights : 1));
     }
-  }, [checkInDate, checkOutDate, roomPrice]);
+  }, [formData?.checkInDate, formData?.checkOutDate, roomPrice]);
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const handleGuestFormSubmit = (data: GuestFormValues) => {
+    setFormData(data);
+    setCurrentStep(1);
   };
-
-  const validatePhone = (phone: string) => {
-    return /^[\d\s+()-]{10,15}$/.test(phone);
-  };
-
-  const validateStep = (step: number) => {
-    const newErrors: FormErrors = {};
-
-    if (step === 0) {
-      if (!fullName.trim()) {
-        newErrors.fullName = 'Full name is required';
-      }
-
-      if (!email.trim()) {
-        newErrors.email = 'Email is required';
-      } else if (!validateEmail(email)) {
-        newErrors.email = 'Invalid email format';
-      }
-
-      if (!phone.trim()) {
-        newErrors.phone = 'Phone number is required';
-      } else if (!validatePhone(phone)) {
-        newErrors.phone = 'Invalid phone number format';
-      }
-
-      if (!idNumber.trim()) {
-        newErrors.idNumber = 'ID number is required';
-      }
-
-      if (!checkInDate) {
-        newErrors.checkInDate = 'Check-in date is required';
-      }
-
-      if (!checkOutDate) {
-        newErrors.checkOutDate = 'Check-out date is required';
-      } else if (checkInDate && isBefore(checkOutDate, checkInDate)) {
-        newErrors.checkOutDate = 'Check-out date must be after check-in date';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    const profileDetails = selectedCustomerId 
-      ? `Customer ID: ${selectedCustomerId}` 
+    const profileDetails = formData?.selectedCustomerId 
+      ? `Customer ID: ${formData.selectedCustomerId}` 
       : "New customer profile";
     
     setTimeout(() => {
@@ -243,52 +193,6 @@ const BookingForm = ({
       default: return 'Unknown Method';
     }
   };
-
-  const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-  
-  const handleFormDataChange = (field: string, value: any) => {
-    switch (field) {
-      case 'fullName':
-        setFullName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'phone':
-        setPhone(value);
-        break;
-      case 'idType':
-        setIdType(value);
-        break;
-      case 'idNumber':
-        setIdNumber(value);
-        break;
-      case 'specialRequests':
-        setSpecialRequests(value);
-        break;
-      case 'checkInDate':
-        setCheckInDate(value);
-        break;
-      case 'checkOutDate':
-        setCheckOutDate(value);
-        break;
-      case 'useExistingCustomer':
-        setUseExistingCustomer(value);
-        break;
-      case 'selectedCustomerId':
-        setSelectedCustomerId(value);
-        break;
-      case 'searchCustomer':
-        setSearchCustomer(value);
-        break;
-      default:
-        break;
-    }
-  };
   
   const steps = [
     { title: "Guest Information", description: "Enter guest details" },
@@ -298,25 +202,12 @@ const BookingForm = ({
   
   if (!isOpen) return null;
 
-  const formData = {
+  const formDataWithPricing = {
     roomType,
     roomPrice,
-    fullName,
-    email,
-    phone,
-    idType,
-    idNumber,
-    specialRequests,
-    checkInDate,
-    checkOutDate,
     customerCredibilityScore,
-    useExistingCustomer,
-    selectedCustomerId,
-    searchCustomer,
-    commandOpen,
     totalNights,
     totalAmount,
-    paymentMethod
   };
 
   return (
@@ -333,14 +224,16 @@ const BookingForm = ({
           
           {currentStep === 0 && (
             <GuestInformationForm 
-              formData={formData}
+              formData={formDataWithPricing}
+              defaultValues={defaultValues}
               guests={guests}
               filteredGuests={filteredGuests}
-              errors={errors}
-              onFormDataChange={handleFormDataChange}
-              onNextStep={handleNextStep}
+              onSubmit={handleGuestFormSubmit}
               onClose={onClose}
               setCommandOpen={setCommandOpen}
+              commandOpen={commandOpen}
+              searchCustomer={searchCustomer}
+              onSearchChange={setSearchCustomer}
             />
           )}
           
@@ -356,9 +249,16 @@ const BookingForm = ({
             />
           )}
           
-          {currentStep === 2 && (
+          {currentStep === 2 && formData && (
             <ConfirmationForm 
-              formData={formData}
+              formData={{
+                ...formData,
+                roomType,
+                roomPrice,
+                totalNights,
+                totalAmount,
+                paymentMethod
+              }}
               onSubmit={handleSubmit}
               onClose={onClose}
             />

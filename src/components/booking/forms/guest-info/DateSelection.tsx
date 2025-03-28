@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -7,97 +8,99 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, addDays, isBefore } from 'date-fns';
+import { FormItem, FormControl, FormField, FormMessage } from '@/components/ui/form';
 
 interface DateSelectionProps {
-  checkInDate: Date | undefined;
-  checkOutDate: Date | undefined;
-  onFormDataChange: (field: string, value: any) => void;
-  errors: {
-    checkInDate?: string;
-    checkOutDate?: string;
-  };
   totalNights: number;
   totalAmount: number;
 }
 
 const DateSelection: React.FC<DateSelectionProps> = ({
-  checkInDate,
-  checkOutDate,
-  onFormDataChange,
-  errors,
   totalNights,
   totalAmount
 }) => {
+  const { control, watch, setValue } = useFormContext();
+  const checkInDate = watch('checkInDate');
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="checkIn">Check-In Date</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  errors.checkInDate && "border-red-500"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {checkInDate ? format(checkInDate, "PPP") : "Select date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={checkInDate}
-                onSelect={(date) => {
-                  onFormDataChange('checkInDate', date);
-                  if (date && checkOutDate && isBefore(checkOutDate, date)) {
-                    onFormDataChange('checkOutDate', addDays(date, 1));
-                  }
-                }}
-                disabled={(date) => isBefore(date, new Date())}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-          {errors.checkInDate && (
-            <p className="text-xs text-red-500">{errors.checkInDate}</p>
+        <FormField
+          control={control}
+          name="checkInDate"
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <Label htmlFor="checkIn">Check-In Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal"
+                      id="checkIn"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP") : "Select date"}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      const checkOutDate = watch('checkOutDate');
+                      if (date && checkOutDate && isBefore(checkOutDate, date)) {
+                        setValue('checkOutDate', addDays(date, 1), { shouldValidate: true });
+                      }
+                    }}
+                    disabled={(date) => isBefore(date, new Date())}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
         
-        <div className="space-y-2">
-          <Label htmlFor="checkOut">Check-Out Date</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  errors.checkOutDate && "border-red-500"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {checkOutDate ? format(checkOutDate, "PPP") : "Select date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={checkOutDate}
-                onSelect={(date) => onFormDataChange('checkOutDate', date)}
-                initialFocus
-                disabled={(date) => 
-                  isBefore(date, new Date()) || 
-                  (checkInDate ? isBefore(date, checkInDate) || isBefore(date, addDays(checkInDate, 1)) : false)
-                }
-              />
-            </PopoverContent>
-          </Popover>
-          {errors.checkOutDate && (
-            <p className="text-xs text-red-500">{errors.checkOutDate}</p>
+        <FormField
+          control={control}
+          name="checkOutDate"
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <Label htmlFor="checkOut">Check-Out Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal"
+                      id="checkOut"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP") : "Select date"}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                    disabled={(date) => 
+                      isBefore(date, new Date()) || 
+                      (checkInDate ? isBefore(date, checkInDate) || isBefore(date, addDays(checkInDate, 1)) : false)
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
       </div>
 
       <div className="p-3 border rounded-lg bg-muted/30">

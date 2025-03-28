@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { searchCustomers } from '@/utils/searchUtils';
 
 const Guests = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,10 +43,23 @@ const Guests = () => {
     roomId: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customerSearchQuery, setCustomerSearchQuery] = useState('');
+  const [filteredCustomers, setFilteredCustomers] = useState<any[]>([]);
   const { toast } = useToast();
 
   // Get available rooms for selection
   const availableRooms = rooms.filter(room => room.status === 'Available');
+
+  // Handle customer search
+  const handleCustomerSearch = (query: string) => {
+    setCustomerSearchQuery(query);
+    if (query.trim() === '') {
+      setFilteredCustomers([]);
+      return;
+    }
+    const results = searchCustomers(query);
+    setFilteredCustomers(results);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -53,6 +68,20 @@ const Guests = () => {
 
   const handleSelectChange = (field: string, value: string) => {
     setNewGuest(prev => ({ ...prev, [field]: value }));
+  };
+  
+  const handleSelectCustomer = (customer: any) => {
+    setNewGuest({
+      name: customer.name || '',
+      email: customer.email || '',
+      phone: customer.phone || '',
+      idType: customer.idNumber?.startsWith('IND') ? 'aadhar' : 'passport',
+      idNumber: customer.idNumber || '',
+      nationality: customer.nationality || 'Indian',
+      roomId: customer.roomId || ''
+    });
+    setCustomerSearchQuery('');
+    setFilteredCustomers([]);
   };
 
   const handleAddGuest = () => {
@@ -273,45 +302,94 @@ const Guests = () => {
           </DialogHeader>
           <div className="grid gap-4 py-4 overflow-y-auto">
             <div className="grid grid-cols-1 gap-3">
+              <div className="border rounded-lg p-4 bg-muted/20">
+                <h3 className="text-base font-medium mb-3">Customer Mapping</h3>
+                <div className="space-y-3">
+                  <Label htmlFor="customerSearch">Search Existing Customer</Label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      id="customerSearch"
+                      placeholder="Search by name, email or ID..."
+                      className="pl-10"
+                      value={customerSearchQuery}
+                      onChange={(e) => handleCustomerSearch(e.target.value)}
+                    />
+                  </div>
+                  
+                  {filteredCustomers.length > 0 && (
+                    <div className="bg-background border rounded-md mt-1 max-h-[200px] overflow-y-auto">
+                      {filteredCustomers.map((customer) => (
+                        <div 
+                          key={customer.id}
+                          className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between border-b last:border-b-0"
+                          onClick={() => handleSelectCustomer(customer)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={customer.image} alt={customer.name} />
+                              <AvatarFallback>{getGuestInitials(customer.name)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium text-sm">{customer.name}</div>
+                              <div className="text-xs text-muted-foreground">{customer.email}</div>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            ID: {customer.id}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={newGuest.name}
-                  onChange={handleInputChange}
-                  placeholder="John Smith"
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                  <Input
+                    id="name"
+                    placeholder="John Smith"
+                    className="pl-10"
+                    value={newGuest.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={newGuest.email}
-                  onChange={handleInputChange}
-                  placeholder="john@example.com"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={newGuest.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    placeholder="+91 9012345678"
+                    value={newGuest.phone}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  value={newGuest.phone}
-                  onChange={handleInputChange}
-                  placeholder="+91 9012345678"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="idType">ID Type</Label>
-                  <Select 
-                    value={newGuest.idType} 
-                    onValueChange={(value) => handleSelectChange('idType', value)}
-                  >
-                    <SelectTrigger id="idType">
+                  <Select value={idType} onValueChange={setIdType}>
+                    <SelectTrigger>
                       <SelectValue placeholder="Select ID type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -327,9 +405,10 @@ const Guests = () => {
                   <Label htmlFor="idNumber">ID Number</Label>
                   <Input
                     id="idNumber"
+                    placeholder="Enter ID number"
                     value={newGuest.idNumber}
                     onChange={handleInputChange}
-                    placeholder="123456789"
+                    required
                   />
                 </div>
               </div>

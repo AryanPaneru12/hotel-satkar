@@ -6,10 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "next-themes";
+import { useEffect } from "react";
 
 // Pages
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Error from "./pages/Error";
 import Rooms from "./pages/Rooms";
 import Bookings from "./pages/Bookings";
 import Guests from "./pages/Guests";
@@ -23,7 +25,51 @@ import Reports from "./pages/Reports";
 // Components
 import Sidebar from "./components/layout/Sidebar";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      // On error, redirect to error page
+      onError: (error) => {
+        console.error('Query error:', error);
+        window.location.href = '/error';
+      }
+    },
+    mutations: {
+      onError: (error) => {
+        console.error('Mutation error:', error);
+        window.location.href = '/error';
+      }
+    }
+  }
+});
+
+// Global error handler
+const setupGlobalErrorHandler = () => {
+  const originalOnError = window.onerror;
+  
+  window.onerror = (message, source, lineno, colno, error) => {
+    console.error('Global error:', { message, source, lineno, colno, error });
+    
+    // Don't redirect for these common non-fatal errors
+    const nonFatalErrors = [
+      'ResizeObserver loop limit exceeded',
+      'Script error',
+      'ChunkLoadError'
+    ];
+    
+    if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
+      window.location.href = `/error?source=${encodeURIComponent(source || '')}`;
+    }
+    
+    // Call original handler if it exists
+    if (typeof originalOnError === 'function') {
+      return originalOnError(message, source, lineno, colno, error);
+    }
+    
+    return false;
+  };
+};
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -73,9 +119,15 @@ const CustomerRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => {
   const { user } = useAuth();
   
+  // Set up global error handler
+  useEffect(() => {
+    setupGlobalErrorHandler();
+  }, []);
+  
   return (
     <Routes>
       <Route path="/landing" element={<Landing />} />
+      <Route path="/error" element={<Error />} />
       
       {/* Conditional redirect based on user role */}
       <Route path="/" element={

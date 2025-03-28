@@ -29,16 +29,20 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      // On error, redirect to error page
-      onError: (error) => {
-        console.error('Query error:', error);
-        window.location.href = '/error';
+      // On error, use onSettled instead of onError
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Query error:', error);
+          window.location.href = '/error';
+        }
       }
     },
     mutations: {
-      onError: (error) => {
-        console.error('Mutation error:', error);
-        window.location.href = '/error';
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Mutation error:', error);
+          window.location.href = '/error';
+        }
       }
     }
   }

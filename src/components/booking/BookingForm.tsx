@@ -15,7 +15,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2 } from 'lucide-react';
+import { CreditCard, Landmark, QrCode, User, CalendarIcon, ChevronsUpDown, Info, Loader2, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
@@ -98,7 +98,7 @@ const BookingForm = ({
         (guest.email && guest.email.toLowerCase().includes(searchCustomer.toLowerCase())) ||
         (guest.phone && guest.phone.includes(searchCustomer))
       )
-    : guests;
+    : [];
 
   useEffect(() => {
     if (selectedCustomerId) {

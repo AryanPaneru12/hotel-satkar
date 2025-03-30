@@ -50,8 +50,8 @@ export const useBookingFormLogic = ({
     }
   };
   
-  const defaultCheckInDate = parseDateIfProvided(initialCheckInDate) || new Date(2025, 0, 15);
-  const defaultCheckOutDate = parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 0, 15), 1);
+  const defaultCheckInDate = parseDateIfProvided(initialCheckInDate) || new Date(2025, 5, 15);
+  const defaultCheckOutDate = parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 5, 15), 1);
   
   const methods = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),

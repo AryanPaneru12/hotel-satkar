@@ -13,7 +13,11 @@ export const setupGlobalErrorHandler = () => {
       'ChunkLoadError',
       'Network Error',
       'Loading chunk',
-      'Failed to fetch'
+      'Failed to fetch',
+      'Loading CSS chunk',
+      'The operation was aborted',
+      'NetworkError',
+      'Cannot read properties of undefined'
     ];
     
     if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
@@ -36,13 +40,23 @@ export const setupGlobalErrorHandler = () => {
     
     // Don't redirect for network related errors to avoid loops
     const reasonStr = String(event.reason);
-    if (!reasonStr.includes('Network Error') && !reasonStr.includes('Failed to fetch')) {
+    const nonFatalErrors = [
+      'Network Error',
+      'Failed to fetch',
+      'The operation was aborted',
+      'NetworkError',
+      'Loading CSS chunk'
+    ];
+    
+    if (!nonFatalErrors.some(e => reasonStr.includes(e))) {
       const errorMessage = encodeURIComponent(reasonStr || 'Unhandled Promise Rejection');
       window.location.href = `/error?message=${errorMessage}`;
     }
     
     event.preventDefault();
   });
+  
+  console.log('Global error handlers initialized');
 };
 
 // Helper to manually redirect to error page

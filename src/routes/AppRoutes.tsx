@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,11 +26,12 @@ const AppRoutes = () => {
   // Set up global error handler
   useEffect(() => {
     setupGlobalErrorHandler();
+    console.log('Routes initialized');
   }, []);
   
   return (
     <Routes>
-      {/* Always redirect root to landing for non-authenticated users */}
+      {/* Root path shows Landing for non-authenticated users */}
       <Route path="/" element={
         isAuthenticated ? (
           <ProtectedRoute>
@@ -46,6 +48,7 @@ const AppRoutes = () => {
         )
       } />
       
+      {/* Explicit landing route */}
       <Route path="/landing" element={<Landing />} />
       <Route path="/error" element={<Error />} />
       

@@ -15,6 +15,7 @@ class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
+    console.error("Error caught in ErrorBoundary:", error);
     return { hasError: true, error };
   }
 
@@ -36,8 +37,11 @@ class ErrorBoundary extends React.Component<
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
+  console.error('Root element not found');
   throw new Error('Root element not found');
 }
+
+console.log('Mounting React application...');
 
 const root = createRoot(rootElement);
 
@@ -48,3 +52,5 @@ root.render(
     </ErrorBoundary>
   </React.StrictMode>
 );
+
+console.log('React application mounted');

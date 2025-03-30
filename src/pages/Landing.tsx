@@ -11,6 +11,7 @@ import Footer from '@/components/landing/Footer';
 
 const Landing = () => {
   const [isLoginMode, setIsLoginMode] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const location = useLocation();
   
   // Check if we should show login modal based on URL parameter
@@ -22,14 +23,24 @@ const Landing = () => {
     }
   }, [location]);
 
+  // Mark component as loaded after initial render
+  useEffect(() => {
+    console.log('Landing page loading...');
+    setIsLoaded(true);
+    console.log('Landing page loaded');
+  }, []);
+
   const handleLoginClick = () => {
     setIsLoginMode(true);
   };
 
-  // Log to help with debugging
-  useEffect(() => {
-    console.log('Landing page loaded');
-  }, []);
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-lg text-hotel-700">Loading Satkar Hotel...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

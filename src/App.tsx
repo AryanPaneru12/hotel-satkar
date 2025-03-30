@@ -8,8 +8,13 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "next-themes";
 import queryClient from "./config/queryClient";
 import AppRoutes from "./routes/AppRoutes";
+import React, { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    console.log("App component mounted");
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

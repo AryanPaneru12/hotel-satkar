@@ -13,10 +13,10 @@ export default defineConfig(({ mode }) => ({
     // Only apply the component tagger in development mode and if it's available
     mode === 'development' && (() => {
       try {
-        const { componentTagger } = require("lovable-tagger");
+        const { componentTagger } = require("ankit-tagger");
         return componentTagger();
       } catch (e) {
-        console.warn("lovable-tagger not available, skipping");
+        console.warn("ankit-tagger not available, skipping");
         return null;
       }
     })(),

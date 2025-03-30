@@ -63,7 +63,7 @@ export const useBookingFormLogic = ({
   const formPaymentMethod = watch('paymentMethod');
   const formRoomPrice = watch('roomPrice');
 
-  // Get credibility score from the new hook
+  // Get credibility score from the hook
   const { customerCredibilityScore } = useCredibilityScore(formSelectedCustomerId);
 
   // Calculate total nights and amount when dates change
@@ -81,7 +81,7 @@ export const useBookingFormLogic = ({
     setCurrentStep(1);
   };
   
-  // Handle payment processing
+  // Handle payment processing with improved error handling
   const handlePaymentProcess = () => {
     if (formPaymentMethod === 'cash' && customerCredibilityScore < 80) {
       toast({
@@ -94,18 +94,28 @@ export const useBookingFormLogic = ({
     
     setIsLoading(true);
     
+    // Production code would connect to a payment gateway here
     setTimeout(() => {
-      toast({
-        title: "Payment Processed",
-        description: `Payment has been processed successfully via ${getMethodName(formPaymentMethod)}`,
-        variant: "default",
-      });
-      setIsLoading(false);
-      setCurrentStep(2);
+      try {
+        toast({
+          title: "Payment Processed",
+          description: `Payment has been processed successfully via ${getMethodName(formPaymentMethod)}`,
+          variant: "default",
+        });
+        setIsLoading(false);
+        setCurrentStep(2);
+      } catch (error) {
+        setIsLoading(false);
+        toast({
+          title: "Payment Failed",
+          description: "There was an error processing your payment. Please try again.",
+          variant: "destructive",
+        });
+      }
     }, 1500);
   };
   
-  // Handle booking confirmation
+  // Handle booking confirmation with error handling
   const handleConfirmBooking = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -115,15 +125,25 @@ export const useBookingFormLogic = ({
       ? `Customer ID: ${formValues.selectedCustomerId}` 
       : "New customer profile";
     
+    // In production, this would save to database
     setTimeout(() => {
-      toast({
-        title: "Booking Created!",
-        description: `Your booking has been successfully created. ${profileDetails}`,
-        variant: "default",
-      });
-      setIsLoading(false);
-      onClose();
-      navigate('/bookings');
+      try {
+        toast({
+          title: "Booking Created!",
+          description: `Your booking has been successfully created. ${profileDetails}`,
+          variant: "default",
+        });
+        setIsLoading(false);
+        onClose();
+        navigate('/bookings');
+      } catch (error) {
+        setIsLoading(false);
+        toast({
+          title: "Booking Failed",
+          description: "There was an error creating your booking. Please try again.",
+          variant: "destructive",
+        });
+      }
     }, 1500);
   };
 
@@ -144,4 +164,3 @@ export const useBookingFormLogic = ({
     formPaymentMethod
   };
 };
-

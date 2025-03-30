@@ -1,11 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Landmark, QrCode, Loader2, Info } from 'lucide-react';
+import { Landmark, QrCode, Loader2, Info, CreditCard, AlertCircle } from 'lucide-react';
 
 interface PaymentMethodFormProps {
   paymentMethod: string;
@@ -38,6 +38,26 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   onBack,
   onProcessPayment
 }) => {
+  const [cardName, setCardName] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [upiId, setUpiId] = useState('');
+  
+  const isCreditCardValid = paymentMethod === 'credit' && 
+    cardName.length > 3 && 
+    cardNumber.replace(/\s/g, '').length === 16 && 
+    expiryDate.match(/^\d{2}\/\d{2}$/) && 
+    cvv.length === 3;
+    
+  const isUpiValid = paymentMethod === 'upi' && upiId.includes('@');
+  
+  const isPaymentValid = 
+    (paymentMethod === 'credit' && isCreditCardValid) || 
+    (paymentMethod === 'upi' && isUpiValid) || 
+    paymentMethod === 'qr' || 
+    (paymentMethod === 'cash' && customerCredibilityScore >= 80);
+  
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -46,7 +66,7 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
         {paymentMethod === 'cash' && customerCredibilityScore < 80 && (
           <Alert className="bg-red-50 border-red-200 text-red-800">
             <AlertDescription className="text-sm flex items-center">
-              <Info className="h-4 w-4 mr-2" />
+              <AlertCircle className="h-4 w-4 mr-2" />
               Your credibility score is below 80%. Please choose an alternate payment method.
             </AlertDescription>
           </Alert>
@@ -54,7 +74,10 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
         
         <Tabs defaultValue={paymentMethod} onValueChange={onPaymentMethodChange}>
           <TabsList className="grid grid-cols-4 mb-4">
-            <TabsTrigger value="credit">Card</TabsTrigger>
+            <TabsTrigger value="credit" className="flex items-center gap-1">
+              <CreditCard className="h-3 w-3" />
+              Card
+            </TabsTrigger>
             <TabsTrigger 
               value="cash" 
               disabled={customerCredibilityScore < 80}
@@ -69,20 +92,77 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           <TabsContent value="credit" className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="cardName">Name on Card</Label>
-              <Input id="cardName" placeholder="John Smith" />
+              <Input 
+                id="cardName" 
+                placeholder="John Smith" 
+                value={cardName}
+                onChange={(e) => setCardName(e.target.value)}
+              />
+              {cardName && cardName.length < 3 && (
+                <p className="text-xs text-red-500">Name is too short</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="cardNumber">Card Number</Label>
-              <Input id="cardNumber" placeholder="xxxx xxxx xxxx xxxx" />
+              <Input 
+                id="cardNumber" 
+                placeholder="xxxx xxxx xxxx xxxx" 
+                value={cardNumber}
+                onChange={(e) => {
+                  // Format card number with spaces every 4 digits
+                  const formatted = e.target.value
+                    .replace(/\s/g, '')
+                    .replace(/\D/g, '')
+                    .replace(/(.{4})/g, '$1 ')
+                    .trim();
+                  setCardNumber(formatted);
+                }}
+                maxLength={19} // 16 digits + 3 spaces
+              />
+              {cardNumber && cardNumber.replace(/\s/g, '').length !== 16 && (
+                <p className="text-xs text-red-500">Card number must be 16 digits</p>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="expiryDate">Expiry Date</Label>
-                <Input id="expiryDate" placeholder="MM/YY" />
+                <Input 
+                  id="expiryDate" 
+                  placeholder="MM/YY" 
+                  value={expiryDate}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    if (value.length <= 4) {
+                      const formatted = value.length > 2 
+                        ? value.substring(0, 2) + '/' + value.substring(2)
+                        : value;
+                      setExpiryDate(formatted);
+                    }
+                  }}
+                  maxLength={5}
+                />
+                {expiryDate && !expiryDate.match(/^\d{2}\/\d{2}$/) && (
+                  <p className="text-xs text-red-500">Format: MM/YY</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cvv">CVV</Label>
-                <Input id="cvv" placeholder="123" type="password" />
+                <Input 
+                  id="cvv" 
+                  placeholder="123" 
+                  type="password"
+                  value={cvv}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    if (value.length <= 3) {
+                      setCvv(value);
+                    }
+                  }}
+                  maxLength={3}
+                />
+                {cvv && cvv.length !== 3 && (
+                  <p className="text-xs text-red-500">CVV must be 3 digits</p>
+                )}
               </div>
             </div>
           </TabsContent>
@@ -111,7 +191,15 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           <TabsContent value="upi" className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="upiId">UPI ID</Label>
-              <Input id="upiId" placeholder="yourname@upi" />
+              <Input 
+                id="upiId" 
+                placeholder="yourname@upi" 
+                value={upiId}
+                onChange={(e) => setUpiId(e.target.value)}
+              />
+              {upiId && !upiId.includes('@') && (
+                <p className="text-xs text-red-500">UPI ID must contain @</p>
+              )}
             </div>
             <div className="bg-muted p-4 rounded-md mt-2">
               <p className="text-sm text-muted-foreground">You will receive a payment request notification on your UPI app.</p>
@@ -146,7 +234,7 @@ const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
         <Button 
           type="button" 
           onClick={onProcessPayment}
-          disabled={isLoading || (paymentMethod === 'cash' && customerCredibilityScore < 80)}
+          disabled={isLoading || (paymentMethod === 'cash' && customerCredibilityScore < 80) || !isPaymentValid}
         >
           {isLoading ? (
             <>

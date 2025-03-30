@@ -2,6 +2,8 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Guest } from '@/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 import RoomInfo from './guest-info/RoomInfo';
 import DateSelection from './guest-info/DateSelection';
 import CustomerMapping from './guest-info/CustomerMapping';
@@ -41,10 +43,21 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
   filteredGuests,
   guests
 }) => {
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, formState: { errors } } = useFormContext();
+  
+  const hasErrors = Object.keys(errors).length > 0;
   
   return (
     <form className="space-y-4 overflow-y-auto" onSubmit={handleSubmit(onSubmit)}>
+      {hasErrors && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription className="flex items-center">
+            <Info className="h-4 w-4 mr-2" />
+            Please correct the errors in the form before proceeding.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <RoomInfo 
         onClose={onClose}
         onNext={onSubmit}

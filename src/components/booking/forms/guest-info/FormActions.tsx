@@ -9,13 +9,15 @@ interface FormActionsProps {
   isSubmitting?: boolean;
   onNext?: () => void;
   submitLabel?: string;
+  disableSubmit?: boolean;
 }
 
 const FormActions: React.FC<FormActionsProps> = ({ 
   onClose, 
   isSubmitting,
   onNext,
-  submitLabel = "Next"
+  submitLabel = "Next",
+  disableSubmit = false
 }) => {
   const { formState } = useFormContext();
   
@@ -26,7 +28,7 @@ const FormActions: React.FC<FormActionsProps> = ({
       </Button>
       <Button 
         type="submit" 
-        disabled={isSubmitting || formState.isSubmitting}
+        disabled={isSubmitting || formState.isSubmitting || disableSubmit}
         onClick={onNext}
       >
         {isSubmitting || formState.isSubmitting ? (

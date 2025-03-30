@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useFormContext } from 'react-hook-form';
+import { Loader2 } from 'lucide-react';
 
 interface ConfirmationFormProps {
   onSubmit: (e: React.FormEvent) => void;
@@ -27,6 +28,16 @@ const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
 }) => {
   const { getValues } = useFormContext();
   const formData = getValues();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    setIsSubmitting(true);
+    try {
+      onSubmit(e);
+    } catch (error) {
+      setIsSubmitting(false);
+    }
+  };
   
   return (
     <div className="space-y-6">
@@ -91,9 +102,17 @@ const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
         </Button>
         <Button 
           type="button" 
-          onClick={onSubmit}
+          onClick={handleSubmit}
+          disabled={isSubmitting}
         >
-          View My Bookings
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "View My Bookings"
+          )}
         </Button>
       </div>
     </div>

@@ -13,6 +13,16 @@ import React, { useEffect } from "react";
 const App = () => {
   useEffect(() => {
     console.log("App component mounted");
+    
+    // Log browser information for debugging
+    console.log("Browser info:", {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+    });
+    
+    // Check if we're running in development or production
+    console.log("Environment:", process.env.NODE_ENV);
   }, []);
 
   return (

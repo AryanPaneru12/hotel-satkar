@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
         return componentTagger();
       } catch (e) {
         // More detailed error message that won't break the build
-        console.log("lovable-tagger not available, continuing without it");
+        console.log("lovable-tagger not available, continuing without it:", e.message);
         return null;
       }
     })(),

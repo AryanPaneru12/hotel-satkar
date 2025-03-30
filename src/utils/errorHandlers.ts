@@ -18,7 +18,8 @@ export const setupGlobalErrorHandler = () => {
       'The operation was aborted',
       'NetworkError',
       'Cannot read properties of undefined',
-      'lovable-tagger not available'
+      'lovable-tagger not available',
+      'componentTagger'
     ];
     
     if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
@@ -47,7 +48,8 @@ export const setupGlobalErrorHandler = () => {
       'The operation was aborted',
       'NetworkError',
       'Loading CSS chunk',
-      'lovable-tagger not available'
+      'lovable-tagger not available',
+      'componentTagger'
     ];
     
     if (!nonFatalErrors.some(e => reasonStr.includes(e))) {

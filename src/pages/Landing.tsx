@@ -20,12 +20,16 @@ const Landing = () => {
     const showLogin = query.get('login');
     if (showLogin === 'true') {
       setIsLoginMode(true);
+      console.log('Login mode activated from URL parameter');
     }
   }, [location]);
 
   // Mark component as loaded after initial render
   useEffect(() => {
     console.log('Landing page loading...');
+    
+    // Log component version for debugging
+    console.log('Landing component version: 1.0.2');
     
     // Set loaded immediately
     setIsLoaded(true);
@@ -38,6 +42,7 @@ const Landing = () => {
   }, []);
 
   const handleLoginClick = () => {
+    console.log('Login button clicked');
     setIsLoginMode(true);
   };
 

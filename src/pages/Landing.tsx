@@ -26,6 +26,11 @@ const Landing = () => {
     setIsLoginMode(true);
   };
 
+  // Log to help with debugging
+  useEffect(() => {
+    console.log('Landing page loaded');
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar onLoginClick={handleLoginClick} />

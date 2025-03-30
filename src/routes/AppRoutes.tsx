@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,7 +29,7 @@ const AppRoutes = () => {
   
   return (
     <Routes>
-      {/* Redirect root to landing for non-authenticated users */}
+      {/* Always redirect root to landing for non-authenticated users */}
       <Route path="/" element={
         isAuthenticated ? (
           <ProtectedRoute>
@@ -43,7 +42,7 @@ const AppRoutes = () => {
             )}
           </ProtectedRoute>
         ) : (
-          <Navigate to="/landing" replace />
+          <Landing />
         )
       } />
       

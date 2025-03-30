@@ -34,9 +34,10 @@ export default defineConfig(({ mode }) => ({
       try {
         // Check if the package is installed first
         if (isPackageInstalled('lovable-tagger')) {
-          const { componentTagger } = require("lovable-tagger");
+          // Dynamic import to avoid require.resolve issues
+          const lovableTagger = require("lovable-tagger");
           console.log("lovable-tagger loaded successfully");
-          return componentTagger();
+          return lovableTagger.componentTagger();
         } else {
           console.log("lovable-tagger package not found in node_modules");
           return null;

@@ -26,7 +26,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  // Format price
   const formattedPrice = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
@@ -53,7 +52,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
     setIsLoading(true);
     
     if (!user) {
-      // If not logged in, redirect to landing page with login modal
       toast({
         title: "Authentication Required",
         description: "Please login to book a room",
@@ -66,7 +64,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
       return;
     }
     
-    // If user is logged in, show booking form
     setTimeout(() => {
       setIsLoading(false);
       setShowBookingForm(true);
@@ -83,18 +80,16 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
     }
   };
 
-  // Get the appropriate image based on room type
   const getRoomImage = () => {
     if (room.images && room.images.length > 0) {
       return room.images[0];
     }
     
-    // Fallback images based on room type
     const roomImages = {
-      'Standard': '/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png',
-      'Deluxe': '/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png',
-      'Suite': '/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png',
-      'Presidential': '/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'
+      'Standard': '/ankit-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png',
+      'Deluxe': '/ankit-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png',
+      'Suite': '/ankit-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png',
+      'Presidential': '/ankit-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'
     };
     
     return roomImages[room.type] || '/placeholder.svg';
@@ -110,7 +105,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          {/* Room Image */}
           <div className="h-52 relative overflow-hidden">
             <img 
               src={getRoomImage()} 
@@ -127,7 +121,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
               </Badge>
             </div>
             
-            {/* Admin Status Change Button */}
             {isAdmin && (
               <div className="absolute top-3 left-3">
                 <Button 
@@ -142,7 +135,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
             )}
           </div>
           
-          {/* Room Details */}
           <div className="p-5">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold">Room {room.number}</h3>
@@ -176,7 +168,6 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
               </div>
             </div>
             
-            {/* Actions */}
             <div className="mt-auto pt-2 flex space-x-2">
               <Button 
                 variant="outline" 

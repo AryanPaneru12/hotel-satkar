@@ -8,6 +8,7 @@ import { generateCustomerId, calculateCredibilityScore } from '@/utils/customerU
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isAuthenticated: boolean; // Added this property
   customerId: string | null;
   credibilityScore: number | null;
   login: (email: string, password: string) => Promise<boolean>;
@@ -99,6 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider value={{ 
       user, 
       isLoading, 
+      isAuthenticated: !!user, // Add this computed property
       customerId, 
       credibilityScore, 
       canPayWithCash,

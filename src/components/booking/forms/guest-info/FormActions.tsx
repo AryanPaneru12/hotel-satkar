@@ -21,15 +21,22 @@ const FormActions: React.FC<FormActionsProps> = ({
 }) => {
   const { formState } = useFormContext();
   
+  const handleSubmit = (e: React.MouseEvent) => {
+    if (onNext) {
+      e.preventDefault();
+      onNext();
+    }
+  };
+  
   return (
     <div className="pt-4 flex justify-between">
       <Button type="button" variant="outline" onClick={onClose}>
         Cancel
       </Button>
       <Button 
-        type="submit" 
+        type={onNext ? "button" : "submit"}
         disabled={isSubmitting || formState.isSubmitting || disableSubmit}
-        onClick={onNext}
+        onClick={onNext ? handleSubmit : undefined}
       >
         {isSubmitting || formState.isSubmitting ? (
           <>

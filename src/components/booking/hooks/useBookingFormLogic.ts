@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -63,10 +62,8 @@ export const useBookingFormLogic = ({
   const formPaymentMethod = watch('paymentMethod');
   const formRoomPrice = watch('roomPrice');
 
-  // Get credibility score from the hook
   const { customerCredibilityScore } = useCredibilityScore(formSelectedCustomerId);
 
-  // Calculate total nights and amount when dates change
   useEffect(() => {
     if (formCheckInDate && formCheckOutDate) {
       const nights = differenceInDays(formCheckOutDate, formCheckInDate);
@@ -76,12 +73,10 @@ export const useBookingFormLogic = ({
     }
   }, [formCheckInDate, formCheckOutDate, formRoomPrice, setValue]);
 
-  // Handle moving to payment step
   const handleGuestFormSubmit = () => {
     setCurrentStep(1);
   };
   
-  // Handle payment processing with improved error handling
   const handlePaymentProcess = () => {
     if (formPaymentMethod === 'cash' && customerCredibilityScore < 80) {
       toast({
@@ -94,7 +89,6 @@ export const useBookingFormLogic = ({
     
     setIsLoading(true);
     
-    // Production code would connect to a payment gateway here
     setTimeout(() => {
       try {
         toast({
@@ -115,7 +109,6 @@ export const useBookingFormLogic = ({
     }, 1500);
   };
   
-  // Handle booking confirmation with error handling
   const handleConfirmBooking = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -125,7 +118,6 @@ export const useBookingFormLogic = ({
       ? `Customer ID: ${formValues.selectedCustomerId}` 
       : "New customer profile";
     
-    // In production, this would save to database
     setTimeout(() => {
       try {
         toast({

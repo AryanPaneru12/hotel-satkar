@@ -43,7 +43,7 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
   filteredGuests,
   guests
 }) => {
-  const { handleSubmit, formState: { errors } } = useFormContext();
+  const { handleSubmit, formState: { errors, isSubmitting } } = useFormContext();
   
   const hasErrors = Object.keys(errors).length > 0;
   
@@ -60,7 +60,7 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
       
       <RoomInfo 
         onClose={onClose}
-        onNext={onSubmit}
+        isSubmitting={isSubmitting}
       />
       
       <DateSelection />
@@ -75,8 +75,31 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
       />
       
       <PersonalInfo />
+      
+      <div className="pt-4 flex justify-between">
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button 
+          type="submit" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Next"
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
+
+// Missing import
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 export default GuestInformationForm;

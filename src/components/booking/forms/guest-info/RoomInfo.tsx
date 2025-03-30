@@ -8,9 +8,10 @@ import FormActions from './FormActions';
 interface RoomInfoProps {
   onClose: () => void;
   onNext?: () => void;
+  isSubmitting?: boolean;
 }
 
-const RoomInfo: React.FC<RoomInfoProps> = ({ onClose, onNext }) => {
+const RoomInfo: React.FC<RoomInfoProps> = ({ onClose, onNext, isSubmitting }) => {
   const { watch } = useFormContext();
   const roomType = watch('roomType');
   const roomPrice = watch('roomPrice');
@@ -39,7 +40,9 @@ const RoomInfo: React.FC<RoomInfoProps> = ({ onClose, onNext }) => {
         </div>
       </div>
       
-      <FormActions onClose={onClose} onNext={onNext} />
+      {onNext && (
+        <FormActions onClose={onClose} onNext={onNext} isSubmitting={isSubmitting} />
+      )}
     </div>
   );
 };

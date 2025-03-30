@@ -2,7 +2,6 @@
 import React from 'react';
 import PageContainer from '@/components/layout/PageContainer';
 import StatsCard from '@/components/dashboard/StatsCard';
-import DashboardCard from '@/components/dashboard/DashboardCard';
 import RecentBookings from '@/components/dashboard/RecentBookings';
 import PaymentMethodsCard from '@/components/admin/PaymentMethodsCard';
 import { UserRound, Hotel, CalendarDays, IndianRupee } from 'lucide-react';

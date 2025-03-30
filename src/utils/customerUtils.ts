@@ -10,7 +10,7 @@ import { customerUsers } from '@/data/userDatabase';
 export const generateCustomerId = (email: string): string => {
   const hashedEmail = crypto.SHA256(email).toString();
   // Return first 8 characters of hash for a shorter, manageable ID
-  return hashedEmail.substring(0, 8).toUpperCase();
+  return `CUS-${hashedEmail.substring(0, 8).toUpperCase()}`;
 };
 
 /**

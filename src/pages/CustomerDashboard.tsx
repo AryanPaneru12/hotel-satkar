@@ -47,7 +47,7 @@ const CustomerDashboard = () => {
   // Generate customer ID and get customer specific data
   useEffect(() => {
     if (user) {
-      // Generate customer ID from email
+      // Generate customer ID from email using the standardized utility
       const id = generateCustomerId(user.email);
       setCustomerId(id);
       

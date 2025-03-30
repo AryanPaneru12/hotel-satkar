@@ -103,7 +103,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
               <TableCell>
                 <div className="flex items-center">
                   <Search className="h-3.5 w-3.5 mr-1 text-primary" />
-                  <span className="text-xs font-medium">{booking.guest?.id || 'N/A'}</span>
+                  <span className="text-xs font-medium">{booking.guest?.id?.startsWith('CUS-') ? booking.guest?.id : `CUS-${booking.guest?.id}` || 'N/A'}</span>
                 </div>
               </TableCell>
               <TableCell>{booking.room?.number} ({booking.room?.type})</TableCell>

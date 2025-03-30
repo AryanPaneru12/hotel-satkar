@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +10,7 @@ import GuestInformationForm from './forms/GuestInformationForm';
 import PaymentMethodForm from './forms/PaymentMethodForm';
 import ConfirmationForm from './forms/ConfirmationForm';
 import { useBookingFormLogic } from './hooks/useBookingFormLogic';
+import { getFilteredGuests } from './hooks/bookingFormUtils';
 
 interface BookingFormProps {
   isOpen: boolean;

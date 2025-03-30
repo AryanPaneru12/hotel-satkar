@@ -1,25 +1,16 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays, differenceInDays } from 'date-fns';
-import { calculateCredibilityScore } from '@/lib/formatters';
 import { useAuth } from '@/contexts/AuthContext';
-import { Guest } from '@/types';
 import { bookingFormSchema, BookingFormValues } from '../schema/bookingFormSchema';
 import { guests } from '@/data/guests';
-
-interface UseBookingFormLogicProps {
-  isOpen: boolean;
-  onClose: () => void;
-  roomId?: string;
-  roomType?: string;
-  roomPrice?: number;
-  checkInDate?: string;
-  checkOutDate?: string;
-  paymentMethod?: string;
-}
+import { UseBookingFormLogicProps, UseBookingFormLogicReturn } from './types';
+import { getFilteredGuests, getMethodName, parseDateIfProvided } from './bookingFormUtils';
+import { useCredibilityScore } from './useCredibilityScore';
 
 export const useBookingFormLogic = ({
   isOpen,
@@ -29,27 +20,16 @@ export const useBookingFormLogic = ({
   checkInDate: initialCheckInDate,
   checkOutDate: initialCheckOutDate,
   paymentMethod: initialPaymentMethod
-}: UseBookingFormLogicProps) => {
+}: UseBookingFormLogicProps): UseBookingFormLogicReturn => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [customerCredibilityScore, setCustomerCredibilityScore] = useState(0);
   const [commandOpen, setCommandOpen] = useState(false);
   const [searchCustomer, setSearchCustomer] = useState('');
   
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const parseDateIfProvided = (dateString?: string): Date | undefined => {
-    if (!dateString) return undefined;
-    try {
-      return new Date(dateString);
-    } catch (error) {
-      console.error("Error parsing date:", error);
-      return undefined;
-    }
-  };
-  
   const defaultCheckInDate = parseDateIfProvided(initialCheckInDate) || new Date(2025, 5, 15);
   const defaultCheckOutDate = parseDateIfProvided(initialCheckOutDate) || addDays(new Date(2025, 5, 15), 1);
   
@@ -83,6 +63,10 @@ export const useBookingFormLogic = ({
   const formPaymentMethod = watch('paymentMethod');
   const formRoomPrice = watch('roomPrice');
 
+  // Get credibility score from the new hook
+  const { customerCredibilityScore } = useCredibilityScore(formSelectedCustomerId);
+
+  // Calculate total nights and amount when dates change
   useEffect(() => {
     if (formCheckInDate && formCheckOutDate) {
       const nights = differenceInDays(formCheckOutDate, formCheckInDate);
@@ -92,47 +76,12 @@ export const useBookingFormLogic = ({
     }
   }, [formCheckInDate, formCheckOutDate, formRoomPrice, setValue]);
 
-  useEffect(() => {
-    if (user && !formSelectedCustomerId) {
-      const mockHistory = {
-        totalBookings: 5,
-        completedStays: 4,
-        cancellations: 1,
-        noShows: 0
-      };
-      
-      const score = calculateCredibilityScore(
-        mockHistory.totalBookings,
-        mockHistory.completedStays,
-        mockHistory.cancellations,
-        mockHistory.noShows
-      );
-      
-      setCustomerCredibilityScore(score);
-    }
-  }, [user, formSelectedCustomerId]);
-
-  useEffect(() => {
-    if (formSelectedCustomerId) {
-      const selectedGuest = guests.find(g => g.id === formSelectedCustomerId);
-      if (selectedGuest && selectedGuest.credibilityScore) {
-        setCustomerCredibilityScore(selectedGuest.credibilityScore);
-      } else if (selectedGuest && selectedGuest.bookingHistory) {
-        const score = calculateCredibilityScore(
-          selectedGuest.bookingHistory.totalBookings,
-          selectedGuest.bookingHistory.completedStays,
-          selectedGuest.bookingHistory.cancellations,
-          selectedGuest.bookingHistory.noShows
-        );
-        setCustomerCredibilityScore(score);
-      }
-    }
-  }, [formSelectedCustomerId]);
-
+  // Handle moving to payment step
   const handleGuestFormSubmit = () => {
     setCurrentStep(1);
   };
   
+  // Handle payment processing
   const handlePaymentProcess = () => {
     if (formPaymentMethod === 'cash' && customerCredibilityScore < 80) {
       toast({
@@ -156,6 +105,7 @@ export const useBookingFormLogic = ({
     }, 1500);
   };
   
+  // Handle booking confirmation
   const handleConfirmBooking = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -175,29 +125,6 @@ export const useBookingFormLogic = ({
       onClose();
       navigate('/bookings');
     }, 1500);
-  };
-  
-  const getMethodName = (value: string): string => {
-    switch (value) {
-      case 'cash': return 'Cash';
-      case 'credit': return 'Credit Card';
-      case 'debit': return 'Debit Card';
-      case 'qr': return 'QR Code Payment';
-      case 'upi': return 'UPI';
-      case 'stripe': return 'Stripe';
-      default: return 'Unknown Method';
-    }
-  };
-
-  const getFilteredGuests = (guests: Guest[], searchTerm: string) => {
-    return searchTerm.trim() !== '' 
-      ? guests.filter(guest => 
-          guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          guest.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (guest.email && guest.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (guest.phone && guest.phone.includes(searchTerm))
-        )
-      : [];
   };
 
   return {

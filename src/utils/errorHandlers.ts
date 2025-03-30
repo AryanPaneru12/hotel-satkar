@@ -17,7 +17,8 @@ export const setupGlobalErrorHandler = () => {
       'Loading CSS chunk',
       'The operation was aborted',
       'NetworkError',
-      'Cannot read properties of undefined'
+      'Cannot read properties of undefined',
+      'lovable-tagger not available'
     ];
     
     if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
@@ -45,7 +46,8 @@ export const setupGlobalErrorHandler = () => {
       'Failed to fetch',
       'The operation was aborted',
       'NetworkError',
-      'Loading CSS chunk'
+      'Loading CSS chunk',
+      'lovable-tagger not available'
     ];
     
     if (!nonFatalErrors.some(e => reasonStr.includes(e))) {

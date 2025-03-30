@@ -27,7 +27,7 @@ const Landing = () => {
   useEffect(() => {
     console.log('Landing page loading...');
     
-    // Set loaded immediately - no artificial delay
+    // Set loaded immediately
     setIsLoaded(true);
     console.log('Landing page loaded');
     
@@ -41,7 +41,7 @@ const Landing = () => {
     setIsLoginMode(true);
   };
 
-  // Add a console log to check the component's rendering
+  // Log rendering status for debugging
   console.log('Landing rendering, isLoaded:', isLoaded);
 
   if (!isLoaded) {

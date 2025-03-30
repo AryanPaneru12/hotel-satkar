@@ -24,8 +24,8 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
   setCommandOpen,
   searchCustomer,
   onSearchChange,
-  filteredGuests = [], // Add default empty array
-  guests
+  filteredGuests = [], // Default empty array
+  guests = [] // Default empty array
 }) => {
   const { watch, setValue } = useFormContext();
   const useExistingCustomer = watch('useExistingCustomer');

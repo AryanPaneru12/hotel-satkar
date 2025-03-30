@@ -5,6 +5,10 @@ import { Guest } from '@/types';
  * Filter guests based on search term
  */
 export const getFilteredGuests = (guests: Guest[], searchTerm: string): Guest[] => {
+  if (!Array.isArray(guests)) {
+    return [];
+  }
+  
   return searchTerm.trim() !== '' 
     ? guests.filter(guest => 
         guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -42,8 +42,8 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
   commandOpen,
   searchCustomer,
   onSearchChange,
-  filteredGuests = [], // Add default empty array
-  guests = []  // Add default empty array
+  filteredGuests = [], // Default empty array
+  guests = []  // Default empty array
 }) => {
   const { handleSubmit, formState: { errors, isSubmitting } } = useFormContext();
   

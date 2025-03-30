@@ -25,6 +25,7 @@ const AppRoutes = () => {
   
   // Set up global error handler
   useEffect(() => {
+    console.log("Setting up global error handler...");
     setupGlobalErrorHandler();
     console.log('Routes initialized');
   }, []);

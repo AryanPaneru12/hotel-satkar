@@ -27,13 +27,9 @@ const Landing = () => {
   useEffect(() => {
     console.log('Landing page loading...');
     
-    // Simulate content loading
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-      console.log('Landing page loaded');
-    }, 100); // Short timeout to ensure all resources are initialized
-    
-    return () => clearTimeout(timer);
+    // Set loaded immediately - no need for artificial delay
+    setIsLoaded(true);
+    console.log('Landing page loaded');
   }, []);
 
   const handleLoginClick = () => {

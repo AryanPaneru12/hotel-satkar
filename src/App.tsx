@@ -20,10 +20,10 @@ const App = () => {
       <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
             <BrowserRouter>
               <AppRoutes />
+              <Toaster />
+              <Sonner />
             </BrowserRouter>
           </TooltipProvider>
         </ThemeProvider>

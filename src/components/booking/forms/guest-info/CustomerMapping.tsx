@@ -77,27 +77,30 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
                   onValueChange={onSearchChange}
                   className="h-9"
                 />
-                <CommandEmpty>No customer found.</CommandEmpty>
-                <CommandGroup className="max-h-[200px] overflow-auto">
-                  {filteredGuests.map(guest => (
-                    <CommandItem
-                      key={guest.id}
-                      value={guest.id}
-                      onSelect={(value) => {
-                        setValue('selectedCustomerId', value);
-                        setCommandOpen(false);
-                      }}
-                    >
-                      <div className="flex items-center">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>{guest.name}</span>
-                      </div>
-                      <span className="ml-auto text-xs text-muted-foreground">
-                        ID: {guest.id}
-                      </span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                {filteredGuests && filteredGuests.length > 0 ? (
+                  <CommandGroup className="max-h-[200px] overflow-auto">
+                    {filteredGuests.map(guest => (
+                      <CommandItem
+                        key={guest.id}
+                        value={guest.id}
+                        onSelect={(value) => {
+                          setValue('selectedCustomerId', value);
+                          setCommandOpen(false);
+                        }}
+                      >
+                        <div className="flex items-center">
+                          <User className="mr-2 h-4 w-4" />
+                          <span>{guest.name}</span>
+                        </div>
+                        <span className="ml-auto text-xs text-muted-foreground">
+                          ID: {guest.id}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ) : (
+                  <CommandEmpty>No customer found.</CommandEmpty>
+                )}
               </Command>
             </PopoverContent>
           </Popover>

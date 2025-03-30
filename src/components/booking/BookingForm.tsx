@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +8,7 @@ import { FormProvider } from 'react-hook-form';
 // Import our components
 import StepIndicator from './StepIndicator';
 import GuestInformationForm from './forms/GuestInformationForm';
-import PaymentMethodForm from './forms/PaymentMethodForm';
+import PaymentMethodForm from './forms/payment-method';
 import ConfirmationForm from './forms/ConfirmationForm';
 import { useBookingFormLogic } from './hooks/useBookingFormLogic';
 import { getFilteredGuests } from './hooks/bookingFormUtils';

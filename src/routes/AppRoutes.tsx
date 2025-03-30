@@ -21,7 +21,7 @@ import Payments from "@/pages/Payments";
 import Reports from "@/pages/Reports";
 
 const AppRoutes = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   // Set up global error handler
   useEffect(() => {
@@ -30,21 +30,25 @@ const AppRoutes = () => {
   
   return (
     <Routes>
+      {/* Redirect root to landing for non-authenticated users */}
+      <Route path="/" element={
+        isAuthenticated ? (
+          <ProtectedRoute>
+            {user?.role === 'customer' ? (
+              <Navigate to="/customer-dashboard" replace />
+            ) : (
+              <PageLayout>
+                <Index />
+              </PageLayout>
+            )}
+          </ProtectedRoute>
+        ) : (
+          <Navigate to="/landing" replace />
+        )
+      } />
+      
       <Route path="/landing" element={<Landing />} />
       <Route path="/error" element={<Error />} />
-      
-      {/* Conditional redirect based on user role */}
-      <Route path="/" element={
-        <ProtectedRoute>
-          {user?.role === 'customer' ? (
-            <Navigate to="/customer-dashboard" replace />
-          ) : (
-            <PageLayout>
-              <Index />
-            </PageLayout>
-          )}
-        </ProtectedRoute>
-      } />
       
       {/* Profile Page */}
       <Route path="/profile" element={

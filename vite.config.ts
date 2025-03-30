@@ -7,6 +7,13 @@ import path from "path";
 export default defineConfig(({ mode }) => ({
   server: {
     port: 8080,
+    headers: {
+      // Add security headers for development server
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   },
   plugins: [
     react(),

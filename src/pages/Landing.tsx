@@ -26,8 +26,14 @@ const Landing = () => {
   // Mark component as loaded after initial render
   useEffect(() => {
     console.log('Landing page loading...');
-    setIsLoaded(true);
-    console.log('Landing page loaded');
+    
+    // Simulate content loading
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+      console.log('Landing page loaded');
+    }, 100); // Short timeout to ensure all resources are initialized
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleLoginClick = () => {
@@ -37,7 +43,7 @@ const Landing = () => {
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-lg text-hotel-700">Loading Satkar Hotel...</p>
+        <p className="text-lg text-gray-700">Loading Satkar Hotel...</p>
       </div>
     );
   }

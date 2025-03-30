@@ -10,11 +10,16 @@ export const setupGlobalErrorHandler = () => {
     const nonFatalErrors = [
       'ResizeObserver loop limit exceeded',
       'Script error',
-      'ChunkLoadError'
+      'ChunkLoadError',
+      'Network Error',
+      'Loading chunk',
+      'Failed to fetch'
     ];
     
     if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
-      window.location.href = `/error?source=${encodeURIComponent(source || '')}`;
+      // Add error details to the URL for displaying on error page
+      const errorMessage = encodeURIComponent(message?.toString() || 'Unknown error');
+      window.location.href = `/error?source=${encodeURIComponent(source || '')}&message=${errorMessage}`;
     }
     
     // Call original handler if it exists
@@ -24,4 +29,26 @@ export const setupGlobalErrorHandler = () => {
     
     return false;
   };
+
+  // Handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    
+    // Don't redirect for network related errors to avoid loops
+    const reasonStr = String(event.reason);
+    if (!reasonStr.includes('Network Error') && !reasonStr.includes('Failed to fetch')) {
+      const errorMessage = encodeURIComponent(reasonStr || 'Unhandled Promise Rejection');
+      window.location.href = `/error?message=${errorMessage}`;
+    }
+    
+    event.preventDefault();
+  });
+};
+
+// Helper to manually redirect to error page
+export const redirectToErrorPage = (error: Error | string) => {
+  const errorMessage = encodeURIComponent(
+    typeof error === 'string' ? error : (error.message || 'Unknown error')
+  );
+  window.location.href = `/error?message=${errorMessage}`;
 };

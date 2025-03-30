@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { XCircle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
@@ -14,12 +14,27 @@ interface ErrorProps {
 const Error = ({ title, message, error }: ErrorProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  
+  // Get error details from URL params, state, or props
+  const errorSource = searchParams.get('source') || '';
+  const errorMessage = searchParams.get('message') || '';
   
   // Get error details from state if available
   const state = location.state as { error?: Error; title?: string; message?: string } | null;
   const errorTitle = title || state?.title || 'Something went wrong';
-  const errorMessage = message || state?.message || 'An unexpected error occurred. Please try again.';
+  const displayMessage = message || state?.message || errorMessage || 'An unexpected error occurred. Please try again.';
   const errorDetails = error || state?.error;
+
+  // Log error details for debugging
+  useEffect(() => {
+    console.error('Error page loaded with:', {
+      source: errorSource,
+      message: displayMessage,
+      details: errorDetails,
+      state
+    });
+  }, [errorSource, displayMessage, errorDetails, state]);
 
   // Handler to go back
   const handleGoBack = () => {
@@ -47,8 +62,14 @@ const Error = ({ title, message, error }: ErrorProps) => {
           <h1 className="text-2xl font-bold mb-3 text-red-800">{errorTitle}</h1>
           <Alert variant="destructive" className="mb-6">
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{errorMessage}</AlertDescription>
+            <AlertDescription>{displayMessage}</AlertDescription>
           </Alert>
+          
+          {errorSource && (
+            <div className="bg-gray-50 p-4 rounded-md mb-4">
+              <p className="text-sm text-gray-500">Source: {decodeURIComponent(errorSource)}</p>
+            </div>
+          )}
           
           {errorDetails && (
             <div className="bg-gray-50 p-4 rounded-md mb-6 overflow-auto max-h-40">

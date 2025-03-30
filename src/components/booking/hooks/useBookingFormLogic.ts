@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
@@ -144,3 +144,4 @@ export const useBookingFormLogic = ({
     formPaymentMethod
   };
 };
+

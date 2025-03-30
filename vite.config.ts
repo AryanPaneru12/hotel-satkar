@@ -20,10 +20,14 @@ export default defineConfig(({ mode }) => ({
     // Only apply the component tagger in development mode and if it's available
     mode === 'development' && (() => {
       try {
+        // First check if the package is installed before requiring it
+        require.resolve("ankit-tagger");
         const { componentTagger } = require("ankit-tagger");
+        console.log("ankit-tagger loaded successfully");
         return componentTagger();
       } catch (e) {
-        console.warn("ankit-tagger not available, skipping");
+        // More detailed error message that won't break the build
+        console.log("ankit-tagger not available, continuing without it");
         return null;
       }
     })(),

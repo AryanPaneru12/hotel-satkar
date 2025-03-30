@@ -27,14 +27,22 @@ const Landing = () => {
   useEffect(() => {
     console.log('Landing page loading...');
     
-    // Set loaded immediately - no need for artificial delay
+    // Set loaded immediately - no artificial delay
     setIsLoaded(true);
     console.log('Landing page loaded');
+    
+    // Log component status to verify we're rendering correctly
+    return () => {
+      console.log('Landing page unmounting');
+    };
   }, []);
 
   const handleLoginClick = () => {
     setIsLoginMode(true);
   };
+
+  // Add a console log to check the component's rendering
+  console.log('Landing rendering, isLoaded:', isLoaded);
 
   if (!isLoaded) {
     return (

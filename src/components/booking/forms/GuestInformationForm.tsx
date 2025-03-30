@@ -8,6 +8,8 @@ import RoomInfo from './guest-info/RoomInfo';
 import DateSelection from './guest-info/DateSelection';
 import CustomerMapping from './guest-info/CustomerMapping';
 import PersonalInfo from './guest-info/PersonalInfo';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 export type GuestFormValues = {
   fullName: string;
@@ -40,8 +42,8 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
   commandOpen,
   searchCustomer,
   onSearchChange,
-  filteredGuests,
-  guests
+  filteredGuests = [], // Add default empty array
+  guests = []  // Add default empty array
 }) => {
   const { handleSubmit, formState: { errors, isSubmitting } } = useFormContext();
   
@@ -97,9 +99,5 @@ const GuestInformationForm: React.FC<GuestInformationFormProps> = ({
     </form>
   );
 };
-
-// Missing import
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
 
 export default GuestInformationForm;

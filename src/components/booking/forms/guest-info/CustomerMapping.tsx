@@ -24,7 +24,7 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
   setCommandOpen,
   searchCustomer,
   onSearchChange,
-  filteredGuests,
+  filteredGuests = [], // Add default empty array
   guests
 }) => {
   const { watch, setValue } = useFormContext();
@@ -77,7 +77,7 @@ const CustomerMapping: React.FC<CustomerMappingProps> = ({
                   onValueChange={onSearchChange}
                   className="h-9"
                 />
-                {filteredGuests && filteredGuests.length > 0 ? (
+                {Array.isArray(filteredGuests) && filteredGuests.length > 0 ? (
                   <CommandGroup className="max-h-[200px] overflow-auto">
                     {filteredGuests.map(guest => (
                       <CommandItem

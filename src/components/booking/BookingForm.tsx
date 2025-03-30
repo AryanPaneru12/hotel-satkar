@@ -56,7 +56,8 @@ const BookingForm = (props: BookingFormProps) => {
   
   if (!isOpen) return null;
 
-  const filteredGuests = getFilteredGuests(guests, searchCustomer);
+  // Ensure filteredGuests is always an array
+  const filteredGuests = getFilteredGuests(guests, searchCustomer) || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {

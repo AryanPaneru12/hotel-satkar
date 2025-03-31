@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import PageContainer from '@/components/layout/PageContainer';
-import RoomCard from '@/components/rooms/RoomCard';
+import RoomCard from '@/components/rooms/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {

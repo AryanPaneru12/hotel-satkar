@@ -35,7 +35,10 @@ const App = () => {
         // Check if this is a lovable-tagger related error and suppress it
         if (args.length > 0 && typeof args[0] === 'string') {
           const errorMsg = args[0];
-          if (errorMsg.includes('lovable-tagger') || errorMsg.includes('componentTagger')) {
+          if (errorMsg.includes('lovable-tagger') || 
+              errorMsg.includes('componentTagger') ||
+              errorMsg.includes('Dynamic require of') ||
+              errorMsg.includes('node_modules/lovable-tagger')) {
             console.warn('Suppressed lovable-tagger error in App component:', ...args);
             return;
           }
@@ -53,7 +56,11 @@ const App = () => {
       };
     } catch (error) {
       // Don't set error state for lovable-tagger errors
-      if (error instanceof Error && isLovableTaggerError(error)) {
+      if (error instanceof Error && (
+          isLovableTaggerError(error) || 
+          error.message.includes('Dynamic require of') ||
+          error.message.includes('node_modules/lovable-tagger')
+      )) {
         console.warn("Ignoring lovable-tagger error in App:", error.message);
         return;
       }

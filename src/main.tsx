@@ -21,7 +21,9 @@ class ErrorBoundary extends React.Component<
     console.error("Error caught in ErrorBoundary:", error);
     // Filter out non-fatal errors
     if (error.message.includes('lovable-tagger') || 
-        error.message.includes('componentTagger')) {
+        error.message.includes('componentTagger') ||
+        error.message.includes('Dynamic require of') ||
+        error.message.includes('node_modules/lovable-tagger')) {
       console.warn("Non-fatal error related to lovable-tagger:", error.message);
       return { hasError: false, error: null };
     }
@@ -31,7 +33,9 @@ class ErrorBoundary extends React.Component<
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Ignore lovable-tagger errors
     if (error.message.includes('lovable-tagger') || 
-        error.message.includes('componentTagger')) {
+        error.message.includes('componentTagger') ||
+        error.message.includes('Dynamic require of') ||
+        error.message.includes('node_modules/lovable-tagger')) {
       console.warn("Ignoring non-fatal error:", error.message);
       return;
     }
@@ -80,11 +84,19 @@ if (rootElement) {
 try {
   const root = createRoot(rootElement);
 
-  // Prevent lovable-tagger errors from propagating
+  // Prevent lovable-tagger errors from propagating - enhanced error handler
   window.addEventListener('error', (event) => {
+    // Add more specific checks for the error you're getting
     if (event.message.includes('lovable-tagger') || 
         event.message.includes('componentTagger') ||
-        (event.filename && event.filename.includes('lovable-tagger'))) {
+        event.message.includes('__require.resolve') ||
+        event.message.includes('Dynamic require of') ||
+        event.message.includes('node_modules/lovable-tagger') ||
+        (event.filename && (
+           event.filename.includes('lovable-tagger') ||
+           event.filename.includes('node_modules/lovable-tagger')
+        ))
+    ) {
       console.warn("Suppressed lovable-tagger error:", event.message);
       event.preventDefault();
       return false;

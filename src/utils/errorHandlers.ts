@@ -1,3 +1,4 @@
+
 // Global error handler
 export const setupGlobalErrorHandler = () => {
   const originalOnError = window.onerror;
@@ -20,7 +21,9 @@ export const setupGlobalErrorHandler = () => {
       'lovable-tagger not available',
       'lovable-tagger',
       'componentTagger',
-      '__require.resolve is not a function'
+      '__require.resolve is not a function',
+      'Dynamic require of',
+      'node_modules/lovable-tagger'
     ];
     
     // Only redirect if not a non-fatal error
@@ -59,7 +62,9 @@ export const setupGlobalErrorHandler = () => {
       'lovable-tagger not available',
       'lovable-tagger',
       'componentTagger',
-      '__require.resolve is not a function'
+      '__require.resolve is not a function',
+      'Dynamic require of',
+      'node_modules/lovable-tagger'
     ];
     
     if (!nonFatalErrors.some(e => reasonStr.includes(e))) {
@@ -84,7 +89,9 @@ export const setupGlobalErrorHandler = () => {
     const errorString = args.join(' ');
     if (
       errorString.includes('lovable-tagger') || 
-      errorString.includes('componentTagger')
+      errorString.includes('componentTagger') ||
+      errorString.includes('Dynamic require of') ||
+      errorString.includes('node_modules/lovable-tagger')
     ) {
       console.warn('Suppressed lovable-tagger error log:', ...args);
       return;
@@ -107,7 +114,9 @@ export const redirectToErrorPage = (error: Error | string) => {
   const errorStr = typeof error === 'string' ? error : error.message;
   if (
     errorStr.includes('lovable-tagger') || 
-    errorStr.includes('componentTagger')
+    errorStr.includes('componentTagger') ||
+    errorStr.includes('Dynamic require of') ||
+    errorStr.includes('node_modules/lovable-tagger')
   ) {
     console.warn('Ignoring lovable-tagger error:', errorStr);
     return;
@@ -128,6 +137,8 @@ export const isLovableTaggerError = (error: Error | string): boolean => {
   return (
     errorMsg.includes('lovable-tagger') || 
     errorMsg.includes('componentTagger') ||
-    errorMsg.includes('__require.resolve')
+    errorMsg.includes('__require.resolve') ||
+    errorMsg.includes('Dynamic require of') ||
+    errorMsg.includes('node_modules/lovable-tagger')
   );
 };

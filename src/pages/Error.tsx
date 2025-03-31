@@ -38,12 +38,22 @@ const Error = ({ title, message, error }: ErrorProps) => {
 
   // Handler to go back
   const handleGoBack = () => {
-    navigate(-1);
+    try {
+      navigate(-1);
+    } catch (e) {
+      console.error("Navigation error:", e);
+      navigate('/', { replace: true });
+    }
   };
 
   // Handler to go home
   const handleGoHome = () => {
-    navigate('/');
+    try {
+      navigate('/', { replace: true });
+    } catch (e) {
+      console.error("Navigation error:", e);
+      window.location.href = '/';
+    }
   };
 
   // Handler to reload the page

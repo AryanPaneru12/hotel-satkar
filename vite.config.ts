@@ -30,22 +30,15 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     // Only apply the component tagger in development mode and if it's available
-    mode === 'development' && (() => {
+    mode === 'development' && isPackageInstalled('lovable-tagger') && (() => {
       try {
-        // Check if the package is installed first
-        if (isPackageInstalled('lovable-tagger')) {
-          // Dynamic import to avoid require.resolve issues
-          const lovableTagger = require("lovable-tagger");
-          console.log("lovable-tagger loaded successfully");
-          return lovableTagger.componentTagger();
-        } else {
-          console.log("lovable-tagger package not found in node_modules");
-          return null;
-        }
-      } catch (e: unknown) {
-        // More detailed error message that won't break the build
-        const errorMessage = e instanceof Error ? e.message : String(e);
-        console.log("lovable-tagger not available, continuing without it:", errorMessage);
+        // Import lovable-tagger without using require.resolve
+        const lovableTagger = require("lovable-tagger");
+        console.log("lovable-tagger loaded successfully");
+        return lovableTagger.componentTagger();
+      } catch (e) {
+        // Don't break the build if there's an issue with lovable-tagger
+        console.log("Error loading lovable-tagger:", e instanceof Error ? e.message : String(e));
         return null;
       }
     })(),

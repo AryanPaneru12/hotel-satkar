@@ -19,12 +19,14 @@ export const setupGlobalErrorHandler = () => {
       'NetworkError',
       'Cannot read properties of undefined',
       'lovable-tagger not available',
-      'componentTagger'
+      'componentTagger',
+      '__require.resolve is not a function'
     ];
     
-    if (!nonFatalErrors.some(e => message?.toString().includes(e))) {
+    // Only redirect if not a non-fatal error
+    if (message && typeof message === 'string' && !nonFatalErrors.some(e => message.includes(e))) {
       // Add error details to the URL for displaying on error page
-      const errorMessage = encodeURIComponent(message?.toString() || 'Unknown error');
+      const errorMessage = encodeURIComponent(message || 'Unknown error');
       window.location.href = `/error?source=${encodeURIComponent(source || '')}&message=${errorMessage}`;
     }
     
@@ -49,7 +51,8 @@ export const setupGlobalErrorHandler = () => {
       'NetworkError',
       'Loading CSS chunk',
       'lovable-tagger not available',
-      'componentTagger'
+      'componentTagger',
+      '__require.resolve is not a function'
     ];
     
     if (!nonFatalErrors.some(e => reasonStr.includes(e))) {

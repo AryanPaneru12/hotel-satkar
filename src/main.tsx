@@ -25,9 +25,23 @@ class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      // Redirect to error page
-      window.location.href = `/error?message=${encodeURIComponent(this.state.error?.message || 'Render Error')}`;
-      return <div>Loading error page...</div>;
+      // Return a fallback UI instead of redirecting
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+          <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden p-6">
+            <h1 className="text-2xl font-bold mb-3 text-red-800">Something went wrong</h1>
+            <p className="text-gray-700 mb-4">
+              {this.state.error?.message || 'An unexpected error occurred.'}
+            </p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
     }
 
     return this.props.children;
@@ -43,14 +57,32 @@ if (!rootElement) {
 
 console.log('Mounting React application...');
 
-const root = createRoot(rootElement);
+try {
+  const root = createRoot(rootElement);
 
-root.render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
-);
+  root.render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </React.StrictMode>
+  );
 
-console.log('React application mounted');
+  console.log('React application mounted');
+} catch (error) {
+  console.error('Failed to mount React application:', error);
+  // Append a fallback error message to the DOM
+  rootElement.innerHTML = `
+    <div style="padding: 20px; font-family: sans-serif;">
+      <h1 style="color: #d32f2f;">Application Failed to Load</h1>
+      <p>There was a problem initializing the application. Please try refreshing the page.</p>
+      <button style="padding: 8px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer;" 
+              onclick="window.location.reload()">
+        Refresh Page
+      </button>
+      <pre style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px; overflow: auto;">
+        ${error instanceof Error ? error.message : String(error)}
+      </pre>
+    </div>
+  `;
+}

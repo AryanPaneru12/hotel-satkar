@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PaymentsPage from './payments';
+import PaymentsPage from './payments/PaymentsPage';
 
 const Payments = () => {
   return <PaymentsPage />;

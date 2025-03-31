@@ -25,6 +25,12 @@ export const setupGlobalErrorHandler = () => {
     
     // Only redirect if not a non-fatal error
     if (message && typeof message === 'string' && !nonFatalErrors.some(e => message.includes(e))) {
+      // Instead of redirecting, log to console in development
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Error would normally redirect to error page:', message);
+        return false;
+      }
+      
       // Add error details to the URL for displaying on error page
       const errorMessage = encodeURIComponent(message || 'Unknown error');
       window.location.href = `/error?source=${encodeURIComponent(source || '')}&message=${errorMessage}`;
@@ -56,6 +62,13 @@ export const setupGlobalErrorHandler = () => {
     ];
     
     if (!nonFatalErrors.some(e => reasonStr.includes(e))) {
+      // In development, just log instead of redirecting
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Unhandled rejection would normally redirect:', reasonStr);
+        event.preventDefault();
+        return;
+      }
+      
       const errorMessage = encodeURIComponent(reasonStr || 'Unhandled Promise Rejection');
       window.location.href = `/error?message=${errorMessage}`;
     }
@@ -71,5 +84,12 @@ export const redirectToErrorPage = (error: Error | string) => {
   const errorMessage = encodeURIComponent(
     typeof error === 'string' ? error : (error.message || 'Unknown error')
   );
+  
+  // In development, just log instead of redirecting
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Would redirect to error page with message:', decodeURIComponent(errorMessage));
+    return;
+  }
+  
   window.location.href = `/error?message=${errorMessage}`;
 };

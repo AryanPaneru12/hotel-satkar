@@ -32,13 +32,13 @@ export default defineConfig(({ mode }) => ({
     // Only apply the component tagger in development mode and if it's available
     mode === 'development' && isPackageInstalled('lovable-tagger') && (() => {
       try {
-        // Import lovable-tagger dynamically
+        // Dynamically import lovable-tagger
         const lovableTagger = require("lovable-tagger");
         console.log("lovable-tagger loaded successfully");
         return lovableTagger.componentTagger();
       } catch (e) {
         // Don't break the build if there's an issue with lovable-tagger
-        console.log("lovable-tagger not available, continuing without it:", e instanceof Error ? e.message : String(e));
+        console.log("lovable-tagger not available or failed to load:", e instanceof Error ? e.message : String(e));
         return null;
       }
     })(),
@@ -48,4 +48,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    exclude: ['lovable-tagger'], // Exclude lovable-tagger from optimization
+  },
+  build: {
+    rollupOptions: {
+      external: ['lovable-tagger'], // Mark lovable-tagger as external during build
+    }
+  }
 }));

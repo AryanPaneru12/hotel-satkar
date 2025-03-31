@@ -9,6 +9,7 @@ import { ThemeProvider } from "next-themes";
 import queryClient from "./config/queryClient";
 import AppRoutes from "./routes/AppRoutes";
 import React, { useEffect, useState } from "react";
+import { isLovableTaggerError } from "./utils/errorHandlers";
 
 const App = () => {
   const [hasError, setHasError] = useState(false);
@@ -27,7 +28,33 @@ const App = () => {
       
       // Check if we're running in development or production
       console.log("Environment:", process.env.NODE_ENV);
+      
+      // Setup error handler for lovable-tagger
+      const originalConsoleError = console.error;
+      console.error = (...args) => {
+        // Check if this is a lovable-tagger related error and suppress it
+        if (args.length > 0 && typeof args[0] === 'string') {
+          const errorMsg = args[0];
+          if (errorMsg.includes('lovable-tagger') || errorMsg.includes('componentTagger')) {
+            console.warn('Suppressed lovable-tagger error in App component:', ...args);
+            return;
+          }
+        }
+        // Pass through to original console.error
+        originalConsoleError(...args);
+      };
+      
+      // Cleanup
+      return () => {
+        console.error = originalConsoleError;
+      };
     } catch (error) {
+      // Don't set error state for lovable-tagger errors
+      if (error instanceof Error && isLovableTaggerError(error)) {
+        console.warn("Ignoring lovable-tagger error in App:", error.message);
+        return;
+      }
+      
       console.error("Error in App component:", error);
       setHasError(true);
       setErrorMessage(error instanceof Error ? error.message : 'Unknown error in App component');

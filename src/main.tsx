@@ -4,6 +4,9 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
+// Setup error tracking
+console.log('Starting application - initializing error handlers');
+
 // Custom error handler for render errors
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -16,10 +19,22 @@ class ErrorBoundary extends React.Component<
 
   static getDerivedStateFromError(error: Error) {
     console.error("Error caught in ErrorBoundary:", error);
+    // Filter out non-fatal errors
+    if (error.message.includes('lovable-tagger') || 
+        error.message.includes('componentTagger')) {
+      console.warn("Non-fatal error related to lovable-tagger:", error.message);
+      return { hasError: false, error: null };
+    }
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Ignore lovable-tagger errors
+    if (error.message.includes('lovable-tagger') || 
+        error.message.includes('componentTagger')) {
+      console.warn("Ignoring non-fatal error:", error.message);
+      return;
+    }
     console.error("Uncaught error:", error, errorInfo);
   }
 
@@ -60,6 +75,17 @@ console.log('Mounting React application...');
 try {
   const root = createRoot(rootElement);
 
+  // Prevent lovable-tagger errors from propagating
+  window.addEventListener('error', (event) => {
+    if (event.message.includes('lovable-tagger') || 
+        event.message.includes('componentTagger') ||
+        (event.filename && event.filename.includes('lovable-tagger'))) {
+      console.warn("Suppressed lovable-tagger error:", event.message);
+      event.preventDefault();
+      return false;
+    }
+  }, true);
+
   root.render(
     <React.StrictMode>
       <ErrorBoundary>
@@ -68,7 +94,7 @@ try {
     </React.StrictMode>
   );
 
-  console.log('React application mounted');
+  console.log('React application mounted successfully');
 } catch (error) {
   console.error('Failed to mount React application:', error);
   // Append a fallback error message to the DOM

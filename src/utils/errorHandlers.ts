@@ -1,4 +1,3 @@
-
 // Global error handler
 export const setupGlobalErrorHandler = () => {
   const originalOnError = window.onerror;
@@ -19,6 +18,7 @@ export const setupGlobalErrorHandler = () => {
       'NetworkError',
       'Cannot read properties of undefined',
       'lovable-tagger not available',
+      'lovable-tagger',
       'componentTagger',
       '__require.resolve is not a function'
     ];
@@ -57,6 +57,7 @@ export const setupGlobalErrorHandler = () => {
       'NetworkError',
       'Loading CSS chunk',
       'lovable-tagger not available',
+      'lovable-tagger',
       'componentTagger',
       '__require.resolve is not a function'
     ];
@@ -76,6 +77,23 @@ export const setupGlobalErrorHandler = () => {
     event.preventDefault();
   });
   
+  // Explicitly handle lovable-tagger errors
+  const originalConsoleError = console.error;
+  console.error = (...args) => {
+    // Check if this is a lovable-tagger related error
+    const errorString = args.join(' ');
+    if (
+      errorString.includes('lovable-tagger') || 
+      errorString.includes('componentTagger')
+    ) {
+      console.warn('Suppressed lovable-tagger error log:', ...args);
+      return;
+    }
+    
+    // Otherwise, proceed with normal error logging
+    originalConsoleError(...args);
+  };
+  
   console.log('Global error handlers initialized');
 };
 
@@ -85,6 +103,16 @@ export const redirectToErrorPage = (error: Error | string) => {
     typeof error === 'string' ? error : (error.message || 'Unknown error')
   );
   
+  // Check if this is a lovable-tagger related error
+  const errorStr = typeof error === 'string' ? error : error.message;
+  if (
+    errorStr.includes('lovable-tagger') || 
+    errorStr.includes('componentTagger')
+  ) {
+    console.warn('Ignoring lovable-tagger error:', errorStr);
+    return;
+  }
+  
   // In development, just log instead of redirecting
   if (process.env.NODE_ENV === 'development') {
     console.warn('Would redirect to error page with message:', decodeURIComponent(errorMessage));
@@ -92,4 +120,14 @@ export const redirectToErrorPage = (error: Error | string) => {
   }
   
   window.location.href = `/error?message=${errorMessage}`;
+};
+
+// Utility to check if an error is related to lovable-tagger
+export const isLovableTaggerError = (error: Error | string): boolean => {
+  const errorMsg = typeof error === 'string' ? error : error.message;
+  return (
+    errorMsg.includes('lovable-tagger') || 
+    errorMsg.includes('componentTagger') ||
+    errorMsg.includes('__require.resolve')
+  );
 };

@@ -1,8 +1,4 @@
 
-export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(price);
-};
+import { formatPrice as sharedFormatPrice } from '@/components/shared/formatters';
+
+export const formatPrice = sharedFormatPrice;

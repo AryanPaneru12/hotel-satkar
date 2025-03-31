@@ -1,6 +1,6 @@
 
 import React from 'react';
-import RoomCard from './RoomCard';
+import LandingRoomCard from './landingCard';
 import TransitionWrapper from '@/components/ui/TransitionWrapper';
 
 interface RoomsSectionProps {
@@ -53,7 +53,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {rooms.map((room, index) => (
-            <RoomCard
+            <LandingRoomCard
               key={index}
               title={room.title}
               description={room.description}

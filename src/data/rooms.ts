@@ -17,7 +17,7 @@ export const rooms: Room[] = [
     floor: 1,
     description: 'Standard room with basic amenities',
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Fridge'],
-    images: ['/ankit-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png'],
+    images: ['/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png'],
     createdAt: new Date().toISOString()
   })),
   
@@ -35,7 +35,7 @@ export const rooms: Room[] = [
     floor: 2,
     description: 'Deluxe room with premium amenities',
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub'],
-    images: ['/ankit-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png'],
+    images: ['/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png'],
     createdAt: new Date().toISOString()
   })),
   
@@ -53,7 +53,7 @@ export const rooms: Room[] = [
     floor: 3,
     description: 'Luxury suite with spacious living area',
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen'],
-    images: ['/ankit-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png'],
+    images: ['/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png'],
     createdAt: new Date().toISOString()
   })),
   
@@ -69,7 +69,7 @@ export const rooms: Room[] = [
     floor: 4,
     description: 'The most luxurious accommodation with all premium amenities',
     amenities: ['Wi-Fi', 'TV', 'Air Conditioning', 'Mini Bar', 'Safe', 'Bathtub', 'Living Room', 'Kitchen', 'Work Desk', 'Premium View', 'Private Pool', 'Butler Service'],
-    images: ['/ankit-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'],
+    images: ['/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'],
     createdAt: new Date().toISOString()
   })),
 ];

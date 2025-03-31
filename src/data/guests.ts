@@ -1,3 +1,4 @@
+
 import { Guest } from '../types';
 
 export const guests: Guest[] = [
@@ -21,7 +22,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-01T00:00:00Z',
-    image: '/ankit-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png'
+    image: '/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png'
   },
   {
     id: '2',
@@ -43,7 +44,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-05T00:00:00Z',
-    image: '/ankit-uploads/7f333ea6-b0d6-44ca-90c8-ec02f7f9902a.png'
+    image: '/lovable-uploads/7f333ea6-b0d6-44ca-90c8-ec02f7f9902a.png'
   },
   {
     id: '3',
@@ -65,7 +66,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-10T00:00:00Z',
-    image: '/ankit-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png'
+    image: '/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png'
   },
   {
     id: '4',
@@ -86,7 +87,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-15T00:00:00Z',
-    image: '/ankit-uploads/127a805a-a683-4d65-8411-a8640d5f839c.png'
+    image: '/lovable-uploads/127a805a-a683-4d65-8411-a8640d5f839c.png'
   },
   {
     id: '5',
@@ -107,7 +108,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-20T00:00:00Z',
-    image: '/ankit-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png'
+    image: '/lovable-uploads/7f6ee3f4-9ad1-4dfd-907c-5b2a6b33460b.png'
   },
   {
     id: '6',
@@ -128,7 +129,7 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-25T00:00:00Z',
-    image: '/ankit-uploads/3334a0b3-058e-403f-9f56-23fd144ae856.png'
+    image: '/lovable-uploads/3334a0b3-058e-403f-9f56-23fd144ae856.png'
   },
   {
     id: '7',
@@ -149,6 +150,6 @@ export const guests: Guest[] = [
     },
     role: 'customer',
     createdAt: '2025-01-30T00:00:00Z',
-    image: '/ankit-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png'
+    image: '/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png'
   }
 ];

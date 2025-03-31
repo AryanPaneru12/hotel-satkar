@@ -12,7 +12,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Standard Room",
       description: "Comfortable and cozy room with breathtaking mountain views.",
-      image: "/ankit-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
+      image: "/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png",
       features: ["Wi-Fi & Smart TV", "Air Conditioning", "Mountain View Balcony"],
       price: 4999,
       delay: 700
@@ -20,7 +20,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Deluxe Room",
       description: "Spacious room with premium amenities and panoramic Himalayan vista.",
-      image: "/ankit-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png",
+      image: "/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png",
       features: ["Premium Wi-Fi & Smart TV", "Mini Bar & Safe", "Private Balcony with Mountain View"],
       price: 10999,
       delay: 800
@@ -28,7 +28,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Suite",
       description: "Luxurious suite with separate living area and unparalleled Annapurna views.",
-      image: "/ankit-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png",
+      image: "/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png",
       features: ["Living Room & Private Terrace", "Premium Dining Area", "Panoramic Mountain Views"],
       price: 20999,
       delay: 900
@@ -36,7 +36,7 @@ const RoomsSection = ({ onBookNowClick }: RoomsSectionProps) => {
     {
       title: "Presidential Suite",
       description: "The ultimate luxury experience with infinity pool and Himalayan panorama.",
-      image: "/ankit-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png",
+      image: "/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png",
       features: ["Private Infinity Pool", "Exclusive Panoramic Views", "Private Dining & Butler Service"],
       price: 30999,
       delay: 1000

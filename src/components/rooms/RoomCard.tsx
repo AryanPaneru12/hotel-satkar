@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -82,14 +83,14 @@ const RoomCard = ({ room, delay = 0, onStatusChange }: RoomCardProps) => {
 
   const getRoomImage = () => {
     if (room.images && room.images.length > 0) {
-      return room.images[0];
+      return room.images[0].replace('/ankit-uploads/', '/lovable-uploads/');
     }
     
     const roomImages = {
-      'Standard': '/ankit-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png',
-      'Deluxe': '/ankit-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png',
-      'Suite': '/ankit-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png',
-      'Presidential': '/ankit-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'
+      'Standard': '/lovable-uploads/65411b44-d58a-4ca3-b6e0-524c1dc50484.png',
+      'Deluxe': '/lovable-uploads/31cf91b6-22a8-4382-9199-d680609bd325.png',
+      'Suite': '/lovable-uploads/a1f17f98-5fbc-49ce-93d7-77dae3cc0241.png',
+      'Presidential': '/lovable-uploads/c4d1d1b1-b6f7-4bc8-8d3e-ce3e4af224f1.png'
     };
     
     return roomImages[room.type] || '/placeholder.svg';

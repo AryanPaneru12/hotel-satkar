@@ -1,5 +1,5 @@
+
 import React, { useState } from 'react';
-import { format } from 'date-fns';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import BookingForm from '@/components/booking/BookingForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface RoomCardProps {
   title: string;
@@ -126,7 +127,5 @@ const RoomCard = ({
     </TransitionWrapper>
   );
 };
-
-import { cn } from '@/lib/utils';
 
 export default RoomCard;

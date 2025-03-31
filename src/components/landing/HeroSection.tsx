@@ -14,7 +14,7 @@ const HeroSection = ({ onBookNowClick }: HeroSectionProps) => {
       <div 
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: 'url(/ankit-uploads/62b48b77-b858-4e45-9e3b-81865d0a061e.png)',
+          backgroundImage: 'url(/lovable-uploads/62b48b77-b858-4e45-9e3b-81865d0a061e.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

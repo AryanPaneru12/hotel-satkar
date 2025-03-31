@@ -285,3 +285,13 @@ input, select, textarea, button {
     margin-top: 0.75rem;
   }
 }
+
+/* Debug styles to force background color */
+html, body, #root {
+  background-color: hsl(var(--background));
+}
+
+/* Force background on main containers */
+.flex.flex-col.min-h-screen {
+  background-color: hsl(var(--background));
+}

@@ -44,6 +44,9 @@ const App = () => {
         originalConsoleError(...args);
       };
       
+      // Force the body to use the background color
+      document.body.className = document.body.className + " bg-background";
+      
       // Cleanup
       return () => {
         console.error = originalConsoleError;
@@ -84,9 +87,11 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <TooltipProvider>
             <BrowserRouter>
-              <AppRoutes />
-              <Toaster />
-              <Sonner />
+              <div className="min-h-screen bg-background">
+                <AppRoutes />
+                <Toaster />
+                <Sonner />
+              </div>
             </BrowserRouter>
           </TooltipProvider>
         </ThemeProvider>

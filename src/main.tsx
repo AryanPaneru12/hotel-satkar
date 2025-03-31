@@ -72,6 +72,11 @@ if (!rootElement) {
 
 console.log('Mounting React application...');
 
+// Apply background color to root element
+if (rootElement) {
+  rootElement.className += ' bg-background';
+}
+
 try {
   const root = createRoot(rootElement);
 

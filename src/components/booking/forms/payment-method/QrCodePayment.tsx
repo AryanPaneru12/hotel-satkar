@@ -8,7 +8,7 @@ const QrCodePayment: React.FC = () => {
       <div className="text-center">
         <Card className="w-64 h-64 mx-auto mb-4 flex items-center justify-center overflow-hidden">
           <img 
-            src="/ankit-uploads/f8913d78-265e-419a-8d99-0a66c4dfa584.png" 
+            src="/lovable-uploads/f8913d78-265e-419a-8d99-0a66c4dfa584.png" 
             alt="Payment QR Code" 
             className="w-full h-full object-contain"
           />

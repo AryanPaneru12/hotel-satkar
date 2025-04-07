@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       // For this demo, we're using the same password for all users
-      const mockPassword = "NaveenSir@2025";
+      const mockPassword = "xxyy0011?";
       
       if (password === mockPassword) {
         setUser(foundUser);

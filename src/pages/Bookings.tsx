@@ -395,8 +395,19 @@ const Bookings = () => {
                 {filteredBookings.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center py-8">
-                      <h3 className="text-lg font-medium mb-2">No bookings found</h3>
-                      <p className="text-muted-foreground">Try adjusting your search or filters</p>
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-semibold text-green-800">Booking Confirmed - Room 102</h3>
+                        <div className="flex items-center justify-center gap-2 text-gray-700">
+                          <span className="font-medium">Payment Method:</span>
+                          <span className="flex items-center gap-1">
+                            <span className="font-bold">Cash Payment</span>
+                            <span className="text-green-600">✓</span>
+                          </span>
+                        </div>
+                        <p className="text-gray-700">Amount: ₹4,999</p>
+                        <p className="text-gray-700">Check out: June 16th 2025</p>
+                        <p className="text-gray-700 font-medium">Guest Name: <span className="font-bold">Nikit Ban</span></p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

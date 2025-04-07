@@ -5,15 +5,15 @@ import { User } from '../types';
 export const adminUsers: User[] = [
   {
     id: '1',
-    email: 'ankit@satkar.com',
-    name: 'Ankit Subedi',
+    email: 'aryan@satkar.com',
+    name: 'Aryan Paneru',
     role: 'superadmin',
     createdAt: '2025-01-01T10:00:00Z'
   },
   {
     id: '2',
-    email: 'raj@satkar.com',
-    name: 'Rajbansh Singh',
+    email: 'john@satkar.com',
+    name: 'John',
     role: 'admin',
     createdAt: '2025-01-15T10:00:00Z'
   }
@@ -23,8 +23,8 @@ export const adminUsers: User[] = [
 export const customerUsers: User[] = [
   {
     id: '3',
-    email: 'naveen@satkar.com',
-    name: 'Naveen Kumar',
+    email: 'nikit@satkar.com',
+    name: 'Nikit Ban',
     role: 'customer',
     createdAt: '2025-02-15T10:00:00Z'
   },

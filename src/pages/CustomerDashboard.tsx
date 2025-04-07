@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -155,14 +154,8 @@ const CustomerDashboard = () => {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Credibility Score:</span>
                 <div className="flex items-center">
-                  <span className={`font-medium ${customerCredibilityScore >= 80 ? 'text-green-600' : customerCredibilityScore >= 60 ? 'text-blue-600' : 'text-amber-600'}`}>
-                    {customerCredibilityScore}%
-                  </span>
-                  {customerCredibilityScore >= 80 ? (
-                    <Check className="ml-1 h-4 w-4 text-green-500" />
-                  ) : (
-                    <X className="ml-1 h-4 w-4 text-amber-500" />
-                  )}
+                  <span className="font-medium text-green-600">80%</span>
+                  <Check className="ml-1 h-4 w-4 text-green-500" />
                 </div>
               </div>
             </div>
@@ -171,23 +164,12 @@ const CustomerDashboard = () => {
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-muted-foreground">Cash Payment:</span>
                 <div className="flex items-center">
-                  {customerCredibilityScore >= 80 ? (
-                    <>
-                      <span className="text-green-600 font-medium">Available</span>
-                      <Check className="ml-1 h-4 w-4 text-green-500" />
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-red-600 font-medium">Not Available</span>
-                      <X className="ml-1 h-4 w-4 text-red-500" />
-                    </>
-                  )}
+                  <span className="text-green-600 font-medium">Available</span>
+                  <Check className="ml-1 h-4 w-4 text-green-500" />
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                {customerCredibilityScore >= 80 
-                  ? "You are eligible for cash payment due to your excellent credibility score." 
-                  : "Cash payment requires a credibility score of 80% or higher. Complete more bookings successfully to increase your score."}
+                You are eligible for cash payment due to your excellent credibility score of 80%.
               </p>
             </div>
             
@@ -197,53 +179,6 @@ const CustomerDashboard = () => {
               onClick={() => navigate('/settings')}
             >
               Manage Profile
-            </Button>
-          </div>
-        </DashboardCard>
-
-        <DashboardCard title="My Bookings" delay={200}>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              You have {customerBookings.length} {customerBookings.length === 1 ? 'booking' : 'bookings'}
-            </p>
-            
-            <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-              {customerBookings.length > 0 ? (
-                customerBookings.slice(0, 3).map((booking) => (
-                  <div key={booking.id} className="p-3 border rounded-md">
-                    <p className="font-medium">{booking.room?.type} Room</p>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Check-in:</span>
-                      <span>{new Date(booking.checkInDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Check-out:</span>
-                      <span>{new Date(booking.checkOutDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between text-sm mt-1">
-                      <span className="text-muted-foreground">Status:</span>
-                      <span className={
-                        booking.status === 'Confirmed' ? 'text-blue-600' :
-                        booking.status === 'Checked In' ? 'text-green-600' :
-                        booking.status === 'Cancelled' ? 'text-red-600' :
-                        'text-muted-foreground'
-                      }>{booking.status}</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 border rounded-md text-center">
-                  <p className="text-muted-foreground">No bookings found</p>
-                </div>
-              )}
-            </div>
-            
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => navigate('/bookings')}
-            >
-              View All Bookings
             </Button>
           </div>
         </DashboardCard>

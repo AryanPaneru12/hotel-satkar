@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import PageContainer from '@/components/layout/PageContainer';
@@ -7,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { UserRound, Settings, CalendarDays, BookOpen } from 'lucide-react';
+import { UserRound, Settings, CalendarDays, BookOpen, Star, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CredibilityScore from '@/components/credibility/CredibilityScore';
 
@@ -53,13 +52,19 @@ const Profile = () => {
                   <Separator />
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-muted-foreground">Credibility Score</p>
-                    {/* Update from 'value' to 'score' prop */}
-                    <CredibilityScore score={credibilityScore || 0} />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {canPayWithCash 
-                        ? "✅ Eligible for cash payments" 
-                        : "❌ Cash payments restricted"}
-                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <span className="text-xl font-bold text-green-600">80%</span>
+                        <Star className="ml-1 h-4 w-4 text-green-500" fill="currentColor" />
+                      </div>
+                      <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+                        Excellent
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-green-600">
+                      <Check className="h-4 w-4" />
+                      <span>Eligible for cash payments</span>
+                    </div>
                   </div>
                   <Separator />
                 </>

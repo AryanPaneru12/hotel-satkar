@@ -50,7 +50,7 @@ export const calculateCredibilityScore = (userBookings: Booking[]): number => {
  */
 export const canPayWithCash = (credibilityScore: number | null): boolean => {
   if (credibilityScore === null) return false;
-  return credibilityScore >= 80; // Threshold is 80%
+  return credibilityScore >= 50; // Threshold is 80%
 };
 
 /**

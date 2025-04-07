@@ -4,8 +4,8 @@ import { Guest } from '../types';
 export const guests: Guest[] = [
   {
     id: '1',
-    name: 'Rajesh Kumar',
-    email: 'rajesh.kumar@example.com',
+    name: 'Aryan Paneru',
+    email: 'aryanpaneru@example.com',
     phone: '555-123-4567',
     address: '123 Main St, Mumbai, India',
     nationality: 'India',
@@ -26,8 +26,8 @@ export const guests: Guest[] = [
   },
   {
     id: '2',
-    name: 'Aarav Sharma',
-    email: 'aarav.sharma@example.com',
+    name: 'Nikit Ban',
+    email: 'nikitban@example.com',
     phone: '555-234-5678',
     address: '456 Oak Ave, Delhi, India',
     nationality: 'India',
@@ -48,8 +48,8 @@ export const guests: Guest[] = [
   },
   {
     id: '3',
-    name: 'Sujata Patel',
-    email: 'sujata.patel@example.com',
+    name: 'Rohan Lekhak',
+    email: 'rohanlekhak@example.com',
     phone: '555-345-6789',
     address: '789 Pine Rd, Pune, India',
     nationality: 'India',
@@ -70,8 +70,8 @@ export const guests: Guest[] = [
   },
   {
     id: '4',
-    name: 'Pramod Gurung',
-    email: 'pramod.gurung@example.com',
+    name: 'Yubraj Panjiyar',
+    email: 'yubrajpanjiyar@example.com',
     phone: '555-456-7890',
     address: '101 Elm Blvd, Kathmandu, Nepal',
     nationality: 'Nepal',
